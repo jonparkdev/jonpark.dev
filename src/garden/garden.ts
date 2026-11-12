@@ -23,8 +23,13 @@ export interface Note {
   upgrades: Upgrade[];
   /** Markdown body, frontmatter removed. */
   markdown: string;
-  /** Rendered body HTML. */
+  /** Rendered body HTML, wikilinks resolved and Diagrams embedded. */
   html: string;
+  /**
+   * The written Notes this Note's body wikilinks to, in first-mention order,
+   * each once. Links to unwritten Notes are not included.
+   */
+  linksTo: Note[];
 }
 
 /** Everything pages render from: the Curriculum and every Note, validated. */
@@ -101,6 +106,7 @@ function buildGarden(inputs: GardenInputs): Garden {
   if (problems.length > 0) throw new GardenError(problems);
 
   notes.sort((a, b) => a.title.localeCompare(b.title));
+  renderNotes(notes);
   return {
     curriculum,
     notes,
@@ -176,6 +182,25 @@ function readNote(
     topic,
     upgrades: upgradeList as Upgrade[],
     markdown,
-    html: renderMarkdown(markdown),
+    html: "",
+    linksTo: [],
   };
+}
+
+/** Second pass, once every Note is known: renders bodies and records resolved wikilinks. */
+function renderNotes(notes: Note[]): void {
+  // Obsidian resolves wikilinks by filename, ignoring case.
+  const byTitle = new Map(notes.map((note) => [note.title.toLowerCase(), note]));
+  for (const note of notes) {
+    const linked = new Set<Note>();
+    note.html = renderMarkdown(note.markdown, {
+      resolveNote(target) {
+        const found = byTitle.get(target.toLowerCase());
+        if (!found) return undefined;
+        linked.add(found);
+        return `/notes/${found.slug}`;
+      },
+    });
+    note.linksTo = [...linked];
+  }
 }
