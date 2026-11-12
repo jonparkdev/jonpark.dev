@@ -36,3 +36,20 @@ test("a Note lists every Note that links to it, each with its Stage badge and a 
   expect(entries[1]).toMatch(/<a[^>]*href="\/notes\/write-through-cache"[^>]*>Write-through cache<\/a>/);
   expect(entries[1]).toMatch(/class="stage-badge stage-budding"/);
 });
+
+test("a Note that links to another several times appears once in its Linked from list", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Cache invalidation.md": note("Hard."),
+      "Read-through cache.md": note(
+        "See [[Cache invalidation]], [[cache invalidation|again]] and [[Cache invalidation]].",
+      ),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const entries = items(linkedFrom(build.page("/notes/cache-invalidation")));
+  expect(entries).toHaveLength(1);
+  expect(entries[0]).toContain(">Read-through cache</a>");
+});
