@@ -21,6 +21,18 @@ const { note } = Astro.props;
       <p><StageBadge stage={note.stage} /> · <span class="topic">Topic: {note.topic.title}</span></p>
     </header>
     <div class="note-body" set:html={note.html} />
+    <section class="linked-from">
+      <h2>Linked from</h2>
+      <ul>
+        {
+          note.linkedFrom.map((source) => (
+            <li>
+              <a href={`/notes/${source.slug}`}>{source.title}</a> <StageBadge stage={source.stage} />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
   </article>
 </Base>
 

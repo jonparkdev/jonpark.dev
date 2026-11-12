@@ -31,6 +31,8 @@ export interface Note {
    * each once. Links to unwritten Notes are not included.
    */
   linksTo: Note[];
+  /** The other Notes whose bodies wikilink to this one, ordered by title, each once. */
+  linkedFrom: Note[];
 }
 
 /** Everything pages render from: the Curriculum and every Note, validated. */
@@ -108,6 +110,7 @@ function buildGarden(inputs: GardenInputs): Garden {
 
   notes.sort((a, b) => a.title.localeCompare(b.title));
   renderNotes(notes, inputs.assetsDir, problems);
+  linkBacklinks(notes);
 
   if (problems.length > 0) throw new GardenError(problems);
 
@@ -189,6 +192,7 @@ function readNote(
     markdown,
     html: "",
     linksTo: [],
+    linkedFrom: [],
   };
 }
 
@@ -215,6 +219,13 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
       },
     });
     note.linksTo = [...linked];
+  }
+}
+
+/** Inverts `linksTo` into `linkedFrom`. `notes` is sorted by title, so each list is too. */
+function linkBacklinks(notes: Note[]): void {
+  for (const source of notes) {
+    for (const target of source.linksTo) target.linkedFrom.push(source);
   }
 }
 
