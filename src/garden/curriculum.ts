@@ -33,7 +33,7 @@ export interface CurriculumDefinition {
   tangents?: Topic[];
 }
 
-export const TANGENTS_TITLE = "🐇 Tangents";
+const TANGENTS_TITLE = "🐇 Tangents";
 
 /** Reads and checks the Curriculum JSON. Throws, naming the file, if it is malformed. */
 export function loadCurriculum(path: string): Curriculum {
@@ -82,7 +82,7 @@ function toCurriculum(raw: unknown, path: string): Curriculum {
   return { parts, topic: (key) => byKey.get(key) };
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
+export function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
