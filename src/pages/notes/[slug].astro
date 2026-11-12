@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from "astro";
+import NoteLink from "../../components/NoteLink.astro";
 import StageBadge from "../../components/StageBadge.astro";
 import { loadGarden, type Note } from "../../garden/garden";
 import Base from "../../layouts/Base.astro";
@@ -28,7 +29,7 @@ const { note } = Astro.props;
           <ul>
             {note.linkedFrom.map((source) => (
               <li>
-                <a href={`/notes/${source.slug}`}>{source.title}</a> <StageBadge stage={source.stage} />
+                <NoteLink note={source} />
               </li>
             ))}
           </ul>
