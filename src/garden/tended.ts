@@ -1,8 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import type { Note } from "./garden";
 
 /** How many Notes the home page lists as Recently tended. */
-export const RECENTLY_TENDED_COUNT = 5;
+const RECENTLY_TENDED_COUNT = 5;
 
 /**
  * When a Note was Tended: the author date of the last git commit touching its
@@ -19,9 +20,9 @@ export function tendedDate(notesDir: string, filename: string, now: Date): Date 
   return committed ? new Date(committed) : now;
 }
 
-/** The latest Tended items, newest first. Ties keep their given order. */
-export function recentlyTended<T extends { tended: Date }>(items: T[], count = RECENTLY_TENDED_COUNT): T[] {
-  return [...items].sort((a, b) => b.tended.getTime() - a.tended.getTime()).slice(0, count);
+/** The most recently Tended Notes, newest first. Ties keep their given order. */
+export function recentlyTended(notes: Note[]): Note[] {
+  return [...notes].sort((a, b) => b.tended.getTime() - a.tended.getTime()).slice(0, RECENTLY_TENDED_COUNT);
 }
 
 /** A Tended date as YYYY-MM-DD (UTC). */

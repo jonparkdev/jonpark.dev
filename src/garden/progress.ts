@@ -19,15 +19,17 @@ export interface PartProgress {
   topics: TopicProgress[];
 }
 
-/** The Curriculum's Parts and Topics in order, each Topic with its Notes. Tangents last. */
+/**
+ * The Curriculum's Parts and Topics in order, each Topic with its Notes.
+ * Tangents last. `notes` must be ordered by title; each Topic keeps that order.
+ */
 export function progressMap(curriculum: Curriculum, notes: Note[]): PartProgress[] {
-  const byTopic = new Map<string, Note[]>();
-  for (const note of notes) byTopic.set(note.topic.key, [...(byTopic.get(note.topic.key) ?? []), note]);
+  const byTopic = Map.groupBy(notes, (note) => note.topic.key);
 
   return curriculum.parts.map((part) => ({
     part,
     topics: part.topics.map((topic) => {
-      const topicNotes = [...(byTopic.get(topic.key) ?? [])].sort((a, b) => a.title.localeCompare(b.title));
+      const topicNotes = byTopic.get(topic.key) ?? [];
       const stage = topicNotes
         .map((note) => note.stage)
         .reduce<Stage | undefined>((best, s) => (best && compareStages(best, s) >= 0 ? best : s), undefined);
