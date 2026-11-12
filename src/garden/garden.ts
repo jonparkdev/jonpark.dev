@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { loadCurriculum, type Curriculum, type Topic } from "./curriculum";
@@ -103,10 +103,11 @@ function buildGarden(inputs: GardenInputs): Garden {
     }
   }
 
+  notes.sort((a, b) => a.title.localeCompare(b.title));
+  renderNotes(notes, inputs.assetsDir, problems);
+
   if (problems.length > 0) throw new GardenError(problems);
 
-  notes.sort((a, b) => a.title.localeCompare(b.title));
-  renderNotes(notes, inputs.assetsDir);
   return {
     curriculum,
     notes,
@@ -188,7 +189,7 @@ function readNote(
 }
 
 /** Second pass, once every Note is known: renders bodies and records resolved wikilinks. */
-function renderNotes(notes: Note[], assetsDir: string): void {
+function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void {
   // Obsidian resolves wikilinks by filename, ignoring case.
   const byTitle = new Map(notes.map((note) => [note.title.toLowerCase(), note]));
   for (const note of notes) {
@@ -201,7 +202,12 @@ function renderNotes(notes: Note[], assetsDir: string): void {
         return `/notes/${found.slug}`;
       },
       embedDiagram(name) {
-        return inlineSvg(readFileSync(join(assetsDir, name), "utf8"));
+        const path = join(assetsDir, name);
+        if (!existsSync(path)) {
+          problems.push(`Note "${note.filename}": Diagram "${name}" is not in the assets folder ${assetsDir}`);
+          return "";
+        }
+        return inlineSvg(readFileSync(path, "utf8"));
       },
     });
     note.linksTo = [...linked];
