@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 03 (Note pages with Stage badges)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] `[[Note title]]` renders as a link to that Note's page
 - [ ] Matching is by filename and ignores case
@@ -16,3 +16,7 @@ Spec: `.scratch/site-mvp/spec.md`
 - [ ] `![[name.svg]]` shows the Diagram inline
 - [ ] A missing Diagram asset fails the build, naming the Note and the file
 - [ ] Each behaviour above is covered by a build-based test
+
+## Comments
+
+- Implemented on integration branch `site-mvp` (2026-11-12); all acceptance criteria covered by build-based tests.

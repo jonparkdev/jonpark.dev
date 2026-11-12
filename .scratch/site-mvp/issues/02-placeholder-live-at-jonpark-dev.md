@@ -19,3 +19,7 @@ Spec: `.scratch/site-mvp/spec.md` · ADR: `docs/adr/0001-container-behind-cloudf
 - [ ] A wizard walks the author through every manual step, and every secret it sets matches a secret the Action references
 - [ ] Cloudflare proxies jonpark.dev to Fly with SSL mode Full (strict); the record causing the 520 error is gone
 - [ ] `curl https://jonpark.dev` returns the placeholder page with a valid certificate
+
+## Comments
+
+- Code is on `site-mvp`: Dockerfile, fly.toml, `.github/workflows/deploy.yml`, wizard `scripts/setup-hosting.sh`, `docs/hosting.md`. Still open for the author: run the wizard, then confirm the smoke run, the Fly machine, deploy-on-push, Cloudflare Full (strict), and `curl https://jonpark.dev`.
