@@ -14,14 +14,25 @@ function output(build: { stdout: string; stderr: string }) {
   return build.stdout + build.stderr;
 }
 
-test.each([
-  ["missing", "topic: caching"],
-  ["invalid", "stage: sapling\ntopic: caching"],
-])("a %s stage fails the build, naming the Note and field", (_, frontmatter) => {
-  const build = buildWithNote("Write-through cache.md", frontmatter);
+/** The Note's own content on its page: title, Stage badge, Topic and body, without the site's chrome. */
+function article(html: string): string {
+  const start = html.indexOf("<article");
+  expect(start, "the Note's <article>").toBeGreaterThanOrEqual(0);
+  return html.slice(start, html.indexOf("</article>", start));
+}
+
+test("a missing stage fails the build, naming the Note and field", () => {
+  const build = buildWithNote("Write-through cache.md", "topic: caching");
 
   expect(build.exitCode).not.toBe(0);
-  expect(output(build)).toContain('Note "Write-through cache.md": stage');
+  expect(output(build)).toContain('Note "Write-through cache.md": stage is missing');
+});
+
+test("an invalid stage fails the build, naming the Note, field and value", () => {
+  const build = buildWithNote("Write-through cache.md", "stage: sapling\ntopic: caching");
+
+  expect(build.exitCode).not.toBe(0);
+  expect(output(build)).toContain('Note "Write-through cache.md": stage "sapling"');
 });
 
 test("a Note with no frontmatter fails the build, naming the Note", () => {
@@ -29,6 +40,13 @@ test("a Note with no frontmatter fails the build, naming the Note", () => {
 
   expect(build.exitCode).not.toBe(0);
   expect(output(build)).toContain('Note "Bare note.md": stage is missing');
+});
+
+test("a missing topic fails the build, naming the Note and field", () => {
+  const build = buildWithNote("Write-through cache.md", "stage: seedling");
+
+  expect(build.exitCode).not.toBe(0);
+  expect(output(build)).toContain('Note "Write-through cache.md": topic is missing');
 });
 
 test("a topic not in the Curriculum fails the build, naming the Note and field", () => {
@@ -52,6 +70,13 @@ test("an invalid upgrades value fails the build, naming the Note and field", () 
   expect(output(build)).toContain('Note "Write-through cache.md": upgrades value "video"');
 });
 
+test("upgrades that are not a list fail the build, naming the Note and field", () => {
+  const build = buildWithNote("Write-through cache.md", "stage: seedling\ntopic: caching\nupgrades: diagram");
+
+  expect(build.exitCode).not.toBe(0);
+  expect(output(build)).toContain('Note "Write-through cache.md": upgrades must be a list');
+});
+
 test("valid upgrades are accepted but not rendered", () => {
   const build = buildWithNote(
     "Write-through cache.md",
@@ -59,9 +84,16 @@ test("valid upgrades are accepted but not rendered", () => {
   );
 
   expect(build.exitCode, output(build)).toBe(0);
-  const html = build.page("/notes/write-through-cache") ?? "";
-  expect(html).toContain("Body");
-  expect(html).not.toMatch(/diagram|interactive|explainer/i);
+  const content = article(build.page("/notes/write-through-cache") ?? "");
+  expect(content).toContain("Body");
+  expect(content).not.toMatch(/diagram|interactive|explainer/i);
+});
+
+test("frontmatter that is not valid YAML fails the build, naming the Note", () => {
+  const build = buildWithNote("Write-through cache.md", "stage: seedling\ntopic: [caching");
+
+  expect(build.exitCode).not.toBe(0);
+  expect(output(build)).toContain('Note "Write-through cache.md": frontmatter is not valid YAML');
 });
 
 test("any other frontmatter field fails the build, naming the Note and field", () => {
@@ -91,10 +123,12 @@ test("every invalid Note is reported in one failed build", () => {
     notes: {
       "First.md": "---\nstage: sapling\ntopic: caching\n---\n",
       "Second.md": "---\nstage: seedling\ntopic: nope\n---\n",
+      "Third.md": "---\ntopic: caching\n---\n",
     },
   });
 
   expect(build.exitCode).not.toBe(0);
-  expect(output(build)).toContain('Note "First.md": stage');
-  expect(output(build)).toContain('Note "Second.md": topic');
+  expect(output(build)).toContain('Note "First.md": stage "sapling"');
+  expect(output(build)).toContain('Note "Second.md": topic "nope"');
+  expect(output(build)).toContain('Note "Third.md": stage is missing');
 });
