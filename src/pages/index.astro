@@ -1,16 +1,29 @@
 ---
+import { loadGarden } from "../garden/garden";
+import Base from "../layouts/Base.astro";
+
+const garden = loadGarden();
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>jonpark.dev</title>
-  </head>
-  <body>
-    <main>
-      <h1>jonpark.dev</h1>
-      <p>A garden of system design notes is growing here.</p>
-    </main>
-  </body>
-</html>
+<Base title="jonpark.dev">
+  <h1>jonpark.dev</h1>
+  <p>A garden of system design notes, kept in service of interview prep.</p>
+
+  <section class="progress-map">
+    <h2>Progress map</h2>
+    {
+      garden.curriculum.parts.map((part) => (
+        <section class:list={["part", { tangents: part.isTangents }]}>
+          <h3>{part.title}</h3>
+          <ul class="topics">
+            {part.topics.map((topic) => (
+              <li class="topic" data-topic={topic.key}>
+                <span class="topic-title">{topic.title}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </section>
+</Base>
