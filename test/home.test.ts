@@ -34,12 +34,12 @@ function positions(html: string, needles: string[]): number[] {
   });
 }
 
-/** The HTML of one Topic's entry on the Progress map: up to the next Topic, or the end of the page. */
+/** The HTML of one Topic's entry on the Progress map: up to the next Topic, or the end of the Progress map. */
 function topicEntry(html: string, key: string): string {
   const start = html.indexOf(`data-topic="${key}"`);
   expect(start, `Topic "${key}" on the Progress map`).toBeGreaterThanOrEqual(0);
   const next = html.indexOf('data-topic="', start + 1);
-  return html.slice(start, next === -1 ? html.indexOf("</main>", start) : next);
+  return html.slice(start, next === -1 ? html.indexOf("data-recently-tended", start) : next);
 }
 
 test("the home page shows every Part and its Topics in Curriculum order, with Tangents last", () => {

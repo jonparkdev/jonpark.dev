@@ -6,6 +6,7 @@ import { gardenInputs, type GardenInputs } from "./inputs";
 import { renderMarkdown } from "./markdown";
 import { progressMap, type PartProgress } from "./progress";
 import { isStage, STAGES, type Stage } from "./stage";
+import { recentlyTended, tendedDate } from "./tended";
 
 /** Richer formats a Note can declare. Validated, not rendered, in the MVP. */
 export const UPGRADES = ["diagram", "interactive", "explainer"] as const;
@@ -33,6 +34,8 @@ export interface Note {
   linksTo: Note[];
   /** The other Notes whose bodies wikilink to this one, ordered by title, each once. */
   linkedFrom: Note[];
+  /** When the Note was last Tended: its file's last git commit, or now if uncommitted. */
+  tended: Date;
 }
 
 /** Everything pages render from: the Curriculum and every Note, validated. */
@@ -44,6 +47,8 @@ export interface Garden {
   note(slug: string): Note | undefined;
   /** The Progress map: every Part and Topic in Curriculum order, each Topic with its Notes and Stage. */
   progressMap: PartProgress[];
+  /** The five most recently Tended Notes, newest first (ties by title). */
+  recentlyTended: Note[];
 }
 
 /** Thrown when Notes break the garden's rules. Lists every problem, each naming its Note. */
@@ -91,12 +96,13 @@ function buildGarden(inputs: GardenInputs): Garden {
     .sort();
 
   const notes: Note[] = [];
+  const now = new Date();
   for (const filename of filenames) {
     const source = readFileSync(join(inputs.notesDir, filename), "utf8");
     const note = readNote(filename, source, curriculum, (problem) =>
       problems.push(`Note "${filename}": ${problem}`),
     );
-    if (note) notes.push(note);
+    if (note) notes.push({ ...note, tended: tendedDate(inputs.notesDir, filename, now) });
   }
 
   const bySlug = new Map<string, Note[]>();
@@ -119,6 +125,7 @@ function buildGarden(inputs: GardenInputs): Garden {
     notes,
     note: (slug) => bySlug.get(slug)?.[0],
     progressMap: progressMap(curriculum, notes),
+    recentlyTended: recentlyTended(notes),
   };
 }
 
@@ -129,7 +136,7 @@ function readNote(
   source: string,
   curriculum: Curriculum,
   report: (problem: string) => void,
-): Note | undefined {
+): Omit<Note, "tended"> | undefined {
   const match = FRONTMATTER.exec(source);
   let frontmatter: unknown = {};
   if (match) {
