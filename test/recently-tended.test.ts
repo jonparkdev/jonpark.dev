@@ -66,3 +66,21 @@ test("the home page lists the five most recently Tended Notes below the Progress
   });
   expect(section).not.toContain("Charlie");
 });
+
+test("an uncommitted Note counts as tended now", () => {
+  const before = new Date().toISOString().slice(0, 10);
+  const build = buildGarden({
+    curriculum,
+    notes: { "Committed.md": note("budding"), "Fresh.md": note("seedling") },
+    commits: [{ date: "2026-01-05T12:00:00Z", notes: ["Committed.md"] }],
+  });
+  const after = new Date().toISOString().slice(0, 10);
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const listed = entries(recentlyTended(build.page("/") ?? ""));
+  expect(listed).toHaveLength(2);
+  expect(listed[0]).toContain('<a href="/notes/fresh">Fresh</a>');
+  const today = /<time datetime="(\d{4}-\d{2}-\d{2})">/.exec(listed[0])?.[1];
+  expect([before, after]).toContain(today);
+  expect(listed[1]).toContain('<time datetime="2026-01-05">2026-01-05</time>');
+});
