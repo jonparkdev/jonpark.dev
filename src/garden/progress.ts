@@ -1,6 +1,6 @@
 import type { Curriculum, Part, Topic } from "./curriculum";
 import type { Note } from "./garden";
-import { compareStages, type Stage } from "./stage";
+import { compareStages, STAGES, type Stage } from "./stage";
 
 /** One Topic on the Progress map, with what the garden holds for it. */
 export interface TopicProgress {
@@ -9,6 +9,8 @@ export interface TopicProgress {
   notes: Note[];
   /** Stage of the Topic's most advanced Note; undefined when the Topic is untouched. */
   stage: Stage | undefined;
+  /** How many of the Topic's Notes sit at each Stage. */
+  counts: Record<Stage, number>;
 }
 
 /** One Part on the Progress map: its Topics in Curriculum order. */
@@ -29,7 +31,9 @@ export function progressMap(curriculum: Curriculum, notes: Note[]): PartProgress
       const stage = topicNotes
         .map((note) => note.stage)
         .reduce<Stage | undefined>((best, s) => (best && compareStages(best, s) >= 0 ? best : s), undefined);
-      return { topic, notes: topicNotes, stage };
+      const counts = Object.fromEntries(STAGES.map((s) => [s, 0])) as Record<Stage, number>;
+      for (const note of topicNotes) counts[note.stage]++;
+      return { topic, notes: topicNotes, stage, counts };
     }),
   }));
 }

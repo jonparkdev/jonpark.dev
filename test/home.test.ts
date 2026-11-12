@@ -77,3 +77,20 @@ test("each Topic is marked with the Stage of its most advanced Note", () => {
   expect(topicEntry(html, "caching")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌳 Evergreen/);
   expect(topicEntry(html, "scaling")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌿 Budding/);
 });
+
+test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Cache aside.md": note("seedling", "caching"),
+      "Cache stampede.md": note("seedling", "caching"),
+      "Write through.md": note("budding", "caching"),
+      "Sharding.md": note("evergreen", "scaling"),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/") ?? "";
+  expect(topicEntry(html, "caching")).toContain('<span class="topic-counts">🌱 2 · 🌿 1 · 🌳 0</span>');
+  expect(topicEntry(html, "scaling")).toContain('<span class="topic-counts">🌱 0 · 🌿 0 · 🌳 1</span>');
+});

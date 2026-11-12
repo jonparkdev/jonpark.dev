@@ -1,6 +1,7 @@
 ---
 import StageBadge from "../components/StageBadge.astro";
 import { loadGarden } from "../garden/garden";
+import { STAGES, stageEmoji } from "../garden/stage";
 import Base from "../layouts/Base.astro";
 
 const garden = loadGarden();
@@ -17,7 +18,7 @@ const garden = loadGarden();
         <section class:list={["part", { tangents: part.isTangents }]}>
           <h3>{part.title}</h3>
           <ul class="topics">
-            {topics.map(({ topic, stage }) => (
+            {topics.map(({ topic, stage, counts }) => (
               <li class="topic" data-topic={topic.key}>
                 <span class="topic-title">{topic.title}</span>
                 {stage && (
@@ -25,6 +26,7 @@ const garden = loadGarden();
                     <StageBadge stage={stage} />
                   </span>
                 )}
+                <span class="topic-counts">{STAGES.map((s) => `${stageEmoji(s)} ${counts[s]}`).join(" · ")}</span>
               </li>
             ))}
           </ul>
