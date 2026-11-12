@@ -2,6 +2,7 @@
 import StageBadge from "../components/StageBadge.astro";
 import { loadGarden } from "../garden/garden";
 import { STAGES, stageEmoji } from "../garden/stage";
+import { tendedDay } from "../garden/tended";
 import Base from "../layouts/Base.astro";
 
 const garden = loadGarden();
@@ -44,5 +45,19 @@ const garden = loadGarden();
         </section>
       ))
     }
+  </section>
+
+  <section class="recently-tended" data-recently-tended>
+    <h2>Recently tended</h2>
+    <ol>
+      {
+        garden.recentlyTended.map((note) => (
+          <li>
+            <a href={`/notes/${note.slug}`}>{note.title}</a> <StageBadge stage={note.stage} />{" "}
+            <time datetime={tendedDay(note.tended)}>{tendedDay(note.tended)}</time>
+          </li>
+        ))
+      }
+    </ol>
   </section>
 </Base>

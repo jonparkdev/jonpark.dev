@@ -15,6 +15,23 @@ export interface FixtureGarden {
   assets?: Record<string, string>;
   /** Curriculum, written as JSON. Shape is defined by the site's Curriculum module. */
   curriculum?: unknown;
+  /**
+   * Git history for the fixture, oldest first, each commit at a controlled
+   * date. With commits, the fixture root is a git repo; a Note left out of
+   * every commit stays uncommitted.
+   */
+  commits?: FixtureCommit[];
+}
+
+export interface FixtureCommit {
+  /** Commit date, ISO 8601, e.g. "2026-03-14T12:00:00Z". */
+  date: string;
+  /**
+   * Notes to commit: filenames to commit as written in `notes`, or filename to
+   * contents to write and commit first (e.g. an earlier version of a Note,
+   * which a later commit of its final contents then replaces).
+   */
+  notes: string[] | Record<string, string>;
 }
 
 export interface GardenBuild {
@@ -54,6 +71,7 @@ export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = 
   writeFiles(notesDir, garden.notes ?? {});
   writeFiles(assetsDir, garden.assets ?? {});
   writeFileSync(curriculumPath, JSON.stringify(garden.curriculum ?? { parts: [] }, null, 2));
+  if (garden.commits) commitHistory(root, garden.notes ?? {}, garden.commits);
 
   const result = spawnSync(astroBin, ["build", "--outDir", outDir], {
     cwd: projectRoot,
@@ -82,6 +100,37 @@ export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = 
       return existsSync(file) ? readFileSync(file, "utf8") : undefined;
     },
   };
+}
+
+/** Makes the fixture root a git repo and commits Notes at controlled dates. */
+function commitHistory(root: string, notes: Record<string, string>, commits: FixtureCommit[]) {
+  const run = (args: string[], date?: string) => {
+    const result = spawnSync("git", args, {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        GIT_AUTHOR_NAME: "Fixture",
+        GIT_AUTHOR_EMAIL: "fixture@example.com",
+        GIT_COMMITTER_NAME: "Fixture",
+        GIT_COMMITTER_EMAIL: "fixture@example.com",
+        ...(date ? { GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date } : {}),
+      },
+    });
+    if (result.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${result.stderr}`);
+  };
+  run(["init", "--quiet"]);
+  commits.forEach((commit, i) => {
+    const contents = Array.isArray(commit.notes)
+      ? Object.fromEntries(commit.notes.map((name) => [name, notes[name]]))
+      : commit.notes;
+    for (const [name, text] of Object.entries(contents)) {
+      if (text === undefined) throw new Error(`Fixture commit names "${name}", which is not in notes`);
+      writeFileSync(join(root, "notes", name), text);
+    }
+    run(["add", "--", ...Object.keys(contents).map((name) => join("notes", name))]);
+    run(["-c", "commit.gpgsign=false", "commit", "--quiet", "--allow-empty", "-m", `Commit ${i + 1}`], commit.date);
+  });
 }
 
 function writeFiles(dir: string, files: Record<string, string>) {
