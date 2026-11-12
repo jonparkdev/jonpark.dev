@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
@@ -7,7 +7,7 @@ const curriculum = {
 };
 
 function buildWithNote(filename: string, frontmatter: string) {
-  return buildGarden({ curriculum, notes: { [filename]: `---\n${frontmatter}\n---\nBody\n` } });
+  return buildFixtureSite({ curriculum, notes: { [filename]: `---\n${frontmatter}\n---\nBody\n` } });
 }
 
 function output(build: { stdout: string; stderr: string }) {
@@ -36,7 +36,7 @@ test("an invalid stage fails the build, naming the Note, field and value", () =>
 });
 
 test("a Note with no frontmatter fails the build, naming the Note", () => {
-  const build = buildGarden({ curriculum, notes: { "Bare note.md": "Just a body\n" } });
+  const build = buildFixtureSite({ curriculum, notes: { "Bare note.md": "Just a body\n" } });
 
   expect(build.exitCode).not.toBe(0);
   expect(output(build)).toContain('Note "Bare note.md": stage is missing');
@@ -104,7 +104,7 @@ test("any other frontmatter field fails the build, naming the Note and field", (
 });
 
 test("two Notes with the same slug fail the build, naming both", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Write-through cache.md": "---\nstage: seedling\ntopic: caching\n---\nOne\n",
@@ -118,7 +118,7 @@ test("two Notes with the same slug fail the build, naming both", () => {
 });
 
 test("every invalid Note is reported in one failed build", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "First.md": "---\nstage: sapling\ntopic: caching\n---\n",

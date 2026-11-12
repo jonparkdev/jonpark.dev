@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [
@@ -44,7 +44,7 @@ function topicEntry(html: string, key: string): string {
 }
 
 test("the home page shows every Part and its Topics in Curriculum order, with Tangents last", () => {
-  const build = buildGarden({ curriculum });
+  const build = buildFixtureSite({ curriculum });
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/") ?? "";
@@ -62,7 +62,7 @@ test("the home page shows every Part and its Topics in Curriculum order, with Ta
 });
 
 test("each Topic is marked with the Stage of its most advanced Note", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "A cache aside.md": note("seedling", "caching"),
@@ -80,7 +80,7 @@ test("each Topic is marked with the Stage of its most advanced Note", () => {
 });
 
 test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache aside.md": note("seedling", "caching"),
@@ -97,7 +97,7 @@ test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
 });
 
 test("Topics with no Notes stay visible, marked untouched", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Cache aside.md": note("seedling", "caching") },
   });
@@ -111,7 +111,7 @@ test("Topics with no Notes stay visible, marked untouched", () => {
 });
 
 test("each Topic lists its Notes, each linking to its page with its Stage badge", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache aside.md": note("budding", "caching"),
@@ -137,7 +137,7 @@ test("the home page shows the text the hosting wizard checks for", () => {
   const expected = /^HOME_PAGE_TEXT="(.+)"/m.exec(script)?.[1] ?? "";
   expect(expected, "HOME_PAGE_TEXT in scripts/setup-hosting.sh").not.toBe("");
 
-  const build = buildGarden({ curriculum });
+  const build = buildFixtureSite({ curriculum });
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   expect(build.page("/")).toContain(expected);

@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
@@ -16,7 +16,7 @@ const items = (section: string | undefined) =>
   [...(section ?? "").matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)].map((m) => m[1]);
 
 test("a Note lists every Note that links to it, each with its Stage badge and a link", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache invalidation.md": note("Hard."),
@@ -38,7 +38,7 @@ test("a Note lists every Note that links to it, each with its Stage badge and a 
 });
 
 test("a Note that links to another several times appears once in its Linked from list", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache invalidation.md": note("Hard."),
@@ -55,7 +55,7 @@ test("a Note that links to another several times appears once in its Linked from
 });
 
 test("a Note with no backlinks has no Linked from section", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache invalidation.md": note("Later: [[Write-behind cache]]."),
@@ -70,7 +70,7 @@ test("a Note with no backlinks has no Linked from section", () => {
 });
 
 test("a Note that links to itself does not appear in its own Linked from list", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache invalidation.md": note("As [[Cache invalidation]] says, it's hard."),

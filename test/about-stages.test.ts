@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 test("/about-stages explains the three Stages, Recall and Demotion", () => {
-  const build = buildGarden();
+  const build = buildFixtureSite();
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/about-stages") ?? "";

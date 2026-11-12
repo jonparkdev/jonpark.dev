@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
@@ -8,7 +8,7 @@ const curriculum = {
 const note = (body: string) => `---\nstage: seedling\ntopic: caching\n---\n${body}\n`;
 
 test("[[Note title]] renders as a link to that Note's page", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Read-through cache.md": note("See [[Cache invalidation]] for the hard part."),
@@ -23,7 +23,7 @@ test("[[Note title]] renders as a link to that Note's page", () => {
 });
 
 test("wikilinks match the Note's filename ignoring case", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Read-through cache.md": note("See [[cache INVALIDATION]]."),
@@ -38,7 +38,7 @@ test("wikilinks match the Note's filename ignoring case", () => {
 });
 
 test("[[Note title|label]] shows the label and links to the Note", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Read-through cache.md": note("Then [[Cache invalidation|it gets hard]]."),
@@ -53,7 +53,7 @@ test("[[Note title|label]] shows the label and links to the Note", () => {
 });
 
 test("a wikilink to a Note that doesn't exist renders as styled unwritten text, not a link", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Read-through cache.md": note("Later: [[Write-behind cache|write-behind]].") },
   });
@@ -67,7 +67,7 @@ test("a wikilink to a Note that doesn't exist renders as styled unwritten text, 
 });
 
 test("[[Note#Heading]] links to the Note page, ignoring the heading", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Read-through cache.md": note("See [[Cache invalidation#TTLs]] and [[Cache invalidation#TTLs|TTLs]]."),

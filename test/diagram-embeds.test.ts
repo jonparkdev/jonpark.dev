@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "hashing", title: "Consistent Hashing" }] }],
@@ -10,7 +10,7 @@ const note = (body: string) => `---\nstage: seedling\ntopic: hashing\nupgrades: 
 const ring = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle id="ring" cx="5" cy="5" r="4"/></svg>';
 
 test("![[name.svg]] shows the Diagram from the assets folder inline", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Consistent hashing.md": note("Keys sit on a ring:\n\n![[ring.svg]]\n\nThen nodes join.") },
     assets: { "ring.svg": `<?xml version="1.0" encoding="UTF-8"?>\n${ring}\n` },
@@ -26,7 +26,7 @@ test("![[name.svg]] shows the Diagram from the assets folder inline", () => {
 });
 
 test("a missing Diagram asset fails the build, naming the Note and the file", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Consistent hashing.md": note("![[missing-ring.svg]]") },
   });
@@ -37,7 +37,7 @@ test("a missing Diagram asset fails the build, naming the Note and the file", ()
 });
 
 test("![[Note]] embedding a written Note renders as a link to it, like [[Note]]", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Consistent hashing.md": note("See ![[Virtual nodes]] and ![[Virtual nodes|vnodes]]."),
@@ -55,7 +55,7 @@ test("![[Note]] embedding a written Note renders as a link to it, like [[Note]]"
 });
 
 test("![[target]] for anything but an .svg never fails the build and is never inlined", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Consistent hashing.md": note("See ![[Unwritten idea]] and ![[photo.png]].") },
     assets: { "photo.png": "not really a png" },

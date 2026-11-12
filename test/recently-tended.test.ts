@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
@@ -22,7 +22,7 @@ function entries(section: string): string[] {
 }
 
 test("the home page lists the five most recently Tended Notes below the Progress map, newest first, with badges and dates", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Alpha.md": note("seedling"),
@@ -68,7 +68,7 @@ test("the home page lists the five most recently Tended Notes below the Progress
 });
 
 test("a Note is Tended when its change was written, not when a rebase or squash-merge re-committed it", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Older.md": note("seedling"), "Rebased.md": note("budding") },
     commits: [
@@ -86,7 +86,7 @@ test("a Note is Tended when its change was written, not when a rebase or squash-
 
 test("an uncommitted Note counts as tended now", () => {
   const before = new Date().toISOString().slice(0, 10);
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Committed.md": note("budding"), "Fresh.md": note("seedling") },
     commits: [{ date: "2026-01-05T12:00:00Z", notes: ["Committed.md"] }],

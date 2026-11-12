@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { buildGarden } from "./helpers/build-garden";
+import { buildFixtureSite } from "./helpers/build-fixture-site";
 
 const curriculum = {
   parts: [
@@ -14,7 +14,7 @@ const curriculum = {
 };
 
 test("a Note renders at /notes/<slug> with its filename as title, Topic and body", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: {
       "Consistent Hashing.md": "---\nstage: budding\ntopic: scaling\n---\nKeys map onto a **ring**.\n",
@@ -35,7 +35,7 @@ test.each([
   ["budding", "🌿 Budding"],
   ["evergreen", "🌳 Evergreen"],
 ])("a %s Note shows its Stage badge, linking to /about-stages", (stage, badge) => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "Caching basics.md": `---\nstage: ${stage}\ntopic: caching\n---\nBody\n` },
   });
@@ -46,7 +46,7 @@ test.each([
 });
 
 test("the slug is the kebab-case of the filename", () => {
-  const build = buildGarden({
+  const build = buildFixtureSite({
     curriculum,
     notes: { "CAP theorem: why  P is given.md": "---\nstage: seedling\ntopic: scaling\n---\nBody\n" },
   });

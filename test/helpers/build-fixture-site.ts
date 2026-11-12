@@ -39,17 +39,9 @@ export interface FixtureCommit {
   notes: string[] | Record<string, string>;
 }
 
-export interface GardenBuild {
-  /** Temp directory holding the fixture garden and the built site. */
-  root: string;
-  /** Where the fixture's notes folder was written. */
-  notesDir: string;
-  /** Where the fixture's assets folder was written. */
-  assetsDir: string;
+export interface FixtureSiteBuild {
   /** Where the fixture's Curriculum was written. */
   curriculumPath: string;
-  /** Static output directory. */
-  outDir: string;
   exitCode: number | null;
   stdout: string;
   stderr: string;
@@ -66,7 +58,7 @@ export interface BuildOptions {
 }
 
 /** Writes a fixture garden into a temp dir and runs the real site build against it. */
-export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = {}): GardenBuild {
+export function buildFixtureSite(garden: FixtureGarden = {}, options: BuildOptions = {}): FixtureSiteBuild {
   const root = mkdtempSync(join(tmpdir(), "garden-"));
   const notesDir = join(root, "notes");
   const assetsDir = join(root, "assets");
@@ -92,11 +84,7 @@ export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = 
   });
 
   return {
-    root,
-    notesDir,
-    assetsDir,
     curriculumPath,
-    outDir,
     exitCode: result.status,
     stdout: result.stdout,
     stderr: result.stderr,
