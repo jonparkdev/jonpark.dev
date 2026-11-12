@@ -53,3 +53,18 @@ test("a Note that links to another several times appears once in its Linked from
   expect(entries).toHaveLength(1);
   expect(entries[0]).toContain(">Read-through cache</a>");
 });
+
+test("a Note with no backlinks has no Linked from section", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Cache invalidation.md": note("Later: [[Write-behind cache]]."),
+      "Read-through cache.md": note("See [[Cache invalidation]]."),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/notes/read-through-cache");
+  expect(html).toMatch(/<h1[^>]*>Read-through cache<\/h1>/);
+  expect(html).not.toContain("Linked from");
+});
