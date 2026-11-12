@@ -25,7 +25,9 @@ export function renderMarkdown(markdown: string, context: RenderContext): string
     renderer(token) {
       const href = context.resolveNote(token.target);
       const label = escapeHtml(token.label);
-      return href ? `<a class="wikilink" href="${escapeHtml(href)}">${label}</a>` : label;
+      if (href) return `<a class="wikilink" href="${escapeHtml(href)}">${label}</a>`;
+      // Links ahead of the writing are allowed; show them as not-yet-written ideas.
+      return `<span class="wikilink unwritten" title="Not written yet">${label}</span>`;
     },
   };
   return new Marked({ gfm: true, async: false, extensions: [wikilink] }).parse(markdown) as string;

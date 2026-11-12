@@ -52,6 +52,20 @@ test("[[Note title|label]] shows the label and links to the Note", () => {
   expect(html).not.toContain("Cache invalidation|");
 });
 
+test("a wikilink to a Note that doesn't exist renders as styled unwritten text, not a link", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Read-through cache.md": note("Later: [[Write-behind cache|write-behind]].") },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/notes/read-through-cache") ?? "";
+  expect(html).toMatch(/Later: <span[^>]*class="[^"]*unwritten[^"]*"[^>]*>write-behind<\/span>\./);
+  expect(html).not.toMatch(/<a[^>]*>write-behind<\/a>/);
+  // Visibly unwritten: the class has a style.
+  expect(html).toMatch(/\.unwritten[^{]*\{[^}]+\}/);
+});
+
 test("[[Note#Heading]] links to the Note page, ignoring the heading", () => {
   const build = buildGarden({
     curriculum,
