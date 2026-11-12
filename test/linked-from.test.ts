@@ -68,3 +68,20 @@ test("a Note with no backlinks has no Linked from section", () => {
   expect(html).toMatch(/<h1[^>]*>Read-through cache<\/h1>/);
   expect(html).not.toContain("Linked from");
 });
+
+test("a Note that links to itself does not appear in its own Linked from list", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Cache invalidation.md": note("As [[Cache invalidation]] says, it's hard."),
+      "Read-through cache.md": note("See [[Cache invalidation]]."),
+      "Write-through cache.md": note("Unlike [[Write-through cache|this one]]."),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const entries = items(linkedFrom(build.page("/notes/cache-invalidation")));
+  expect(entries).toHaveLength(1);
+  expect(entries[0]).toContain(">Read-through cache</a>");
+  expect(build.page("/notes/write-through-cache")).not.toContain("Linked from");
+});

@@ -225,7 +225,9 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
 /** Inverts `linksTo` into `linkedFrom`. `notes` is sorted by title, so each list is too. */
 function linkBacklinks(notes: Note[]): void {
   for (const source of notes) {
-    for (const target of source.linksTo) target.linkedFrom.push(source);
+    for (const target of source.linksTo) {
+      if (target !== source) target.linkedFrom.push(source);
+    }
   }
 }
 
