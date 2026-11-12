@@ -74,8 +74,8 @@ test("each Topic is marked with the Stage of its most advanced Note", () => {
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/") ?? "";
-  expect(topicEntry(html, "caching")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌳 Evergreen/);
-  expect(topicEntry(html, "scaling")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌿 Budding/);
+  expect(topicEntry(html, "caching")).toMatch(/class="topic-stage"><a[^>]*>🌳 Evergreen<\/a>/);
+  expect(topicEntry(html, "scaling")).toMatch(/class="topic-stage"><a[^>]*>🌿 Budding<\/a>/);
 });
 
 test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
@@ -107,4 +107,26 @@ test("Topics with no Notes stay visible, marked untouched", () => {
     expect(topicEntry(html, key)).toMatch(/class="topic-stage untouched"[^>]*>untouched</);
   }
   expect(topicEntry(html, "caching")).not.toContain("untouched");
+});
+
+test("each Topic lists its Notes, each linking to its page with its Stage badge", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Cache aside.md": note("budding", "caching"),
+      "Write through.md": note("seedling", "caching"),
+      "Bloom filter basics.md": note("evergreen", "bloom-filters"),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/") ?? "";
+  const noteItem = (slug: string, title: string, badge: string) =>
+    new RegExp(`<a href="/notes/${slug}"[^>]*>${title}</a>\\s*<a[^>]*href="/about-stages"[^>]*>${badge}</a>`);
+
+  const caching = topicEntry(html, "caching");
+  expect(caching).toMatch(noteItem("cache-aside", "Cache aside", "🌿 Budding"));
+  expect(caching).toMatch(noteItem("write-through", "Write through", "🌱 Seedling"));
+  expect(caching).not.toContain("Bloom filter basics");
+  expect(topicEntry(html, "bloom-filters")).toMatch(noteItem("bloom-filter-basics", "Bloom filter basics", "🌳 Evergreen"));
 });

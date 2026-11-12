@@ -18,7 +18,7 @@ const garden = loadGarden();
         <section class:list={["part", { tangents: part.isTangents }]}>
           <h3>{part.title}</h3>
           <ul class="topics">
-            {topics.map(({ topic, stage, counts }) => (
+            {topics.map(({ topic, stage, counts, notes }) => (
               <li class="topic" data-topic={topic.key}>
                 <span class="topic-title">{topic.title}</span>
                 {stage ? (
@@ -29,6 +29,15 @@ const garden = loadGarden();
                   <span class="topic-stage untouched">untouched</span>
                 )}
                 <span class="topic-counts">{STAGES.map((s) => `${stageEmoji(s)} ${counts[s]}`).join(" · ")}</span>
+                {notes.length > 0 && (
+                  <ul class="topic-notes">
+                    {notes.map((note) => (
+                      <li>
+                        <a href={`/notes/${note.slug}`}>{note.title}</a> <StageBadge stage={note.stage} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
