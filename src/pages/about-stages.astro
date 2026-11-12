@@ -1,5 +1,15 @@
 ---
+import { STAGES, stageEmoji, stageLabel, type Stage } from "../garden/stage";
 import Base from "../layouts/Base.astro";
+
+const meaning: Record<Stage, string> = {
+  seedling:
+    '"I\'m thinking about this." Written from memory with the source closed, soon after first learning the idea. Expect gaps and mistakes.',
+  budding:
+    '"I understand the core idea." Explained again from memory on a different day, then checked and corrected against the source.',
+  evergreen:
+    '"I can use this." Applied in a mock interview, a design problem, or an explainer video. Stable, but never finished.',
+};
 ---
 
 <Base title="About Stages">
@@ -9,23 +19,16 @@ import Base from "../layouts/Base.astro";
     not of how polished the writing is.
   </p>
 
-  <h2 id="seedling">🌱 Seedling</h2>
-  <p>
-    "I'm thinking about this." Written from memory with the source closed, soon after first learning the
-    idea. Expect gaps and mistakes.
-  </p>
-
-  <h2 id="budding">🌿 Budding</h2>
-  <p>
-    "I understand the core idea." Explained again from memory on a different day, then checked and corrected
-    against the source.
-  </p>
-
-  <h2 id="evergreen">🌳 Evergreen</h2>
-  <p>
-    "I can use this." Applied in a mock interview, a design problem, or an explainer video. Stable, but never
-    finished.
-  </p>
+  {
+    STAGES.map((stage) => (
+      <>
+        <h2 id={stage}>
+          {stageEmoji(stage)} {stageLabel(stage)}
+        </h2>
+        <p>{meaning[stage]}</p>
+      </>
+    ))
+  }
 
   <h2 id="how-stages-change">How Stages change</h2>
   <p>
