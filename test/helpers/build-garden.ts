@@ -24,8 +24,13 @@ export interface FixtureGarden {
 }
 
 export interface FixtureCommit {
-  /** Commit date, ISO 8601, e.g. "2026-03-14T12:00:00Z". */
+  /** Author date (when the change was written), ISO 8601, e.g. "2026-03-14T12:00:00Z". */
   date: string;
+  /**
+   * Committer date, if it differs from the author date (as after a rebase or
+   * squash-merge). Defaults to `date`.
+   */
+  committedDate?: string;
   /**
    * Notes to commit: filenames to commit as written in `notes`, or filename to
    * contents to write and commit first (e.g. an earlier version of a Note,
@@ -104,7 +109,7 @@ export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = 
 
 /** Makes the fixture root a git repo and commits Notes at controlled dates. */
 function commitHistory(root: string, notes: Record<string, string>, commits: FixtureCommit[]) {
-  const run = (args: string[], date?: string) => {
+  const run = (args: string[], commit?: FixtureCommit) => {
     const result = spawnSync("git", args, {
       cwd: root,
       encoding: "utf8",
@@ -114,7 +119,9 @@ function commitHistory(root: string, notes: Record<string, string>, commits: Fix
         GIT_AUTHOR_EMAIL: "fixture@example.com",
         GIT_COMMITTER_NAME: "Fixture",
         GIT_COMMITTER_EMAIL: "fixture@example.com",
-        ...(date ? { GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date } : {}),
+        ...(commit
+          ? { GIT_AUTHOR_DATE: commit.date, GIT_COMMITTER_DATE: commit.committedDate ?? commit.date }
+          : {}),
       },
     });
     if (result.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${result.stderr}`);
@@ -129,7 +136,7 @@ function commitHistory(root: string, notes: Record<string, string>, commits: Fix
       writeFileSync(join(root, "notes", name), text);
     }
     run(["add", "--", ...Object.keys(contents).map((name) => join("notes", name))]);
-    run(["-c", "commit.gpgsign=false", "commit", "--quiet", "--allow-empty", "-m", `Commit ${i + 1}`], commit.date);
+    run(["-c", "commit.gpgsign=false", "commit", "--quiet", "--allow-empty", "-m", `Commit ${i + 1}`], commit);
   });
 }
 

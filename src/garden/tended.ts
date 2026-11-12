@@ -5,12 +5,13 @@ import { join } from "node:path";
 export const RECENTLY_TENDED_COUNT = 5;
 
 /**
- * When a Note was Tended: the date of the last git commit touching its file.
- * A Note with no commit yet (only in local development) counts as tended `now`,
- * as does any Note outside a git repo.
+ * When a Note was Tended: the author date of the last git commit touching its
+ * file. The author date, unlike the committer date, survives rebases and
+ * squash-merges. A Note with no commit yet (only in local development) counts
+ * as tended `now`, as does any Note outside a git repo.
  */
 export function tendedDate(notesDir: string, filename: string, now: Date): Date {
-  const result = spawnSync("git", ["log", "-1", "--format=%cI", "--", join(notesDir, filename)], {
+  const result = spawnSync("git", ["log", "-1", "--format=%aI", "--", join(notesDir, filename)], {
     cwd: notesDir,
     encoding: "utf8",
   });

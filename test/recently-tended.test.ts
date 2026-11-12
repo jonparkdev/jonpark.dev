@@ -67,6 +67,23 @@ test("the home page lists the five most recently Tended Notes below the Progress
   expect(section).not.toContain("Charlie");
 });
 
+test("a Note is Tended when its change was written, not when a rebase or squash-merge re-committed it", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Older.md": note("seedling"), "Rebased.md": note("budding") },
+    commits: [
+      { date: "2026-02-01T12:00:00Z", notes: ["Older.md"] },
+      { date: "2026-01-05T12:00:00Z", committedDate: "2026-06-01T12:00:00Z", notes: ["Rebased.md"] },
+    ],
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const listed = entries(recentlyTended(build.page("/") ?? ""));
+  expect(listed[0]).toContain('<time datetime="2026-02-01">2026-02-01</time>');
+  expect(listed[1]).toContain('<a href="/notes/rebased">Rebased</a>');
+  expect(listed[1]).toContain('<time datetime="2026-01-05">2026-01-05</time>');
+});
+
 test("an uncommitted Note counts as tended now", () => {
   const before = new Date().toISOString().slice(0, 10);
   const build = buildGarden({
