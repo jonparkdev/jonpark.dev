@@ -1,20 +1,19 @@
 # Curriculum source
 
-`src/curriculum.json` lists Hello Interview's "Learn System Design" Parts and Topics in their published order. It was checked against the source on 2026-11-12.
+`src/curriculum.json` follows Hello Interview's System Design Course in its published order. It was checked against the source on 2026-11-12.
 
 ## Source
 
-- Primary: the "Learn System Design" sidebar. It is the same on every `/learn/system-design/*` page, for example
-  https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction
-  Each sidebar section is a Part.
-- Not used: the structured course at https://www.hellointerview.com/learn/courses/system-design. It groups about 35 of the pages into 3 Parts and 12 pattern modules. The Topic keys would work with that grouping too.
-- Left out: other tracks (DSA, Behavioral, ML System Design, Low Level Design), "Vote For New Content", and the In the Wild "All Posts" index.
+- Primary: the course sidebar at https://www.hellointerview.com/learn/courses/system-design
+  The course has 3 Parts (Fundamentals, The Patterns, Put It All Together) made of 12 numbered modules. Each module is a Part on the Progress map.
+- Not used: the wider "Learn System Design" sidebar (76 pages, e.g. https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction). Pages that are only there can become Tangents.
+- Left out: quizzes, video reviews and "Live Practice (beta)" items, and the other tracks (DSA, Behavioral, ML System Design, Low Level Design).
 
-## Decisions (defaults, pending author review)
+## Decisions
 
-- All 7 sidebar sections are kept as Parts, including the "In a Hurry" overview pages and the "In the Wild" posts. The In the Wild set is the one most likely to change.
-- Premium (🔒) pages are kept, but the 🔒 marker isn't part of the display titles.
-- Keys are kebab-case and unique. They are usually Hello Interview's URL slug, with a readable name where the slug is opaque or would collide (e.g. `local-delivery-service` for `gopuff`, `price-tracking-service` for `camelcamelcamel`, `youtube-top-k` for `top-k`, and `*-overview` for the In a Hurry summaries of other Parts).
+- The author chose the course over the full sidebar, with the 12 modules as Parts (2026-11-12).
+- "Common Patterns" sits at the start of The Patterns, outside any module, so it opens module 04 Scaling Reads.
+- Keys are kebab-case and unique. They are usually Hello Interview's URL slug, with a readable name where the slug is opaque.
 - 🐇 Tangents is empty and comes last.
 
-Totals: 7 Parts with 76 Topics (In a Hurry 7, Core Concepts 9, Question Breakdowns 32, Patterns 7, Key Technologies 10, Advanced Topics 5, In the Wild 6), plus Tangents.
+Totals: 12 Parts with 42 Topics, plus Tangents.
