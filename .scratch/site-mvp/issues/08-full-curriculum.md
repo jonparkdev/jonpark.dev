@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 03 (Note pages with Stage badges)
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [ ] Every Hello Interview Part and Topic is present, in published order, with the source cited where the draft is reviewed
 - [ ] Each Topic has a stable kebab-case key and a display title

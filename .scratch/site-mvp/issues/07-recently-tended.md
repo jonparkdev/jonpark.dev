@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 02 (Placeholder live at https://jonpark.dev), 06 (Progress map home page)
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [ ] The home page shows the five most recently Tended Notes below the Progress map, newest first, with badges and dates
 - [ ] Tended dates come from each Note's last git commit

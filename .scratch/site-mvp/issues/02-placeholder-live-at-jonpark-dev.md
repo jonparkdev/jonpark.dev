@@ -10,7 +10,7 @@ Spec: `.scratch/site-mvp/spec.md` · ADR: `docs/adr/0001-container-behind-cloudf
 
 **Blocked by:** 01 (Site skeleton and build tests)
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [ ] The container image serves the built site on one port; a local smoke run returns the placeholder page
 - [ ] The image contains no Fly-specific code or configuration
