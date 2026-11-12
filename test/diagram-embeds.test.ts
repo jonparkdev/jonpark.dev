@@ -1,0 +1,37 @@
+import { expect, test } from "vitest";
+import { buildGarden } from "./helpers/build-garden";
+
+const curriculum = {
+  parts: [{ title: "Core Concepts", topics: [{ key: "hashing", title: "Consistent Hashing" }] }],
+};
+
+const note = (body: string) => `---\nstage: seedling\ntopic: hashing\nupgrades: [diagram]\n---\n${body}\n`;
+
+const ring = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle id="ring" cx="5" cy="5" r="4"/></svg>';
+
+test("![[name.svg]] shows the Diagram from the assets folder inline", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Consistent hashing.md": note("Keys sit on a ring:\n\n![[ring.svg]]\n\nThen nodes join.") },
+    assets: { "ring.svg": `<?xml version="1.0" encoding="UTF-8"?>\n${ring}\n` },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/notes/consistent-hashing") ?? "";
+  expect(html).toContain('<circle id="ring" cx="5" cy="5" r="4"/>');
+  expect(html).not.toContain("![[ring.svg]]");
+  expect(html).not.toContain("<?xml");
+  expect(html.indexOf("Keys sit on a ring")).toBeLessThan(html.indexOf('id="ring"'));
+  expect(html.indexOf('id="ring"')).toBeLessThan(html.indexOf("Then nodes join"));
+});
+
+test("a missing Diagram asset fails the build, naming the Note and the file", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Consistent hashing.md": note("![[missing-ring.svg]]") },
+  });
+
+  const output = build.stdout + build.stderr;
+  expect(build.exitCode, output).not.toBe(0);
+  expect(output).toMatch(/Note "Consistent hashing\.md":[^\n]*missing-ring\.svg/);
+});

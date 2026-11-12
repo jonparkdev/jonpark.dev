@@ -4,14 +4,31 @@ import { Marked, type TokenizerAndRendererExtension } from "marked";
 export interface RenderContext {
   /** The page path of the Note a wikilink target names, or undefined if it isn't written yet. */
   resolveNote(target: string): string | undefined;
+  /** The SVG markup of the Diagram an `![[name]]` embed names. */
+  embedDiagram(name: string): string;
 }
 
 const WIKILINK = /^\[\[([^\[\]|#]*)(?:#[^\[\]|]*)?(?:\|([^\[\]]*))?\]\]/;
+const EMBED = /^!\[\[([^\[\]|]*)(?:\|[^\[\]]*)?\]\]/;
 
 /**
- * Renders a Note body to HTML, resolving wikilinks through the context.
+ * Renders a Note body to HTML, resolving wikilinks and embedding Diagrams
+ * through the context.
  */
 export function renderMarkdown(markdown: string, context: RenderContext): string {
+  const embed: TokenizerAndRendererExtension = {
+    name: "embed",
+    level: "inline",
+    start: (src) => src.indexOf("![["),
+    tokenizer(src) {
+      const match = EMBED.exec(src);
+      if (!match) return undefined;
+      return { type: "embed", raw: match[0], name: match[1].trim() };
+    },
+    renderer(token) {
+      return `<span class="diagram">${context.embedDiagram(token.name)}</span>`;
+    },
+  };
   const wikilink: TokenizerAndRendererExtension = {
     name: "wikilink",
     level: "inline",
@@ -30,7 +47,7 @@ export function renderMarkdown(markdown: string, context: RenderContext): string
       return `<span class="wikilink unwritten" title="Not written yet">${label}</span>`;
     },
   };
-  return new Marked({ gfm: true, async: false, extensions: [wikilink] }).parse(markdown) as string;
+  return new Marked({ gfm: true, async: false, extensions: [embed, wikilink] }).parse(markdown) as string;
 }
 
 function escapeHtml(text: string): string {
