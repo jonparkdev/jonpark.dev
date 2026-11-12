@@ -94,3 +94,17 @@ test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
   expect(topicEntry(html, "caching")).toContain('<span class="topic-counts">🌱 2 · 🌿 1 · 🌳 0</span>');
   expect(topicEntry(html, "scaling")).toContain('<span class="topic-counts">🌱 0 · 🌿 0 · 🌳 1</span>');
 });
+
+test("Topics with no Notes stay visible, marked untouched", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Cache aside.md": note("seedling", "caching") },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/") ?? "";
+  for (const key of ["scaling", "redis", "kafka", "bloom-filters"]) {
+    expect(topicEntry(html, key)).toMatch(/class="topic-stage untouched"[^>]*>untouched</);
+  }
+  expect(topicEntry(html, "caching")).not.toContain("untouched");
+});
