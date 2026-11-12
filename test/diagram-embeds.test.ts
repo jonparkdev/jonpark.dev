@@ -35,3 +35,36 @@ test("a missing Diagram asset fails the build, naming the Note and the file", ()
   expect(build.exitCode, output).not.toBe(0);
   expect(output).toMatch(/Note "Consistent hashing\.md":[^\n]*missing-ring\.svg/);
 });
+
+test("![[Note]] embedding a written Note renders as a link to it, like [[Note]]", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "Consistent hashing.md": note("See ![[Virtual nodes]] and ![[Virtual nodes|vnodes]]."),
+      "Virtual nodes.md": note("Body"),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/notes/consistent-hashing") ?? "";
+  expect(html).toContain('<a class="wikilink" href="/notes/virtual-nodes">Virtual nodes</a>');
+  expect(html).toContain('<a class="wikilink" href="/notes/virtual-nodes">vnodes</a>');
+  expect(html).not.toContain("![[");
+  expect(html).not.toContain('class="diagram"');
+  expect(build.page("/notes/virtual-nodes")).toContain('href="/notes/consistent-hashing"');
+});
+
+test("![[target]] for anything but an .svg never fails the build and is never inlined", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: { "Consistent hashing.md": note("See ![[Unwritten idea]] and ![[photo.png]].") },
+    assets: { "photo.png": "not really a png" },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/notes/consistent-hashing") ?? "";
+  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">Unwritten idea</span>');
+  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">photo.png</span>');
+  expect(html).not.toContain("not really a png");
+  expect(html).not.toContain('class="diagram"');
+});
