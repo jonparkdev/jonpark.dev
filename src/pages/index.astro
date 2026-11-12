@@ -1,4 +1,5 @@
 ---
+import StageBadge from "../components/StageBadge.astro";
 import { loadGarden } from "../garden/garden";
 import Base from "../layouts/Base.astro";
 
@@ -12,13 +13,18 @@ const garden = loadGarden();
   <section class="progress-map">
     <h2>Progress map</h2>
     {
-      garden.curriculum.parts.map((part) => (
+      garden.progressMap.map(({ part, topics }) => (
         <section class:list={["part", { tangents: part.isTangents }]}>
           <h3>{part.title}</h3>
           <ul class="topics">
-            {part.topics.map((topic) => (
+            {topics.map(({ topic, stage }) => (
               <li class="topic" data-topic={topic.key}>
                 <span class="topic-title">{topic.title}</span>
+                {stage && (
+                  <span class="topic-stage">
+                    <StageBadge stage={stage} />
+                  </span>
+                )}
               </li>
             ))}
           </ul>

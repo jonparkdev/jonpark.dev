@@ -59,3 +59,21 @@ test("the home page shows every Part and its Topics in Curriculum order, with Ta
   ]);
   expect(order).toEqual([...order].sort((a, b) => a - b));
 });
+
+test("each Topic is marked with the Stage of its most advanced Note", () => {
+  const build = buildGarden({
+    curriculum,
+    notes: {
+      "A cache aside.md": note("seedling", "caching"),
+      "B write through.md": note("evergreen", "caching"),
+      "C write back.md": note("budding", "caching"),
+      "Read replicas.md": note("budding", "scaling"),
+      "Sharding.md": note("seedling", "scaling"),
+    },
+  });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/") ?? "";
+  expect(topicEntry(html, "caching")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌳 Evergreen/);
+  expect(topicEntry(html, "scaling")).toMatch(/class="topic-stage"[^>]*>[\s\S]*?🌿 Budding/);
+});
