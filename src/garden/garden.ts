@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { loadCurriculum, type Curriculum, type Topic } from "./curriculum";
@@ -25,8 +25,13 @@ export interface Note {
   upgrades: Upgrade[];
   /** Markdown body, frontmatter removed. */
   markdown: string;
-  /** Rendered body HTML. */
+  /** Rendered body HTML, wikilinks resolved and Diagrams embedded. */
   html: string;
+  /**
+   * The written Notes this Note's body wikilinks to, in first-mention order,
+   * each once. Links to unwritten Notes are not included.
+   */
+  linksTo: Note[];
   /** When the Note was last Tended: its file's last git commit, or now if uncommitted. */
   tended: Date;
 }
@@ -107,9 +112,11 @@ function buildGarden(inputs: GardenInputs): Garden {
     }
   }
 
+  notes.sort((a, b) => a.title.localeCompare(b.title));
+  renderNotes(notes, inputs.assetsDir, problems);
+
   if (problems.length > 0) throw new GardenError(problems);
 
-  notes.sort((a, b) => a.title.localeCompare(b.title));
   return {
     curriculum,
     notes,
@@ -187,6 +194,42 @@ function readNote(
     topic,
     upgrades: upgradeList as Upgrade[],
     markdown,
-    html: renderMarkdown(markdown),
+    html: "",
+    linksTo: [],
   };
+}
+
+/** Second pass, once every Note is known: renders bodies and records resolved wikilinks. */
+function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void {
+  // Obsidian resolves wikilinks by filename, ignoring case.
+  const byTitle = new Map(notes.map((note) => [note.title.toLowerCase(), note]));
+  for (const note of notes) {
+    const linked = new Set<Note>();
+    note.html = renderMarkdown(note.markdown, {
+      resolveNote(target) {
+        const found = byTitle.get(target.toLowerCase());
+        if (!found) return undefined;
+        linked.add(found);
+        return `/notes/${found.slug}`;
+      },
+      embedDiagram(name) {
+        const path = join(assetsDir, name);
+        if (!existsSync(path)) {
+          problems.push(`Note "${note.filename}": Diagram "${name}" is not in the assets folder ${assetsDir}`);
+          return "";
+        }
+        return inlineSvg(readFileSync(path, "utf8"));
+      },
+    });
+    note.linksTo = [...linked];
+  }
+}
+
+/** SVG file contents ready to drop into HTML: the XML prolog and doctype removed. */
+function inlineSvg(svg: string): string {
+  return svg
+    .replace(/^﻿/, "")
+    .replace(/<\?xml[\s\S]*?\?>/, "")
+    .replace(/<!DOCTYPE[^>]*>/i, "")
+    .trim();
 }

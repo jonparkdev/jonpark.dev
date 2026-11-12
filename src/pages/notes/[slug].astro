@@ -23,3 +23,11 @@ const { note } = Astro.props;
     <div class="note-body" set:html={note.html} />
   </article>
 </Base>
+
+<style>
+  .note-body :global(.unwritten) {
+    color: #8a8a8a;
+    border-bottom: 1px dashed currentColor;
+    cursor: help;
+  }
+</style>
