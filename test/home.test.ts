@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 import { buildGarden } from "./helpers/build-garden";
 
@@ -129,4 +130,15 @@ test("each Topic lists its Notes, each linking to its page with its Stage badge"
   expect(caching).toMatch(noteItem("write-through", "Write through", "🌱 Seedling"));
   expect(caching).not.toContain("Bloom filter basics");
   expect(topicEntry(html, "bloom-filters")).toMatch(noteItem("bloom-filter-basics", "Bloom filter basics", "🌳 Evergreen"));
+});
+
+test("the home page shows the text the hosting wizard checks for", () => {
+  const script = readFileSync(new URL("../scripts/setup-hosting.sh", import.meta.url), "utf8");
+  const expected = /^HOME_PAGE_TEXT="(.+)"/m.exec(script)?.[1] ?? "";
+  expect(expected, "HOME_PAGE_TEXT in scripts/setup-hosting.sh").not.toBe("");
+
+  const build = buildGarden({ curriculum });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  expect(build.page("/")).toContain(expected);
 });

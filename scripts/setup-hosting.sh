@@ -209,7 +209,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 APP=$(sed -n 's/^app = "\(.*\)"$/\1/p' fly.toml)  # fly.toml
 DOMAIN="jonpark.dev"
 SECRET_NAME="FLY_API_TOKEN"                        # .github/workflows/deploy.yml
-PLACEHOLDER_TEXT="A garden of system design notes is growing here."
+# Text the home page always shows: the tagline in src/pages/index.astro
+# (test/home.test.ts checks the built home page contains it).
+HOME_PAGE_TEXT="A garden of system design notes, kept in service of interview prep."
 
 banner "jonpark.dev hosting: Fly.io behind Cloudflare"
 
@@ -236,10 +238,10 @@ if command -v docker >/dev/null 2>&1 && confirm "Build and run the image locally
   docker build -t "$APP" .
   cid=$(docker run -d --rm -p 8080:8080 "$APP")
   sleep 2
-  if curl -fsS http://localhost:8080 | grep -qF "$PLACEHOLDER_TEXT"; then
-    printf '  %s✓ local container serves the placeholder page%s\n' "$GREEN" "$RESET"
+  if curl -fsS http://localhost:8080 | grep -qF "$HOME_PAGE_TEXT"; then
+    printf '  %s✓ local container serves the home page%s\n' "$GREEN" "$RESET"
   else
-    warn "local container did not return the placeholder page"
+    warn "local container did not return the home page"
     SKIPPED+=("Local smoke run failed: check docker logs")
   fi
   docker stop "$cid" >/dev/null || true
@@ -322,6 +324,9 @@ note "   (Cloudflare flattens a CNAME on the apex; that's expected.)"
 step "Add: CNAME, name '_acme-challenge', target = the value Fly showed in stage 7,"
 step "     Proxy status OFF (grey cloud, DNS only)."
 pause "Press Enter once the records are saved."
+warn "If the zone's SSL mode is still Flexible, https://$DOMAIN now loops forever:"
+note "   Cloudflare reaches Fly over plain HTTP and fly.toml's force_https redirects it"
+note "   back to HTTPS. That's expected until stage 9 sets Full (strict)."
 
 # ── 9 ─────────────────────────────────────────────────────────────────────
 stage "Wait for the Fly certificate, then Cloudflare SSL: Full (strict)"
@@ -339,10 +344,10 @@ pause "Press Enter once SSL mode is Full (strict)."
 # ── 10 ────────────────────────────────────────────────────────────────────
 stage "Check: https://$DOMAIN"
 say "Fetching https://$DOMAIN with certificate verification on…"
-if curl -fsS "https://$DOMAIN" | grep -qF "$PLACEHOLDER_TEXT"; then
-  printf '  %s✓ https://%s serves the placeholder page with a valid certificate%s\n' "$GREEN" "$DOMAIN" "$RESET"
+if curl -fsS "https://$DOMAIN" | grep -qF "$HOME_PAGE_TEXT"; then
+  printf '  %s✓ https://%s serves the home page with a valid certificate%s\n' "$GREEN" "$DOMAIN" "$RESET"
 else
-  warn "https://$DOMAIN didn't return the placeholder page yet."
+  warn "https://$DOMAIN didn't return the home page yet."
   note "Retry: curl -v https://$DOMAIN   (520 = old record still there, 526 = Fly cert not issued yet)"
   note "Past Sat Nov 14 noon and still not live? See docs/hosting.md for the Cloudflare Pages fallback."
   SKIPPED+=("Live check: curl https://$DOMAIN")
