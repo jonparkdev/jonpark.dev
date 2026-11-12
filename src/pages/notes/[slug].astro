@@ -1,0 +1,48 @@
+---
+import type { GetStaticPaths } from "astro";
+import NoteLink from "../../components/NoteLink.astro";
+import StageBadge from "../../components/StageBadge.astro";
+import { loadGarden, type Note } from "../../garden/garden";
+import Base from "../../layouts/Base.astro";
+
+export const getStaticPaths = (() =>
+  loadGarden().notes.map((note) => ({ params: { slug: note.slug }, props: { note } }))) satisfies GetStaticPaths;
+
+interface Props {
+  note: Note;
+}
+
+const { note } = Astro.props;
+---
+
+<Base title={note.title}>
+  <article>
+    <header>
+      <h1>{note.title}</h1>
+      <p><StageBadge stage={note.stage} /> · <span class="topic">Topic: {note.topic.title}</span></p>
+    </header>
+    <div class="note-body" set:html={note.html} />
+    {
+      note.linkedFrom.length > 0 && (
+        <section class="linked-from">
+          <h2>Linked from</h2>
+          <ul>
+            {note.linkedFrom.map((source) => (
+              <li>
+                <NoteLink note={source} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .note-body :global(.unwritten) {
+    color: #8a8a8a;
+    border-bottom: 1px dashed currentColor;
+    cursor: help;
+  }
+</style>

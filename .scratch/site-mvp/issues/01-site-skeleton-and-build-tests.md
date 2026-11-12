@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] The site builds to fully static output with one command
 - [ ] The home page shows a placeholder
@@ -14,3 +14,7 @@ Spec: `.scratch/site-mvp/spec.md`
 - [ ] A test helper creates a fixture garden in a temp folder, runs the build against it, and exposes the generated pages and the build's exit status and error output
 - [ ] One passing test builds a fixture garden and checks the placeholder page
 - [ ] A single command runs the test suite
+
+## Comments
+
+- Implemented on integration branch `site-mvp` (2026-11-12); all acceptance criteria covered by build-based tests.

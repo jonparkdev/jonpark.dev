@@ -1,0 +1,11 @@
+---
+import { stageEmoji, stageLabel, type Stage } from "../garden/stage";
+
+interface Props {
+  stage: Stage;
+}
+
+const { stage } = Astro.props;
+---
+
+<a href="/about-stages" class={`stage-badge stage-${stage}`}>{stageEmoji(stage)} {stageLabel(stage)}</a>

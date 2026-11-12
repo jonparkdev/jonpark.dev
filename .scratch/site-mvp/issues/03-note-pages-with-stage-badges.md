@@ -8,7 +8,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 01 (Site skeleton and build tests)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Each Note renders at `/notes/<slug>` with its filename as the title, Stage badge, Topic and body
 - [ ] The Stage badge links to `/about-stages`
@@ -19,3 +19,7 @@ Spec: `.scratch/site-mvp/spec.md`
 - [ ] Any other frontmatter field fails the build
 - [ ] Two Notes that produce the same slug fail the build, naming both
 - [ ] Each behaviour above is covered by a build-based test
+
+## Comments
+
+- Implemented on integration branch `site-mvp` (2026-11-12); all acceptance criteria covered by build-based tests.

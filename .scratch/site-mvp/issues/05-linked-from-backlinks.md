@@ -6,9 +6,13 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 04 (Wikilinks and Diagram embeds)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Each Note lists every Note that links to it, each with its Stage badge and a link
 - [ ] A Note linked several times from the same Note appears once in the list
 - [ ] A Note with no backlinks shows no "Linked from" section
 - [ ] Each behaviour above is covered by a build-based test
+
+## Comments
+
+- Implemented on integration branch `site-mvp` (2026-11-12); all acceptance criteria covered by build-based tests.

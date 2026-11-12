@@ -1,0 +1,13 @@
+---
+import type { Note } from "../garden/garden";
+import { notePath } from "../garden/note-file";
+import StageBadge from "./StageBadge.astro";
+
+interface Props {
+  note: Note;
+}
+
+const { note } = Astro.props;
+---
+
+<a href={notePath(note.slug)}>{note.title}</a> <StageBadge stage={note.stage} />
