@@ -1,16 +1,48 @@
 ---
+import StageBadge from "../components/StageBadge.astro";
+import { loadGarden } from "../garden/garden";
+import { STAGES, stageEmoji } from "../garden/stage";
+import Base from "../layouts/Base.astro";
+
+const garden = loadGarden();
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>jonpark.dev</title>
-  </head>
-  <body>
-    <main>
-      <h1>jonpark.dev</h1>
-      <p>A garden of system design notes is growing here.</p>
-    </main>
-  </body>
-</html>
+<Base title="jonpark.dev">
+  <h1>jonpark.dev</h1>
+  <p>A garden of system design notes, kept in service of interview prep.</p>
+
+  <section class="progress-map">
+    <h2>Progress map</h2>
+    {
+      garden.progressMap.map(({ part, topics }) => (
+        <section class:list={["part", { tangents: part.isTangents }]}>
+          <h3>{part.title}</h3>
+          <ul class="topics">
+            {topics.map(({ topic, stage, counts, notes }) => (
+              <li class="topic" data-topic={topic.key}>
+                <span class="topic-title">{topic.title}</span>
+                {stage ? (
+                  <span class="topic-stage">
+                    <StageBadge stage={stage} />
+                  </span>
+                ) : (
+                  <span class="topic-stage untouched">untouched</span>
+                )}
+                <span class="topic-counts">{STAGES.map((s) => `${stageEmoji(s)} ${counts[s]}`).join(" · ")}</span>
+                {notes.length > 0 && (
+                  <ul class="topic-notes">
+                    {notes.map((note) => (
+                      <li>
+                        <a href={`/notes/${note.slug}`}>{note.title}</a> <StageBadge stage={note.stage} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </section>
+</Base>

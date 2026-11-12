@@ -4,6 +4,7 @@ import { parse as parseYaml } from "yaml";
 import { loadCurriculum, type Curriculum, type Topic } from "./curriculum";
 import { gardenInputs, type GardenInputs } from "./inputs";
 import { renderMarkdown } from "./markdown";
+import { progressMap, type PartProgress } from "./progress";
 import { isStage, STAGES, type Stage } from "./stage";
 
 /** Richer formats a Note can declare. Validated, not rendered, in the MVP. */
@@ -39,6 +40,8 @@ export interface Garden {
   notes: Note[];
   /** The Note with this slug, if any. */
   note(slug: string): Note | undefined;
+  /** The Progress map: every Part and Topic in Curriculum order, each Topic with its Notes and Stage. */
+  progressMap: PartProgress[];
 }
 
 /** Thrown when Notes break the garden's rules. Lists every problem, each naming its Note. */
@@ -112,6 +115,7 @@ function buildGarden(inputs: GardenInputs): Garden {
     curriculum,
     notes,
     note: (slug) => bySlug.get(slug)?.[0],
+    progressMap: progressMap(curriculum, notes),
   };
 }
 
