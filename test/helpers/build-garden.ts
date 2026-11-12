@@ -38,8 +38,13 @@ export interface GardenBuild {
   page(urlPath: string): string | undefined;
 }
 
+export interface BuildOptions {
+  /** Extra environment for the build, applied last (e.g. to point an input somewhere else). */
+  env?: Record<string, string>;
+}
+
 /** Writes a fixture garden into a temp dir and runs the real site build against it. */
-export function buildGarden(garden: FixtureGarden = {}): GardenBuild {
+export function buildGarden(garden: FixtureGarden = {}, options: BuildOptions = {}): GardenBuild {
   const root = mkdtempSync(join(tmpdir(), "garden-"));
   const notesDir = join(root, "notes");
   const assetsDir = join(root, "assets");
@@ -59,6 +64,7 @@ export function buildGarden(garden: FixtureGarden = {}): GardenBuild {
       GARDEN_ASSETS_DIR: assetsDir,
       GARDEN_CURRICULUM: curriculumPath,
       NO_COLOR: "1",
+      ...options.env,
     },
   });
 
