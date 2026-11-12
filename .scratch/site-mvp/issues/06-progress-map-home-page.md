@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 03 (Note pages with Stage badges)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [ ] Parts and Topics appear in Curriculum order, with Tangents last
 - [ ] Each Topic is marked with its most advanced Note's Stage
@@ -14,3 +14,7 @@ Spec: `.scratch/site-mvp/spec.md`
 - [ ] Topics with no Notes are visible and marked untouched
 - [ ] Each Topic lists its Notes with Stage badges and links
 - [ ] Each behaviour above is covered by a build-based test
+
+## Comments
+
+- Implemented on integration branch `site-mvp` (2026-11-12); all acceptance criteria covered by build-based tests.

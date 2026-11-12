@@ -1,0 +1,233 @@
+{
+  "parts": [
+    {
+      "title": "01 Orientation",
+      "topics": [
+        {
+          "key": "introduction",
+          "title": "Introduction"
+        },
+        {
+          "key": "delivery-framework",
+          "title": "Delivery Framework"
+        }
+      ]
+    },
+    {
+      "title": "02 Foundations",
+      "topics": [
+        {
+          "key": "networking-essentials",
+          "title": "Networking Essentials"
+        },
+        {
+          "key": "api-design",
+          "title": "API Design"
+        },
+        {
+          "key": "data-modeling",
+          "title": "Data Modeling"
+        },
+        {
+          "key": "database-indexing",
+          "title": "Database Indexing"
+        }
+      ]
+    },
+    {
+      "title": "03 Thinking in Scale",
+      "topics": [
+        {
+          "key": "caching",
+          "title": "Caching"
+        },
+        {
+          "key": "sharding",
+          "title": "Sharding"
+        },
+        {
+          "key": "consistent-hashing",
+          "title": "Consistent Hashing"
+        },
+        {
+          "key": "cap-theorem",
+          "title": "CAP Theorem"
+        },
+        {
+          "key": "numbers-to-know",
+          "title": "Numbers to Know"
+        }
+      ]
+    },
+    {
+      "title": "04 Scaling Reads",
+      "topics": [
+        {
+          "key": "common-patterns",
+          "title": "Common Patterns"
+        },
+        {
+          "key": "bitly",
+          "title": "Bitly"
+        },
+        {
+          "key": "scaling-reads",
+          "title": "Scaling Reads"
+        },
+        {
+          "key": "postgresql",
+          "title": "PostgreSQL"
+        },
+        {
+          "key": "redis",
+          "title": "Redis"
+        },
+        {
+          "key": "news-aggregator",
+          "title": "News Aggregator"
+        }
+      ]
+    },
+    {
+      "title": "05 Scaling Writes",
+      "topics": [
+        {
+          "key": "scaling-writes",
+          "title": "Scaling Writes"
+        },
+        {
+          "key": "kafka",
+          "title": "Kafka"
+        },
+        {
+          "key": "cassandra",
+          "title": "Cassandra"
+        },
+        {
+          "key": "ad-click-aggregator",
+          "title": "Ad Click Aggregator"
+        }
+      ]
+    },
+    {
+      "title": "06 Real-time Updates",
+      "topics": [
+        {
+          "key": "fb-live-comments",
+          "title": "FB Live Comments"
+        },
+        {
+          "key": "realtime-updates",
+          "title": "Real-time Updates"
+        },
+        {
+          "key": "whatsapp",
+          "title": "WhatsApp"
+        }
+      ]
+    },
+    {
+      "title": "07 Dealing with Contention",
+      "topics": [
+        {
+          "key": "ticketmaster",
+          "title": "Ticketmaster"
+        },
+        {
+          "key": "dealing-with-contention",
+          "title": "Dealing with Contention"
+        },
+        {
+          "key": "online-auction",
+          "title": "Online Auction"
+        }
+      ]
+    },
+    {
+      "title": "08 Multi-step Processes",
+      "topics": [
+        {
+          "key": "notification-system",
+          "title": "Notification System"
+        },
+        {
+          "key": "multi-step-processes",
+          "title": "Multi-step Processes"
+        },
+        {
+          "key": "payment-system",
+          "title": "Payment System"
+        }
+      ]
+    },
+    {
+      "title": "09 Handling Large Blobs",
+      "topics": [
+        {
+          "key": "dropbox",
+          "title": "Dropbox"
+        },
+        {
+          "key": "handling-large-blobs",
+          "title": "Handling Large Blobs"
+        },
+        {
+          "key": "youtube",
+          "title": "YouTube"
+        }
+      ]
+    },
+    {
+      "title": "10 Managing Long Running Tasks",
+      "topics": [
+        {
+          "key": "leetcode",
+          "title": "LeetCode"
+        },
+        {
+          "key": "managing-long-running-tasks",
+          "title": "Managing Long Running Tasks"
+        },
+        {
+          "key": "web-crawler",
+          "title": "Web Crawler"
+        }
+      ]
+    },
+    {
+      "title": "11 Proximity-Based Services",
+      "topics": [
+        {
+          "key": "yelp",
+          "title": "Yelp"
+        },
+        {
+          "key": "proximity-search",
+          "title": "Proximity Search"
+        },
+        {
+          "key": "elasticsearch",
+          "title": "Elasticsearch"
+        },
+        {
+          "key": "uber",
+          "title": "Uber"
+        }
+      ]
+    },
+    {
+      "title": "12 Final Designs",
+      "topics": [
+        {
+          "key": "fb-news-feed",
+          "title": "FB News Feed"
+        },
+        {
+          "key": "metrics-monitoring",
+          "title": "Metrics Monitoring"
+        }
+      ]
+    }
+  ],
+  "tangents": []
+}

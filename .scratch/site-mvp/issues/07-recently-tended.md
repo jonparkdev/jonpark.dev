@@ -6,7 +6,7 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Blocked by:** 02 (Placeholder live at https://jonpark.dev), 06 (Progress map home page)
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [ ] The home page shows the five most recently Tended Notes below the Progress map, newest first, with badges and dates
 - [ ] Tended dates come from each Note's last git commit
@@ -14,3 +14,7 @@ Spec: `.scratch/site-mvp/spec.md`
 - [ ] Fewer than five Notes shows all of them
 - [ ] Build-based tests use fixture gardens with real git history and control the commit dates
 - [ ] The deploy Action checks out full history, and the live site shows real Tended dates
+
+## Comments
+
+- Implemented on `site-mvp` with build-based tests (Tended uses the author date). Still open: confirm the live site shows real Tended dates once ticket 02 is live.

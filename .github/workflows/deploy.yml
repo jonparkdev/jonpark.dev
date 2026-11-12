@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+# A newer push cancels a deploy that's still running.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Full history: Tended dates come from git.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      # The site is built here, not by Fly's builder; the image only packages dist/.
+      - run: npm run build
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      # --local-only: build the image on the runner from the pre-built dist/.
+      # --ha=false: keep exactly one machine.
+      - run: flyctl deploy --local-only --ha=false
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

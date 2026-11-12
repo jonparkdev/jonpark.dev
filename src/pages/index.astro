@@ -1,0 +1,65 @@
+---
+import NoteLink from "../components/NoteLink.astro";
+import StageBadge from "../components/StageBadge.astro";
+import { loadGarden } from "../garden/garden";
+import { STAGES, stageEmoji } from "../garden/stage";
+import { tendedDay } from "../garden/tended";
+import Base from "../layouts/Base.astro";
+
+const garden = loadGarden();
+---
+
+<Base title="jonpark.dev">
+  <h1>jonpark.dev</h1>
+  {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
+  <p>A garden of system design notes, kept in service of interview prep.</p>
+
+  <section class="progress-map">
+    <h2>Progress map</h2>
+    {
+      garden.progressMap.map(({ part, topics }) => (
+        <section class:list={["part", { tangents: part.isTangents }]}>
+          <h3>{part.title}</h3>
+          <ul class="topics">
+            {topics.map(({ topic, stage, counts, notes }) => (
+              <li class="topic" data-topic={topic.key}>
+                <span class="topic-title">{topic.title}</span>
+                {stage ? (
+                  <span class="topic-stage">
+                    <StageBadge stage={stage} />
+                  </span>
+                ) : (
+                  <span class="topic-stage untouched">untouched</span>
+                )}
+                <span class="topic-counts">{STAGES.map((s) => `${stageEmoji(s)} ${counts[s]}`).join(" · ")}</span>
+                {notes.length > 0 && (
+                  <ul class="topic-notes">
+                    {notes.map((note) => (
+                      <li>
+                        <NoteLink note={note} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </section>
+
+  <section class="recently-tended" data-recently-tended>
+    <h2>Recently tended</h2>
+    <ol>
+      {
+        garden.recentlyTended.map((note) => (
+          <li>
+            <NoteLink note={note} />{" "}
+            <time datetime={tendedDay(note.tended)}>{tendedDay(note.tended)}</time>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Base>

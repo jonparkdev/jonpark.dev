@@ -1,0 +1,42 @@
+---
+import { STAGES, stageEmoji, stageLabel, type Stage } from "../garden/stage";
+import Base from "../layouts/Base.astro";
+
+const meaning: Record<Stage, string> = {
+  seedling:
+    '"I\'m thinking about this." Written from memory with the source closed, soon after first learning the idea. Expect gaps and mistakes.',
+  budding:
+    '"I understand the core idea." Explained again from memory on a different day, then checked and corrected against the source.',
+  evergreen:
+    '"I can use this." Applied in a mock interview, a design problem, or an explainer video. Stable, but never finished.',
+};
+---
+
+<Base title="About Stages">
+  <h1>About Stages</h1>
+  <p>
+    Every Note in this garden carries a Stage: an honest mark of how well I understand the idea right now,
+    not of how polished the writing is.
+  </p>
+
+  {
+    STAGES.map((stage) => (
+      <>
+        <h2 id={stage}>
+          {stageEmoji(stage)} {stageLabel(stage)}
+        </h2>
+        <p>{meaning[stage]}</p>
+      </>
+    ))
+  }
+
+  <h2 id="how-stages-change">How Stages change</h2>
+  <p>
+    A Note moves up a Stage only through <strong>Recall</strong>: explaining the idea from memory with the
+    source closed. Editing, tidying or adding pictures never changes a Stage.
+  </p>
+  <p>
+    When a Recall goes badly, the Note moves back a Stage. That <strong>Demotion</strong> is expected, not a
+    failure, and the reason is written down. So a Seedling here is an honest snapshot, not an unfinished page.
+  </p>
+</Base>
