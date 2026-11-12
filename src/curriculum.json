@@ -1,3 +1,17 @@
 {
-  "parts": []
+  "parts": [
+    {
+      "title": "Core Concepts",
+      "topics": [
+        { "key": "networking-essentials", "title": "Networking Essentials" },
+        { "key": "api-design", "title": "API Design" },
+        { "key": "data-modeling", "title": "Data Modeling" },
+        { "key": "caching", "title": "Caching" },
+        { "key": "sharding", "title": "Sharding" },
+        { "key": "consistent-hashing", "title": "Consistent Hashing" },
+        { "key": "cap-theorem", "title": "CAP Theorem" }
+      ]
+    }
+  ],
+  "tangents": []
 }
