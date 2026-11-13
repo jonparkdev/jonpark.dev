@@ -8,10 +8,10 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** ready-for-human
 
-- [ ] Every Hello Interview Part and Topic is present, in published order, with the source cited where the draft is reviewed
-- [ ] Each Topic has a stable kebab-case key and a display title
-- [ ] An empty Tangents Part comes last
-- [ ] Any Topics used by existing Notes still exist, or those Notes are updated so the build passes
+- [x] Every Hello Interview Part and Topic is present, in published order, with the source cited where the draft is reviewed
+- [x] Each Topic has a stable kebab-case key and a display title
+- [x] An empty Tangents Part comes last
+- [x] Any Topics used by existing Notes still exist, or those Notes are updated so the build passes
 - [ ] The author has reviewed and approved the list
 
 ## Comments
