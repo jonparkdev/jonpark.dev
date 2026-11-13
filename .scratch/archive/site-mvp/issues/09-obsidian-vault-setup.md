@@ -2,7 +2,7 @@
 
 **What to build:** The `garden/` folder works as the author's Obsidian vault, and writing in it publishes the site with no other steps. Obsidian Git commits and syncs every 30 minutes when something changed. Excalidraw auto-exports SVGs into the assets folder. The vault configuration (plugins and settings) is committed, but not the workspace layout files. The Inbox exists and stays out of git. This is mostly clicking through Obsidian, so the author does it; an agent can help by preparing settings files and checking the result.
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** 02 (Placeholder live at https://jonpark.dev), 03 (Note pages with Stage badges)
 

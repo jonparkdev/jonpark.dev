@@ -4,7 +4,7 @@
 
 `/about-stages` explains the three Stages in plain language, and that Stages change only through Recall and Demotion is expected (vocabulary per `GLOSSARY.md`).
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** 01 (Site skeleton and build tests)
 

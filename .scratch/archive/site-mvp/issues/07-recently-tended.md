@@ -2,7 +2,7 @@
 
 **What to build:** Below the Progress map, the home page lists the five most recently Tended Notes, newest first, each with its Stage badge and Tended date. A Note's Tended date is the date of the last git commit that touched its file. A Note with no commit yet (local development only) counts as tended now. The deploy Action checks out full git history so production dates are real.
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** 02 (Placeholder live at https://jonpark.dev), 06 (Progress map home page)
 

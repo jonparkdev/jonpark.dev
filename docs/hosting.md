@@ -7,6 +7,17 @@ The site is a static Astro build shipped as a plain static-file-server container
 - `.github/workflows/deploy.yml`: on every push to `main`, builds the site (full git history) and runs `flyctl deploy`. A newer run cancels one in progress. Needs the GitHub secret `FLY_API_TOKEN`.
 - `scripts/setup-hosting.sh`: the wizard for the one-time manual steps (Fly login, app, deploy token secret, certificate, Cloudflare DNS and SSL, final `curl` check). Run it from anywhere in the repo: `scripts/setup-hosting.sh`.
 
+## Writing vault
+
+Notes are published from a dedicated writing clone of this repo at `~/vaults/jonpark.dev`, which stays on `main`. The Obsidian vault is its `garden/` folder. Code work happens in a separate checkout, so Obsidian Git's auto-sync never commits code changes or pushes to a feature branch.
+
+- Obsidian Git: commit-and-sync every 30 minutes, only when something changed, pulling before it pushes. Every sync that pushes triggers the deploy. Sync only runs while Obsidian is open.
+- Excalidraw: drawings live in `garden/assets/`, auto-export SVG next to them, and are embedded as `![[name.svg]]`.
+- New Notes go to `garden/notes/`. A Note needs valid `stage` and `topic` frontmatter, or the deploy fails and the live site stays at its last good version.
+- `garden/inbox.md` and `garden/.obsidian/workspace*.json` are gitignored and exist only in the writing clone.
+
+Settings live in `garden/.obsidian/` (committed). To set up on a new machine: clone the repo to `~/vaults/jonpark.dev`, open `garden/` as a vault, trust the author, and enable community plugins. The committed plugin code and settings load as-is. Check the settings in the plugin UI rather than editing `data.json` while Obsidian is running, because the plugin overwrites the file.
+
 ## Local smoke run
 
 ```sh
