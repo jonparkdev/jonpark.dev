@@ -2,7 +2,7 @@
 
 **What to build:** The Curriculum lists every Hello Interview Part and Topic in their published order, drafted from Hello Interview's public table of contents, plus an empty 🐇 Tangents Part last. Each Topic gets a stable kebab-case key (what Note frontmatter `topic` refers to) and its display title. The author reviews the draft once before it's considered done.
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** 03 (Note pages with Stage badges)
 
