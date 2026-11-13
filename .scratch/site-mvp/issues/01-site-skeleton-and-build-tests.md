@@ -8,12 +8,12 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** resolved
 
-- [ ] The site builds to fully static output with one command
-- [ ] The home page shows a placeholder
-- [ ] The build reads its notes folder, assets folder and Curriculum from overridable inputs, defaulting to the real vault
-- [ ] A test helper creates a fixture garden in a temp folder, runs the build against it, and exposes the generated pages and the build's exit status and error output
-- [ ] One passing test builds a fixture garden and checks the placeholder page
-- [ ] A single command runs the test suite
+- [x] The site builds to fully static output with one command
+- [x] The home page shows a placeholder
+- [x] The build reads its notes folder, assets folder and Curriculum from overridable inputs, defaulting to the real vault
+- [x] A test helper creates a fixture garden in a temp folder, runs the build against it, and exposes the generated pages and the build's exit status and error output
+- [x] One passing test builds a fixture garden and checks the placeholder page
+- [x] A single command runs the test suite
 
 ## Comments
 

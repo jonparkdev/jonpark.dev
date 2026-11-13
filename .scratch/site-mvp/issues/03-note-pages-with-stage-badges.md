@@ -10,15 +10,15 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** resolved
 
-- [ ] Each Note renders at `/notes/<slug>` with its filename as the title, Stage badge, Topic and body
-- [ ] The Stage badge links to `/about-stages`
-- [ ] `/about-stages` exists and explains Seedling, Budding, Evergreen, Recall and Demotion
-- [ ] A missing or invalid `stage` fails the build, naming the Note
-- [ ] A `topic` not in the Curriculum fails the build, naming the Note
-- [ ] An `upgrades` value other than `diagram`, `interactive` or `explainer` fails the build, naming the Note; valid `upgrades` are accepted but not rendered
-- [ ] Any other frontmatter field fails the build
-- [ ] Two Notes that produce the same slug fail the build, naming both
-- [ ] Each behaviour above is covered by a build-based test
+- [x] Each Note renders at `/notes/<slug>` with its filename as the title, Stage badge, Topic and body
+- [x] The Stage badge links to `/about-stages`
+- [x] `/about-stages` exists and explains Seedling, Budding, Evergreen, Recall and Demotion
+- [x] A missing or invalid `stage` fails the build, naming the Note
+- [x] A `topic` not in the Curriculum fails the build, naming the Note
+- [x] An `upgrades` value other than `diagram`, `interactive` or `explainer` fails the build, naming the Note; valid `upgrades` are accepted but not rendered
+- [x] Any other frontmatter field fails the build
+- [x] Two Notes that produce the same slug fail the build, naming both
+- [x] Each behaviour above is covered by a build-based test
 
 ## Comments
 
