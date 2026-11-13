@@ -8,12 +8,12 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** resolved
 
-- [ ] Parts and Topics appear in Curriculum order, with Tangents last
-- [ ] Each Topic is marked with its most advanced Note's Stage
-- [ ] Each Topic shows correct per-Stage counts
-- [ ] Topics with no Notes are visible and marked untouched
-- [ ] Each Topic lists its Notes with Stage badges and links
-- [ ] Each behaviour above is covered by a build-based test
+- [x] Parts and Topics appear in Curriculum order, with Tangents last
+- [x] Each Topic is marked with its most advanced Note's Stage
+- [x] Each Topic shows correct per-Stage counts
+- [x] Topics with no Notes are visible and marked untouched
+- [x] Each Topic lists its Notes with Stage badges and links
+- [x] Each behaviour above is covered by a build-based test
 
 ## Comments
 

@@ -8,10 +8,10 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** resolved
 
-- [ ] Each Note lists every Note that links to it, each with its Stage badge and a link
-- [ ] A Note linked several times from the same Note appears once in the list
-- [ ] A Note with no backlinks shows no "Linked from" section
-- [ ] Each behaviour above is covered by a build-based test
+- [x] Each Note lists every Note that links to it, each with its Stage badge and a link
+- [x] A Note linked several times from the same Note appears once in the list
+- [x] A Note with no backlinks shows no "Linked from" section
+- [x] Each behaviour above is covered by a build-based test
 
 ## Comments
 
