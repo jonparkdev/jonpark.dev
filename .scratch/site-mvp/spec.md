@@ -1,6 +1,6 @@
 # Spec: Site MVP
 
-Status: ready-for-human
+Status: resolved
 
 ## Problem Statement
 
