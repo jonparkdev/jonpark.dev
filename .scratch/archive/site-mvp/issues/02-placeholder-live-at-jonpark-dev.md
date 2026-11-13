@@ -6,7 +6,7 @@ The build runs in the GitHub Action, not in Fly's remote builder; the image only
 
 **Fallback (soft target):** if the placeholder isn't live over HTTPS by around Saturday Nov 14 at noon, deploy the same static build to Cloudflare Pages instead and defer the container work.
 
-Spec: `.scratch/site-mvp/spec.md` · ADR: `docs/adr/0001-container-behind-cloudflare.md`
+Spec: `.scratch/archive/site-mvp/spec.md` · ADR: `docs/adr/0001-container-behind-cloudflare.md`
 
 **Blocked by:** 01 (Site skeleton and build tests)
 
