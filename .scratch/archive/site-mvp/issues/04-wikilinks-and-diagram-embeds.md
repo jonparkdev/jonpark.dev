@@ -2,7 +2,7 @@
 
 **What to build:** Wikilinks in a Note's body work the way they do in Obsidian. `[[Note title]]` links to that Note's page, matched by filename and case-insensitive; `[[Note title|label]]` shows the label. A link whose target Note doesn't exist yet renders as visibly unwritten text (styled, not an anchor) and does not fail the build. `[[Note#Heading]]` links to the Note page and ignores the heading. `![[name.svg]]` embeds that Diagram from the assets folder inline; a missing asset fails the build, naming the Note and the file.
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** 03 (Note pages with Stage badges)
 

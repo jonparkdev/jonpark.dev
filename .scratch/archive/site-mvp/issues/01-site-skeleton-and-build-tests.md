@@ -2,7 +2,7 @@
 
 **What to build:** A static Astro site that builds and shows a placeholder home page, plus the test setup every later ticket uses: a test writes a fixture garden (Notes, Diagrams, a fixture Curriculum) into a temp folder, runs the real build against it, and checks the generated pages or the build's exit status. The notes folder, assets folder and Curriculum the build reads can be overridden at build time, and default to the real `garden/` vault and Curriculum. See the spec's Testing Decisions: tests only look at the built site, never at internals.
 
-Spec: `.scratch/site-mvp/spec.md`
+Spec: `.scratch/archive/site-mvp/spec.md`
 
 **Blocked by:** None (can start immediately)
 
