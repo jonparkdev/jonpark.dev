@@ -281,7 +281,7 @@
   "autoExportLightAndDark": false,
   "autoexportExcalidraw": false,
   "autoexportPNG": false,
-  "autoexportSVG": false,
+  "autoexportSVG": true,
   "autosaveIntervalDesktop": 60000,
   "autosaveIntervalMobile": 30000,
   "autostartScriptFailures": {},
@@ -625,7 +625,7 @@
   "dynamicStyling": "colorful",
   "embedMarkdownCommentLinks": true,
   "embedPlaceholderImage": true,
-  "embedType": "excalidraw",
+  "embedType": "SVG",
   "embedUseExcalidrawFolder": false,
   "embedWikiLink": true,
   "embeddableMarkdownDefaults": {
@@ -655,7 +655,7 @@
   "fadeOutExcalidrawMarkup": false,
   "fieldSuggester": true,
   "focusOnFileTab": true,
-  "folder": "Excalidraw",
+  "folder": "assets",
   "fontAssetsPath": "Excalidraw/CJK Fonts",
   "forceWrap": false,
   "gridSettings": {
@@ -673,7 +673,7 @@
   "imageCacheRetentionDays": 30,
   "imageElementNotice": true,
   "isLeftHanded": false,
-  "keepInSync": false,
+  "keepInSync": true,
   "laserSettings": {
     "COLOR": "#ff0000",
     "DECAY_LENGTH": 50,
@@ -689,7 +689,7 @@
     "version": 2
   },
   "libraryFileName": "local-library",
-  "libraryFolderPath": "Excalidraw/Libraries",
+  "libraryFolderPath": "assets/Libraries",
   "libraryMigrationSnoozeUntil": 0,
   "libraryMigrationStatus": "not-required",
   "libraryStorageMode": "vault",
