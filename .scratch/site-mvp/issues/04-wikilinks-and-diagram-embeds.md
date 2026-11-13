@@ -8,14 +8,14 @@ Spec: `.scratch/site-mvp/spec.md`
 
 **Status:** resolved
 
-- [ ] `[[Note title]]` renders as a link to that Note's page
-- [ ] Matching is by filename and ignores case
-- [ ] `[[Note title|label]]` shows the label and links to the Note
-- [ ] A link to a Note that doesn't exist renders as styled unwritten text, not a link, and the build succeeds
-- [ ] `[[Note#Heading]]` links to the Note page
-- [ ] `![[name.svg]]` shows the Diagram inline
-- [ ] A missing Diagram asset fails the build, naming the Note and the file
-- [ ] Each behaviour above is covered by a build-based test
+- [x] `[[Note title]]` renders as a link to that Note's page
+- [x] Matching is by filename and ignores case
+- [x] `[[Note title|label]]` shows the label and links to the Note
+- [x] A link to a Note that doesn't exist renders as styled unwritten text, not a link, and the build succeeds
+- [x] `[[Note#Heading]]` links to the Note page
+- [x] `![[name.svg]]` shows the Diagram inline
+- [x] A missing Diagram asset fails the build, naming the Note and the file
+- [x] Each behaviour above is covered by a build-based test
 
 ## Comments
 
