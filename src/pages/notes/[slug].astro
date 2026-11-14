@@ -6,7 +6,7 @@ import StageBadge from "../../components/StageBadge.astro";
 import { loadGarden, type Note } from "../../garden/garden";
 import { stageCue } from "../../garden/stage";
 import { tendedDay, tendedLong } from "../../garden/tended";
-import Base from "../../layouts/Base.astro";
+import Article from "../../layouts/Article.astro";
 
 export const getStaticPaths = (() =>
   loadGarden().notes.map((note) => ({ params: { slug: note.slug }, props: { note } }))) satisfies GetStaticPaths;
@@ -22,8 +22,7 @@ const { note } = Astro.props;
 const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
 ---
 
-<Base title={note.title}>
-  <article class="note">
+<Article title={note.title} class="note">
     <header class="title-block">
       <h1>{note.title}</h1>
       <p class="byline">
@@ -37,7 +36,7 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
       <p>{stageCue(note.stage)}</p>
     </section>
 
-    <div class="note-body" set:html={note.html} />
+    <div class="note-body article-body" set:html={note.html} />
 
     {
       hasReferences && (
@@ -95,119 +94,12 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
         </footer>
       )
     }
-  </article>
-</Base>
+</Article>
 
 <style>
-  .note {
-    max-width: var(--measure);
-    margin: 0 auto;
-    padding-top: clamp(2rem, 6vw, 3.5rem);
-  }
-
-  /* \maketitle */
-  .title-block {
-    text-align: center;
-    margin-bottom: 1.75rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.875rem;
-  }
-  .byline {
-    margin: 0;
-    font-size: 1.0625rem;
-    line-height: 1.5;
-  }
-  .sc {
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
-  }
-
-  /* \begin{abstract} carries the Stage */
-  .abstract {
-    max-width: 35rem;
-    margin: 0 auto 2.25rem;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .abstract p {
-    margin: 0;
-  }
-  .abstract-head {
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    margin-bottom: 0.25rem !important;
-  }
+  /* The abstract's head carries the Stage */
   .abstract-head :global(.stage-badge) {
     color: var(--ink);
-  }
-
-  /* Body: justified, hyphenated, numbered sections */
-  .note-body {
-    counter-reset: section figure;
-  }
-  .note-body :global(p) {
-    margin: 0 0 0.75rem;
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-  }
-  .note-body :global(p + p) {
-    text-indent: 1.5em;
-  }
-  .note-body :global(h2) {
-    counter-increment: section;
-    counter-reset: subsection;
-    font-size: 1.375rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin: 2.25rem 0 0.75rem;
-  }
-  .note-body :global(h2::before) {
-    content: counter(section);
-    display: inline-block;
-    min-width: 1.75em;
-  }
-  .note-body :global(h3) {
-    counter-increment: subsection;
-    font-size: 1.1875rem;
-    font-weight: 700;
-    margin: 1.75rem 0 0.5rem;
-  }
-  .note-body :global(h3::before) {
-    content: counter(section) "." counter(subsection);
-    display: inline-block;
-    min-width: 2.5em;
-  }
-  .note-body :global(h4) {
-    font-size: 1em;
-    font-weight: 700;
-    margin: 1.25rem 0 0.25rem;
-  }
-  .note-body :global(ul),
-  .note-body :global(ol) {
-    margin: 0 0 0.75rem;
-    padding-left: 1.75em;
-  }
-  .note-body :global(li + li) {
-    margin-top: 0.25rem;
-  }
-  .note-body :global(blockquote) {
-    margin: 1rem 2em;
-    font-size: 1.0625rem;
-  }
-  .note-body :global(hr) {
-    border: 0;
-    border-top: 0.8px solid var(--rule);
-    width: 40%;
-    margin: 2rem auto;
-  }
-  .note-body :global(:not(pre) > code) {
-    font-size: 0.875em;
   }
 
   /* Wikilinks: hyperref colours, and LaTeX's ?? for a reference that isn't defined yet */
@@ -393,13 +285,6 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
   }
 
   @media (max-width: 36rem) {
-    .note-body :global(p) {
-      text-align: left;
-      hyphens: manual;
-    }
-    .note-body :global(blockquote) {
-      margin: 1rem 1em;
-    }
     /* Keep Diagram labels at their drawn size; scroll sideways instead of shrinking. */
     .note-body :global(.diagram) {
       overflow-x: auto;
