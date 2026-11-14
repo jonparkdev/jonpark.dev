@@ -11,11 +11,188 @@ const { title } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <link rel="preload" href="/fonts/garden-modern-book.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <header><a href="/">jonpark.dev</a></header>
-    <main>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-line">
+      <a href="/" class="site-name">jonpark.dev</a>
+      <nav aria-label="Site">
+        <a href="/">Progress map</a>
+        <a href="/about-stages">About Stages</a>
+      </nav>
+    </header>
+    <main id="main">
       <slot />
     </main>
   </body>
 </html>
+
+<style is:global>
+  @font-face {
+    font-family: "Garden Modern";
+    src: url("/fonts/garden-modern-book.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Garden Modern";
+    src: url("/fonts/garden-modern-book-italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Garden Modern";
+    src: url("/fonts/garden-modern-bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Garden Modern";
+    src: url("/fonts/garden-modern-bold-italic.woff2") format("woff2");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Garden Modern Mono";
+    src: url("/fonts/garden-modern-mono-book.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* The LaTeX article: a white page, black ink, hyperref blue for references. */
+  :root {
+    color-scheme: light;
+    --page: #ffffff;
+    --ink: #111111;
+    --ink-soft: #4d4d4d;
+    --rule: #111111;
+    --ref: #1f4e8c;
+    --undefined: #8b1a1a;
+    --select: #d6e2f2;
+    --serif: "Garden Modern", "Latin Modern Roman", "CMU Serif", "STIX Two Text", Georgia, serif;
+    --mono: "Garden Modern Mono", "Latin Modern Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --measure: 41rem;
+    --gutter: clamp(1rem, 4vw, 4rem);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    font-variant-numeric: lining-nums proportional-nums;
+    font-kerning: normal;
+  }
+
+  ::selection {
+    background: var(--select);
+    color: var(--ink);
+  }
+
+  a {
+    color: var(--ref);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, var(--ref) 45%, transparent);
+    text-underline-offset: 0.18em;
+  }
+  a:hover {
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 2px;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ref);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .stage-badge {
+    white-space: nowrap;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: var(--gutter);
+    top: -3rem;
+    background: var(--page);
+    padding: 0.5rem 0.75rem;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+
+  .site-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem 1.75rem;
+    padding: 1.5rem var(--gutter) 0;
+    font-variant: small-caps;
+    font-variant-numeric: lining-nums;
+    letter-spacing: 0.04em;
+    font-size: 1.0625rem;
+  }
+  .site-line a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .site-line a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .site-line nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+  }
+
+  main {
+    padding: 0 var(--gutter) 5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--mono);
+    font-size: 0.875em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+</style>

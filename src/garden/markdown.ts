@@ -2,8 +2,11 @@ import { Marked, type TokenizerAndRendererExtension } from "marked";
 
 /** What rendering a Note body needs to know about the rest of the garden. */
 export interface RenderContext {
-  /** The page path of the Note a wikilink target names, or undefined if it isn't written yet. */
-  resolveNote(target: string): string | undefined;
+  /**
+   * The Note a wikilink target names, or undefined if it isn't written yet:
+   * its page path, and its footnote number if it is a Tangent.
+   */
+  resolveNote(target: string): { href: string; tangentFootnote?: number; firstMention?: boolean } | undefined;
   /** The SVG markup of the Diagram an `![[name.svg]]` embed names. */
   embedDiagram(name: string): string;
 }
@@ -38,14 +41,34 @@ export function renderMarkdown(markdown: string, context: RenderContext): string
     start: (src) => src.indexOf("[["),
     tokenizer: wikilinkToken,
     renderer(token) {
-      const href = context.resolveNote(token.target);
+      const resolved = context.resolveNote(token.target);
       const label = escapeHtml(token.label);
-      if (href) return `<a class="wikilink" href="${escapeHtml(href)}">${label}</a>`;
+      if (resolved) {
+        const link = `<a class="wikilink" href="${escapeHtml(resolved.href)}">${label}</a>`;
+        const n = resolved.tangentFootnote;
+        if (n === undefined) return link;
+        // The first mention carries the id the footnote's back link returns to.
+        const id = resolved.firstMention ? ` id="tangent-ref-${n}"` : "";
+        return `${link}<sup class="tangent-mark"><a href="#tangent-${n}"${id} aria-label="Tangent footnote ${n}">🐇${n}</a></sup>`;
+      }
       // Links ahead of the writing are allowed; show them as not-yet-written ideas.
-      return `<span class="wikilink unwritten" title="Not written yet">${label}</span>`;
+      return `<span class="wikilink unwritten" title="Not written yet">${label}<span class="visually-hidden"> (not written yet)</span></span>`;
     },
   };
-  return new Marked({ gfm: true, async: false, extensions: [embed, wikilink] }).parse(markdown) as string;
+  return new Marked({
+    gfm: true,
+    async: false,
+    extensions: [embed, wikilink],
+    renderer: {
+      // Code blocks get one span per line so the page can number them, as LaTeX listings does.
+      code({ text, lang }) {
+        const lines = text.replace(/\n$/, "").split("\n");
+        const language = lang ? ` data-lang="${escapeHtml(lang.split(/\s/)[0])}"` : "";
+        const body = lines.map((line) => `<span class="line">${escapeHtml(line)}</span>`).join("\n");
+        return `<pre class="listing"${language}><code>${body}</code></pre>\n`;
+      },
+    },
+  }).parse(markdown) as string;
 }
 
 function wikilinkToken(src: string) {

@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { loadCurriculum } from "./curriculum";
+import { loadCurriculum, type Part } from "./curriculum";
 import { gardenInputs, type GardenInputs } from "./inputs";
 import { renderMarkdown } from "./markdown";
 import { noteProblem, notePath, readNote, type NoteFile } from "./note-file";
@@ -18,6 +18,12 @@ export interface Note extends NoteFile {
   linksTo: Note[];
   /** The other Notes whose bodies wikilink to this one, ordered by title, each once. */
   linkedFrom: Note[];
+  /** The Curriculum Part the Note's Topic belongs to. */
+  part: Part;
+  /** True if the Note's Topic is a Tangent. */
+  isTangent: boolean;
+  /** The Tangent Notes this Note's body links to, in footnote order (first mention first). */
+  tangents: Note[];
   /** When the Note was last Tended: its file's last git commit, or now if uncommitted. */
   tended: Date;
 }
@@ -66,13 +72,24 @@ function buildGarden(inputs: GardenInputs): Garden {
     .map((entry) => entry.name)
     .sort();
 
+  const partOf = new Map(curriculum.parts.flatMap((part) => part.topics.map((topic) => [topic.key, part] as const)));
   const notes: Note[] = [];
   const now = new Date();
   for (const filename of filenames) {
     const source = readFileSync(join(inputs.notesDir, filename), "utf8");
     const file = readNote(filename, source, curriculum, (problem) => problems.push(noteProblem(filename, problem)));
     if (file) {
-      notes.push({ ...file, html: "", linksTo: [], linkedFrom: [], tended: tendedDate(inputs.notesDir, filename, now) });
+      const part = partOf.get(file.topic.key)!;
+      notes.push({
+        ...file,
+        part,
+        isTangent: part.isTangents,
+        html: "",
+        linksTo: [],
+        linkedFrom: [],
+        tangents: [],
+        tended: tendedDate(inputs.notesDir, filename, now),
+      });
     }
   }
 
@@ -102,12 +119,18 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
   const byTitle = new Map(notes.map((note) => [note.title.toLowerCase(), note]));
   for (const note of notes) {
     const linked = new Set<Note>();
+    const tangents: Note[] = [];
     note.html = renderMarkdown(note.markdown, {
       resolveNote(target) {
         const found = byTitle.get(target.toLowerCase());
         if (!found) return undefined;
         linked.add(found);
-        return notePath(found.slug);
+        const href = notePath(found.slug);
+        // A Tangent gets a footnote, but not when this Note is itself in Tangents or links to itself.
+        if (!found.isTangent || note.isTangent || found === note) return { href };
+        const firstMention = !tangents.includes(found);
+        if (firstMention) tangents.push(found);
+        return { href, tangentFootnote: tangents.indexOf(found) + 1, firstMention };
       },
       embedDiagram(name) {
         const path = join(assetsDir, name);
@@ -119,6 +142,7 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
       },
     });
     note.linksTo = [...linked];
+    note.tangents = tangents;
   }
 }
 
