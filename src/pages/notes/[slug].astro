@@ -3,6 +3,8 @@ import type { GetStaticPaths } from "astro";
 import NoteLink from "../../components/NoteLink.astro";
 import StageBadge from "../../components/StageBadge.astro";
 import { loadGarden, type Note } from "../../garden/garden";
+import { stageCue } from "../../garden/stage";
+import { tendedDay } from "../../garden/tended";
 import Base from "../../layouts/Base.astro";
 
 export const getStaticPaths = (() =>
@@ -13,36 +15,415 @@ interface Props {
 }
 
 const { note } = Astro.props;
+
+// Part titles carry their syllabus number ("03 Thinking in Scale"); set it as "Part 3, Thinking in Scale".
+const numbered = /^(\d+)\s+(.+)$/.exec(note.part.title);
+const partLabel = note.part.isTangents
+  ? note.part.title
+  : numbered
+    ? `Part ${Number(numbered[1])}, ${numbered[2]}`
+    : note.part.title;
+
+const tendedLong = note.tended.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
 ---
 
 <Base title={note.title}>
-  <article>
-    <header>
+  <article class="note">
+    <header class="title-block">
       <h1>{note.title}</h1>
-      <p><StageBadge stage={note.stage} /> · <span class="topic">Topic: {note.topic.title}</span></p>
+      <p class="byline">
+        <span class="sc">Topic:</span>{" "}{note.topic.title} · {partLabel}<br />
+        Tended <time datetime={tendedDay(note.tended)}>{tendedLong}</time>
+      </p>
     </header>
+
+    <section class="abstract" aria-label="Stage">
+      <p class="abstract-head">Stage: <StageBadge stage={note.stage} /></p>
+      <p>{stageCue(note.stage)}</p>
+    </section>
+
     <div class="note-body" set:html={note.html} />
+
     {
-      note.linkedFrom.length > 0 && (
-        <section class="linked-from">
-          <h2>Linked from</h2>
-          <ul>
-            {note.linkedFrom.map((source) => (
-              <li>
-                <NoteLink note={source} />
+      hasReferences && (
+        <div class="references">
+          <h2>References</h2>
+          {note.linksTo.length > 0 && (
+            <section class="links-to" aria-labelledby="links-to-head">
+              <h3 id="links-to-head">Links to</h3>
+              <ol>
+                {note.linksTo.map((target) => (
+                  <li>
+                    <NoteLink note={target} />
+                    {target.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+          {note.linkedFrom.length > 0 && (
+            <section class="linked-from" aria-labelledby="linked-from-head">
+              <h3 id="linked-from-head">Linked from</h3>
+              <ol>
+                {note.linkedFrom.map((source) => (
+                  <li>
+                    <NoteLink note={source} />
+                    {source.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+        </div>
+      )
+    }
+
+    {
+      note.tangents.length > 0 && (
+        <footer class="footnotes" aria-labelledby="tangents-head">
+          <h2 id="tangents-head" class="visually-hidden">
+            Tangents
+          </h2>
+          <ol>
+            {note.tangents.map((tangent, i) => (
+              <li id={`tangent-${i + 1}`}>
+                <span class="fn-mark" aria-hidden="true">
+                  🐇{i + 1}
+                </span>
+                Tangent: <NoteLink note={tangent} />{" "}
+                <a class="fn-back" href={`#tangent-ref-${i + 1}`} aria-label={`Back to tangent mark ${i + 1} in the text`}>
+                  ↑
+                </a>
               </li>
             ))}
-          </ul>
-        </section>
+          </ol>
+        </footer>
       )
     }
   </article>
 </Base>
 
 <style>
+  .note {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding-top: clamp(2rem, 6vw, 3.5rem);
+  }
+
+  /* \maketitle */
+  .title-block {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 0 0.875rem;
+  }
+  .byline {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+  .sc {
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+  }
+
+  /* \begin{abstract} carries the Stage */
+  .abstract {
+    max-width: 35rem;
+    margin: 0 auto 2.25rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .abstract p {
+    margin: 0;
+  }
+  .abstract-head {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem !important;
+  }
+  .abstract-head :global(.stage-badge) {
+    color: var(--ink);
+  }
+
+  /* Body: justified, hyphenated, numbered sections */
+  .note-body {
+    counter-reset: section figure;
+  }
+  .note-body :global(p) {
+    margin: 0 0 0.75rem;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+  .note-body :global(p + p) {
+    text-indent: 1.5em;
+  }
+  .note-body :global(h2) {
+    counter-increment: section;
+    counter-reset: subsection;
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 2.25rem 0 0.75rem;
+  }
+  .note-body :global(h2::before) {
+    content: counter(section);
+    display: inline-block;
+    min-width: 1.75em;
+  }
+  .note-body :global(h3) {
+    counter-increment: subsection;
+    font-size: 1.1875rem;
+    font-weight: 700;
+    margin: 1.75rem 0 0.5rem;
+  }
+  .note-body :global(h3::before) {
+    content: counter(section) "." counter(subsection);
+    display: inline-block;
+    min-width: 2.5em;
+  }
+  .note-body :global(h4) {
+    font-size: 1em;
+    font-weight: 700;
+    margin: 1.25rem 0 0.25rem;
+  }
+  .note-body :global(ul),
+  .note-body :global(ol) {
+    margin: 0 0 0.75rem;
+    padding-left: 1.75em;
+  }
+  .note-body :global(li + li) {
+    margin-top: 0.25rem;
+  }
+  .note-body :global(blockquote) {
+    margin: 1rem 2em;
+    font-size: 1.0625rem;
+  }
+  .note-body :global(hr) {
+    border: 0;
+    border-top: 0.8px solid var(--rule);
+    width: 40%;
+    margin: 2rem auto;
+  }
+  .note-body :global(:not(pre) > code) {
+    font-size: 0.875em;
+  }
+
+  /* Wikilinks: hyperref colours, and LaTeX's ?? for a reference that isn't defined yet */
   .note-body :global(.unwritten) {
-    color: #8a8a8a;
-    border-bottom: 1px dashed currentColor;
-    cursor: help;
+    color: var(--undefined);
+    text-decoration: underline dashed 1px;
+    text-underline-offset: 0.18em;
+  }
+  .note-body :global(.unwritten::after) {
+    content: "??";
+    content: "??" / "";
+    font-size: 0.7em;
+    vertical-align: super;
+    line-height: 0;
+    margin-left: 0.1em;
+    font-weight: 700;
+  }
+  .note-body :global(.tangent-mark) {
+    font-size: 0.7em;
+    line-height: 0;
+    margin-left: 0.1em;
+  }
+  .note-body :global(.tangent-mark a) {
+    text-decoration: none;
+  }
+
+  /* lstlisting: rules above and below, line numbers in the margin */
+  .note-body :global(pre.listing) {
+    margin: 1.25rem 0 1.5rem;
+    padding: 0.5rem 0;
+    border-top: 0.8px solid var(--rule);
+    border-bottom: 0.8px solid var(--rule);
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    counter-reset: line;
+    tab-size: 4;
+  }
+  .note-body :global(pre.listing code) {
+    font-size: 1em;
+  }
+  .note-body :global(pre.listing .line) {
+    counter-increment: line;
+  }
+  .note-body :global(pre.listing .line::before) {
+    content: counter(line);
+    display: inline-block;
+    width: 2.25rem;
+    padding-right: 0.875rem;
+    text-align: right;
+    color: var(--ink-soft);
+    font-size: 0.8em;
+    user-select: none;
+  }
+
+  /* booktabs: horizontal rules only, heavier at top and bottom */
+  .note-body :global(table) {
+    border-collapse: collapse;
+    margin: 1.25rem auto 1.5rem;
+    font-size: 1rem;
+    font-variant-numeric: lining-nums tabular-nums;
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    width: fit-content;
+  }
+  .note-body :global(thead) {
+    border-top: 1.5px solid var(--rule);
+    border-bottom: 0.8px solid var(--rule);
+  }
+  .note-body :global(tbody) {
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .note-body :global(th),
+  .note-body :global(td) {
+    padding: 0.3rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .note-body :global(th) {
+    font-weight: 700;
+  }
+
+  /* Diagrams as numbered figures */
+  .note-body :global(.diagram) {
+    counter-increment: figure;
+    display: block;
+    margin: 1.5rem 0;
+    text-align: center;
+    text-indent: 0;
+  }
+  .note-body :global(.diagram svg) {
+    max-width: 100%;
+    height: auto;
+  }
+  .note-body :global(.diagram::after) {
+    content: "Figure " counter(figure);
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9375rem;
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+  }
+
+  /* The bibliography: where the reader walks next */
+  /* One bibliography, numbered straight through both lists */
+  .references {
+    margin-top: 3rem;
+    counter-reset: ref;
+  }
+  .references h2 {
+    font-size: 1.375rem;
+    margin: 0 0 0.75rem;
+  }
+  .references h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    margin: 1.25rem 0 0.375rem;
+  }
+  .references ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .references li {
+    counter-increment: ref;
+    position: relative;
+    padding-left: 2.5em;
+    margin-bottom: 0.25rem;
+  }
+  .references li::before {
+    content: "[" counter(ref) "]";
+    position: absolute;
+    left: 0;
+    font-variant-numeric: lining-nums;
+  }
+  .references :global(.stage-badge),
+  .footnotes :global(.stage-badge) {
+    color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+    font-size: 0.875em;
+    margin-left: 0.25em;
+  }
+  .tangent-flag {
+    font-size: 0.875em;
+    white-space: nowrap;
+  }
+
+  /* \footnote: a short rule, then small type */
+  .footnotes {
+    margin-top: 3rem;
+    font-size: 0.9375rem;
+  }
+  .footnotes::before {
+    content: "";
+    display: block;
+    width: 10rem;
+    border-top: 0.8px solid var(--rule);
+    margin-bottom: 0.5rem;
+  }
+  .footnotes ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footnotes li {
+    margin-bottom: 0.25rem;
+  }
+  .footnotes li:target {
+    background: var(--select);
+  }
+  .fn-back {
+    text-decoration: none;
+    margin-left: 0.25em;
+  }
+  .fn-mark {
+    font-size: 0.75em;
+    vertical-align: super;
+    line-height: 0;
+    margin-right: 0.25em;
+  }
+
+  @media (max-width: 36rem) {
+    .note-body :global(p) {
+      text-align: left;
+      hyphens: manual;
+    }
+    .note-body :global(blockquote) {
+      margin: 1rem 1em;
+    }
+    /* Keep Diagram labels at their drawn size; scroll sideways instead of shrinking. */
+    .note-body :global(.diagram) {
+      overflow-x: auto;
+      text-align: left;
+    }
+    .note-body :global(.diagram svg) {
+      max-width: none;
+    }
+    .note-body :global(.diagram::after) {
+      text-align: center;
+      position: sticky;
+      left: 0;
+    }
   }
 </style>

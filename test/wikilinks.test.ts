@@ -60,7 +60,7 @@ test("a wikilink to a Note that doesn't exist renders as styled unwritten text, 
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/notes/read-through-cache") ?? "";
-  expect(html).toMatch(/Later: <span[^>]*class="[^"]*unwritten[^"]*"[^>]*>write-behind<\/span>\./);
+  expect(html).toMatch(/Later: <span[^>]*class="[^"]*unwritten[^"]*"[^>]*>write-behind<span class="visually-hidden"> \(not written yet\)<\/span><\/span>\./);
   expect(html).not.toMatch(/<a[^>]*>write-behind<\/a>/);
   // Visibly unwritten: the class has a style.
   expect(html).toMatch(/\.unwritten[^{]*\{[^}]+\}/);

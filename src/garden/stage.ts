@@ -9,6 +9,18 @@ const display: Record<Stage, { emoji: string; label: string }> = {
   evergreen: { emoji: "🌳", label: "Evergreen" },
 };
 
+/** One sentence on what a Note at this Stage has been through, shown at the top of its page. */
+const cue: Record<Stage, string> = {
+  seedling: "Written from memory with the source closed. Not yet re-explained on a different day or checked against the source.",
+  budding:
+    "Re-explained from memory on a different day, then checked and corrected against the source. Not yet applied in a Mock, a design problem, or an Explainer.",
+  evergreen: "Applied in a Mock, a design problem, or an Explainer. Stable, not finished.",
+};
+
+export function stageCue(stage: Stage): string {
+  return cue[stage];
+}
+
 export function isStage(value: unknown): value is Stage {
   return typeof value === "string" && (STAGES as readonly string[]).includes(value);
 }

@@ -63,8 +63,8 @@ test("![[target]] for anything but an .svg never fails the build and is never in
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/notes/consistent-hashing") ?? "";
-  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">Unwritten idea</span>');
-  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">photo.png</span>');
+  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">Unwritten idea<span class="visually-hidden"> (not written yet)</span></span>');
+  expect(html).toContain('<span class="wikilink unwritten" title="Not written yet">photo.png<span class="visually-hidden"> (not written yet)</span></span>');
   expect(html).not.toContain("not really a png");
   expect(html).not.toContain('class="diagram"');
 });

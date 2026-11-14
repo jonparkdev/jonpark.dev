@@ -7,4 +7,6 @@ gardenInputs();
 export default defineConfig({
   site: "https://jonpark.dev",
   output: "static",
+  // Inline page CSS: one small site, so no extra stylesheet request per page.
+  build: { inlineStylesheets: "always" },
 });
