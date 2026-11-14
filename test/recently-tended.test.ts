@@ -1,5 +1,12 @@
 import { expect, test } from "vitest";
+import { tendedLong } from "../src/garden/tended";
 import { buildFixtureSite } from "./helpers/build-fixture-site";
+
+/** How the page writes a YYYY-MM-DD date. */
+const long = (day: string) => tendedLong(new Date(`${day}T00:00:00Z`));
+
+/** The <time> element for a Tended day, allowing for attributes the page adds. */
+const timeOf = (day: string) => new RegExp(`<time datetime="${day}"[^>]*>${long(day)}</time>`);
 
 const curriculum = {
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
@@ -21,7 +28,7 @@ function entries(section: string): string[] {
   return section.split("<li").slice(1);
 }
 
-test("the home page lists the five most recently Tended Notes below the Progress map, newest first, with badges and dates", () => {
+test("the home page lists the five most recently Tended Notes below the Topic index, newest first, with badges and dates", () => {
   const build = buildFixtureSite({
     curriculum,
     notes: {
@@ -62,7 +69,7 @@ test("the home page lists the five most recently Tended Notes below the Progress
   expected.forEach(([title, slug, stage, date], i) => {
     expect(listed[i]).toContain(`<a href="/notes/${slug}">${title}</a>`);
     expect(listed[i]).toContain(`stage-badge stage-${stage}`);
-    expect(listed[i]).toContain(`<time datetime="${date}">${date}</time>`);
+    expect(listed[i]).toMatch(timeOf(date));
   });
   expect(section).not.toContain("Charlie");
 });
@@ -79,9 +86,9 @@ test("a Note is Tended when its change was written, not when a rebase or squash-
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const listed = entries(recentlyTended(build.page("/") ?? ""));
-  expect(listed[0]).toContain('<time datetime="2026-02-01">2026-02-01</time>');
+  expect(listed[0]).toMatch(timeOf("2026-02-01"));
   expect(listed[1]).toContain('<a href="/notes/rebased">Rebased</a>');
-  expect(listed[1]).toContain('<time datetime="2026-01-05">2026-01-05</time>');
+  expect(listed[1]).toMatch(timeOf("2026-01-05"));
 });
 
 test("an uncommitted Note counts as tended now", () => {
@@ -97,7 +104,7 @@ test("an uncommitted Note counts as tended now", () => {
   const listed = entries(recentlyTended(build.page("/") ?? ""));
   expect(listed).toHaveLength(2);
   expect(listed[0]).toContain('<a href="/notes/fresh">Fresh</a>');
-  const today = /<time datetime="(\d{4}-\d{2}-\d{2})">/.exec(listed[0])?.[1];
+  const today = /<time datetime="(\d{4}-\d{2}-\d{2})"/.exec(listed[0])?.[1];
   expect([before, after]).toContain(today);
-  expect(listed[1]).toContain('<time datetime="2026-01-05">2026-01-05</time>');
+  expect(listed[1]).toMatch(timeOf("2026-01-05"));
 });

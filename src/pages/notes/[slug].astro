@@ -1,10 +1,11 @@
 ---
 import type { GetStaticPaths } from "astro";
 import NoteLink from "../../components/NoteLink.astro";
+import { partLabel } from "../../garden/curriculum";
 import StageBadge from "../../components/StageBadge.astro";
 import { loadGarden, type Note } from "../../garden/garden";
 import { stageCue } from "../../garden/stage";
-import { tendedDay } from "../../garden/tended";
+import { tendedDay, tendedLong } from "../../garden/tended";
 import Base from "../../layouts/Base.astro";
 
 export const getStaticPaths = (() =>
@@ -16,20 +17,7 @@ interface Props {
 
 const { note } = Astro.props;
 
-// Part titles carry their syllabus number ("03 Thinking in Scale"); set it as "Part 3, Thinking in Scale".
-const numbered = /^(\d+)\s+(.+)$/.exec(note.part.title);
-const partLabel = note.part.isTangents
-  ? note.part.title
-  : numbered
-    ? `Part ${Number(numbered[1])}, ${numbered[2]}`
-    : note.part.title;
 
-const tendedLong = note.tended.toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-});
 
 const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
 ---
@@ -39,8 +27,8 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     <header class="title-block">
       <h1>{note.title}</h1>
       <p class="byline">
-        <span class="sc">Topic:</span>{" "}{note.topic.title} · {partLabel}<br />
-        Tended <time datetime={tendedDay(note.tended)}>{tendedLong}</time>
+        <span class="sc">Topic:</span>{" "}{note.topic.title} · {partLabel(note.part)}<br />
+        Tended <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
       </p>
     </header>
 

@@ -16,6 +16,16 @@ export interface Part {
   isTangents: boolean;
 }
 
+/**
+ * A Part's display name. Part titles carry their syllabus number
+ * ("03 Thinking in Scale"), set as "Part 3, Thinking in Scale".
+ */
+export function partLabel(part: Part): string {
+  const numbered = /^(\d+)\s+(.+)$/.exec(part.title);
+  if (part.isTangents || !numbered) return part.title;
+  return `Part ${Number(numbered[1])}, ${numbered[2]}`;
+}
+
 /** The Hello Interview syllabus plus Tangents, in order. */
 export interface Curriculum {
   /** Parts in syllabus order, with the Tangents Part always last. */

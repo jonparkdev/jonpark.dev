@@ -57,8 +57,9 @@ An ordered group of Topics, following Hello Interview's grouping. Tangents form 
 One Hello Interview section, as an entry in the Curriculum. Every Note belongs to exactly one Topic.
 _Avoid_: Section, chapter
 
-**Progress map**:
-The Curriculum shown as Topics, each marked with the Stage of its most advanced Note. Untouched Topics stay visible.
+**Topic index**:
+The home page: every Topic that has at least one Note, plus Tangents, in Curriculum order, each listing its Notes with their Stages. Topics without Notes are not shown. It shows what has been learned, not progress through the syllabus.
+_Avoid_: Progress map (the retired MVP home page that marked every Topic, untouched ones included)
 
 **Tended**:
 A Note is tended when it was last changed. "Recently tended" lists the latest of these.

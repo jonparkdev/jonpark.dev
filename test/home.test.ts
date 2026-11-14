@@ -5,14 +5,14 @@ import { buildFixtureSite } from "./helpers/build-fixture-site";
 const curriculum = {
   parts: [
     {
-      title: "Core Concepts",
+      title: "03 Thinking in Scale",
       topics: [
         { key: "scaling", title: "Scaling Reads" },
         { key: "caching", title: "Caching" },
       ],
     },
     {
-      title: "Key Technologies",
+      title: "04 Key Technologies",
       topics: [
         { key: "redis", title: "Redis" },
         { key: "kafka", title: "Kafka" },
@@ -35,68 +35,41 @@ function positions(html: string, needles: string[]): number[] {
   });
 }
 
-/** The HTML of one Topic's entry on the Progress map: up to the next Topic, or the end of the Progress map. */
+/** The HTML of one Topic's entry on the Topic index: up to the next Topic, or Recently tended. */
 function topicEntry(html: string, key: string): string {
   const start = html.indexOf(`data-topic="${key}"`);
-  expect(start, `Topic "${key}" on the Progress map`).toBeGreaterThanOrEqual(0);
+  expect(start, `Topic "${key}" on the Topic index`).toBeGreaterThanOrEqual(0);
   const next = html.indexOf('data-topic="', start + 1);
   return html.slice(start, next === -1 ? html.indexOf("data-recently-tended", start) : next);
 }
 
-test("the home page shows every Part and its Topics in Curriculum order, with Tangents last", () => {
-  const build = buildFixtureSite({ curriculum });
-
-  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
-  const html = build.page("/") ?? "";
-  const order = positions(html, [
-    "Core Concepts",
-    "Scaling Reads",
-    "Caching",
-    "Key Technologies",
-    "Redis",
-    "Kafka",
-    "🐇 Tangents",
-    "Bloom filters",
-  ]);
-  expect(order).toEqual([...order].sort((a, b) => a - b));
-});
-
-test("each Topic is marked with the Stage of its most advanced Note", () => {
-  const build = buildFixtureSite({
-    curriculum,
-    notes: {
-      "A cache aside.md": note("seedling", "caching"),
-      "B write through.md": note("evergreen", "caching"),
-      "C write back.md": note("budding", "caching"),
-      "Read replicas.md": note("budding", "scaling"),
-      "Sharding.md": note("seedling", "scaling"),
-    },
-  });
-
-  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
-  const html = build.page("/") ?? "";
-  expect(topicEntry(html, "caching")).toMatch(/class="topic-stage"><a[^>]*>🌳 Evergreen<\/a>/);
-  expect(topicEntry(html, "scaling")).toMatch(/class="topic-stage"><a[^>]*>🌿 Budding<\/a>/);
-});
-
-test("each Topic shows how many 🌱, 🌿 and 🌳 Notes it has", () => {
+test("the Topic index shows only Topics with Notes, under their Parts, in Curriculum order with Tangents last", () => {
   const build = buildFixtureSite({
     curriculum,
     notes: {
       "Cache aside.md": note("seedling", "caching"),
-      "Cache stampede.md": note("seedling", "caching"),
-      "Write through.md": note("budding", "caching"),
-      "Sharding.md": note("evergreen", "scaling"),
+      "Read replicas.md": note("budding", "scaling"),
+      "Kafka basics.md": note("seedling", "kafka"),
+      "Bloom filter basics.md": note("evergreen", "bloom-filters"),
     },
   });
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/") ?? "";
-  expect(topicEntry(html, "caching")).toContain('<span class="topic-counts">🌱 2 · 🌿 1 · 🌳 0</span>');
-  expect(topicEntry(html, "scaling")).toContain('<span class="topic-counts">🌱 0 · 🌿 0 · 🌳 1</span>');
+  const order = positions(html, [
+    "Part 3, Thinking in Scale",
+    'data-topic="scaling"',
+    'data-topic="caching"',
+    "Part 4, Key Technologies",
+    'data-topic="kafka"',
+    "🐇 Tangents",
+    'data-topic="bloom-filters"',
+  ]);
+  expect(order).toEqual([...order].sort((a, b) => a - b));
+  expect(html).not.toContain('data-topic="redis"');
 });
 
-test("Topics with no Notes stay visible, marked untouched", () => {
+test("Topics and Parts without Notes are left out, with no untouched marks or per-Stage counts", () => {
   const build = buildFixtureSite({
     curriculum,
     notes: { "Cache aside.md": note("seedling", "caching") },
@@ -105,17 +78,20 @@ test("Topics with no Notes stay visible, marked untouched", () => {
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/") ?? "";
   for (const key of ["scaling", "redis", "kafka", "bloom-filters"]) {
-    expect(topicEntry(html, key)).toMatch(/class="topic-stage untouched"[^>]*>untouched</);
+    expect(html).not.toContain(`data-topic="${key}"`);
   }
-  expect(topicEntry(html, "caching")).not.toContain("untouched");
+  expect(html).not.toContain("Key Technologies");
+  expect(html).not.toContain("🐇 Tangents");
+  expect(html).not.toContain("untouched");
+  expect(html).not.toContain("topic-counts");
 });
 
-test("each Topic lists its Notes, each linking to its page with its Stage badge", () => {
+test("each Topic lists its Notes by title, each linking to its page with its Stage badge", () => {
   const build = buildFixtureSite({
     curriculum,
     notes: {
-      "Cache aside.md": note("budding", "caching"),
       "Write through.md": note("seedling", "caching"),
+      "Cache aside.md": note("budding", "caching"),
       "Bloom filter basics.md": note("evergreen", "bloom-filters"),
     },
   });
@@ -126,10 +102,21 @@ test("each Topic lists its Notes, each linking to its page with its Stage badge"
     new RegExp(`<a href="/notes/${slug}"[^>]*>${title}</a>\\s*<a[^>]*href="/about-stages"[^>]*>${badge}</a>`);
 
   const caching = topicEntry(html, "caching");
+  expect(caching).toMatch(/<h3[^>]*>Caching<\/h3>/);
   expect(caching).toMatch(noteItem("cache-aside", "Cache aside", "🌿 Budding"));
   expect(caching).toMatch(noteItem("write-through", "Write through", "🌱 Seedling"));
+  expect(caching.indexOf("Cache aside")).toBeLessThan(caching.indexOf("Write through"));
   expect(caching).not.toContain("Bloom filter basics");
   expect(topicEntry(html, "bloom-filters")).toMatch(noteItem("bloom-filter-basics", "Bloom filter basics", "🌳 Evergreen"));
+});
+
+test("an empty garden says there are no Notes yet", () => {
+  const build = buildFixtureSite({ curriculum });
+
+  expect(build.exitCode, build.stdout + build.stderr).toBe(0);
+  const html = build.page("/") ?? "";
+  expect(html).toContain("No Notes yet.");
+  expect(html).not.toContain("data-recently-tended");
 });
 
 test("the home page shows the text the hosting wizard checks for", () => {

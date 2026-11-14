@@ -4,8 +4,8 @@ import { loadCurriculum, type Part } from "./curriculum";
 import { gardenInputs, type GardenInputs } from "./inputs";
 import { renderMarkdown } from "./markdown";
 import { noteProblem, notePath, readNote, type NoteFile } from "./note-file";
-import { progressMap, type PartProgress } from "./progress";
 import { recentlyTended, tendedDate } from "./tended";
+import { topicIndex, type PartEntry } from "./topic-index";
 
 /** One idea in the garden, ready to render. */
 export interface Note extends NoteFile {
@@ -32,8 +32,8 @@ export interface Note extends NoteFile {
 export interface Garden {
   /** All Notes, ordered by title. */
   notes: Note[];
-  /** The Progress map: every Part and Topic in Curriculum order, each Topic with its Notes and Stage. */
-  progressMap: PartProgress[];
+  /** The Topic index: Parts and Topics that have Notes, in Curriculum order, each Topic with its Notes. */
+  topicIndex: PartEntry[];
   /** The five most recently Tended Notes, newest first (ties by title). */
   recentlyTended: Note[];
 }
@@ -108,7 +108,7 @@ function buildGarden(inputs: GardenInputs): Garden {
 
   return {
     notes,
-    progressMap: progressMap(curriculum, notes),
+    topicIndex: topicIndex(curriculum, notes),
     recentlyTended: recentlyTended(notes),
   };
 }

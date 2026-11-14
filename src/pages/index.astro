@@ -1,65 +1,163 @@
 ---
 import NoteLink from "../components/NoteLink.astro";
-import StageBadge from "../components/StageBadge.astro";
+import { partLabel } from "../garden/curriculum";
 import { loadGarden } from "../garden/garden";
-import { STAGES, stageEmoji } from "../garden/stage";
-import { tendedDay } from "../garden/tended";
+import { tendedDay, tendedLong } from "../garden/tended";
 import Base from "../layouts/Base.astro";
 
 const garden = loadGarden();
 ---
 
 <Base title="jonpark.dev">
-  <h1>jonpark.dev</h1>
-  {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
-  <p>A garden of system design notes, kept in service of interview prep.</p>
+  <div class="home">
+    <header class="title-block">
+      <h1>jonpark.dev</h1>
+      {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
+      <p>A garden of system design notes, kept in service of interview prep.</p>
+    </header>
 
-  <section class="progress-map">
-    <h2>Progress map</h2>
-    {
-      garden.progressMap.map(({ part, topics }) => (
-        <section class:list={["part", { tangents: part.isTangents }]}>
-          <h3>{part.title}</h3>
-          <ul class="topics">
-            {topics.map(({ topic, stage, counts, notes }) => (
-              <li class="topic" data-topic={topic.key}>
-                <span class="topic-title">{topic.title}</span>
-                {stage ? (
-                  <span class="topic-stage">
-                    <StageBadge stage={stage} />
-                  </span>
-                ) : (
-                  <span class="topic-stage untouched">untouched</span>
-                )}
-                <span class="topic-counts">{STAGES.map((s) => `${stageEmoji(s)} ${counts[s]}`).join(" · ")}</span>
-                {notes.length > 0 && (
-                  <ul class="topic-notes">
-                    {notes.map((note) => (
-                      <li>
-                        <NoteLink note={note} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
-  </section>
-
-  <section class="recently-tended" data-recently-tended>
-    <h2>Recently tended</h2>
-    <ol>
+    <section class="topic-index" aria-label="Topics">
+      {garden.topicIndex.length === 0 && <p class="empty">No Notes yet.</p>}
       {
-        garden.recentlyTended.map((note) => (
-          <li>
-            <NoteLink note={note} />{" "}
-            <time datetime={tendedDay(note.tended)}>{tendedDay(note.tended)}</time>
-          </li>
+        garden.topicIndex.map(({ part, topics }) => (
+          <section class:list={["part", { tangents: part.isTangents }]}>
+            <h2>{partLabel(part)}</h2>
+            {topics.map(({ topic, notes }) => (
+              <section class="topic" data-topic={topic.key}>
+                <h3>{topic.title}</h3>
+                <ul>
+                  {notes.map((note) => (
+                    <li>
+                      <NoteLink note={note} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </section>
         ))
       }
-    </ol>
-  </section>
+    </section>
+
+    {
+      garden.recentlyTended.length > 0 && (
+        <section class="recently-tended" data-recently-tended aria-labelledby="recent-head">
+          <h2 id="recent-head">Recently tended</h2>
+          <ol>
+            {garden.recentlyTended.map((note) => (
+              <li>
+                <span class="recent-note">
+                  <NoteLink note={note} />
+                </span>{" "}
+                <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+  </div>
 </Base>
+
+<style>
+  .home {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding-top: clamp(2rem, 6vw, 3.5rem);
+  }
+
+  /* \maketitle */
+  .title-block {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 0 0.625rem;
+  }
+  .title-block p {
+    margin: 0;
+    font-size: 1.0625rem;
+  }
+
+  /* The outline: small-caps Part labels, bold Topic heads, Notes indented */
+  .part {
+    margin-bottom: 2rem;
+  }
+  .part h2 {
+    font-size: 1.0625rem;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.25rem;
+  }
+  .topic h3 {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0.625rem 0 0.125rem;
+  }
+  .topic ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5em;
+  }
+  .topic li {
+    margin-bottom: 0.1875rem;
+  }
+  .topic-index :global(.stage-badge),
+  .recently-tended :global(.stage-badge) {
+    color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+    font-size: 0.875em;
+    margin-left: 0.25em;
+  }
+  .empty {
+    text-align: center;
+  }
+
+  /* Recently tended: after a hairline, newest first */
+  .recently-tended {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 0.8px solid var(--rule);
+  }
+  .recently-tended h2 {
+    font-size: 1.0625rem;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.5rem;
+  }
+  .recently-tended ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .recently-tended li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .recently-tended :global(time) {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+
+  /* Narrow screens: the date always sits on its own line, so the list stays even */
+  @media (max-width: 36rem) {
+    .recently-tended li {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .recently-tended :global(time) {
+      display: block;
+    }
+  }
+</style>

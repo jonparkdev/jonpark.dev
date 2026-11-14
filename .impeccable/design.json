@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-13T00:00:00Z",
+  "generatedAt": "2026-11-13T12:00:00Z",
   "title": "Design System: jonpark.dev",
   "extensions": {
     "colorMeta": {
@@ -18,22 +18,22 @@
       "title": { "displayName": "Title", "purpose": "Numbered subsections (1.1)." },
       "body": { "displayName": "Body", "purpose": "Justified, hyphenated running text at 19px on a 41rem measure." },
       "small": { "displayName": "Small", "purpose": "Byline, Stage abstract, footnotes, Figure captions." },
-      "label": { "displayName": "Label", "purpose": "Small-caps site line, References sub-heads, Topic label." },
+      "label": { "displayName": "Label", "purpose": "Small-caps site line, References sub-heads, Topic label, home-page Part labels and Recently tended label." },
       "mono": { "displayName": "Mono", "purpose": "Inline code and listings, tabular lining figures." }
     },
     "shadows": [],
     "motion": [],
     "breakpoints": [
-      { "name": "narrow", "value": "36rem", "purpose": "Below this, body goes ragged-left, blockquote indent halves, Diagrams scroll sideways." }
+      { "name": "narrow", "value": "36rem", "purpose": "Below this, body goes ragged-left, blockquote indent halves, Diagrams scroll sideways, Recently tended dates drop to their own line." }
     ],
     "rules": [
-      { "name": "hairline", "value": "0.8px solid var(--rule)", "purpose": "Listings, booktabs mid-rule, hr, footnote rule." },
+      { "name": "hairline", "value": "0.8px solid var(--rule)", "purpose": "Listings, booktabs mid-rule, hr, footnote rule, the rule above Recently tended." },
       { "name": "heavy", "value": "1.5px solid var(--rule)", "purpose": "Booktabs top and bottom rules." }
     ],
-    "focus": { "value": "outline: 2px solid var(--ref); outline-offset: 2px; border-radius: 1px", "purpose": "Every focusable element." },
+    "focus": { "value": "outline: 2px solid var(--ref); outline-offset: 2px", "purpose": "Every focusable element." },
     "coverage": {
-      "designed": ["src/pages/notes/[slug].astro", "src/layouts/Base.astro"],
-      "notYetCovered": ["src/pages/index.astro (Progress map)", "/about-stages"],
+      "designed": ["src/pages/notes/[slug].astro", "src/pages/index.astro (Topic index)", "src/layouts/Base.astro"],
+      "notYetCovered": ["/about-stages"],
       "outOfScope": ["dark mode (light only, by decision)"]
     }
   },
@@ -42,9 +42,9 @@
       "name": "Site Line",
       "kind": "nav",
       "refersTo": "site-line",
-      "description": "Small-caps site name left, Progress map and About Stages right.",
-      "html": "<header class=\"ds-site-line\"><a href=\"#\">jonpark.dev</a><nav><a href=\"#\">Progress map</a><a href=\"#\">About Stages</a></nav></header>",
-      "css": ".ds-site-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1.75rem; padding: 1.5rem 1rem 0; font-family: var(--serif, 'Garden Modern', Georgia, serif); font-variant: small-caps; letter-spacing: 0.04em; font-size: 1.0625rem; background: #ffffff; } .ds-site-line nav { display: flex; gap: 0.25rem 1.75rem; } .ds-site-line a { color: #111111; text-decoration: none; } .ds-site-line a:hover { text-decoration: underline; text-decoration-thickness: 1px; } .ds-site-line a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; border-radius: 1px; }"
+      "description": "Small-caps site name left, Topics and About Stages right.",
+      "html": "<header class=\"ds-site-line\"><a href=\"#\">jonpark.dev</a><nav><a href=\"#\">Topics</a><a href=\"#\">About Stages</a></nav></header>",
+      "css": ".ds-site-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1.75rem; padding: 1.5rem 1rem 0; font-family: var(--serif, 'Garden Modern', Georgia, serif); font-variant: small-caps; letter-spacing: 0.04em; font-size: 1.0625rem; background: #ffffff; } .ds-site-line nav { display: flex; gap: 0.25rem 1.75rem; } .ds-site-line a { color: #111111; text-decoration: none; } .ds-site-line a:hover { text-decoration: underline; text-decoration-thickness: 1px; } .ds-site-line a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
     },
     {
       "name": "Reference Link",
@@ -52,7 +52,7 @@
       "refersTo": "link-ref",
       "description": "A resolved wikilink in hyperref blue.",
       "html": "<p class=\"ds-prose\">On a read it checks <a class=\"ds-link\" href=\"#\">Redis</a> first.</p>",
-      "css": ".ds-prose { font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; } .ds-link { color: #1f4e8c; text-decoration-line: underline; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-link:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-link:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; border-radius: 1px; }"
+      "css": ".ds-prose { font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; } .ds-link { color: #1f4e8c; text-decoration-line: underline; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-link:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-link:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
     },
     {
       "name": "Unwritten Link",
@@ -109,11 +109,35 @@
       "description": "Short footnote rule, small type, 🐇n marks and a back-link.",
       "html": "<footer class=\"ds-fn\"><ol><li><span class=\"ds-fn-mark\">🐇1</span>Tangent: <a href=\"#\">Thundering herd</a> <a class=\"ds-fn-back\" href=\"#\">↑</a></li></ol></footer>",
       "css": ".ds-fn { font-family: 'Garden Modern', Georgia, serif; font-size: 0.9375rem; color: #111111; } .ds-fn::before { content: ''; display: block; width: 10rem; border-top: 0.8px solid #111111; margin-bottom: 0.5rem; } .ds-fn ol { list-style: none; margin: 0; padding: 0; } .ds-fn li:target { background: #d6e2f2; } .ds-fn a { color: #1f4e8c; text-underline-offset: 0.18em; } .ds-fn a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-fn-back { text-decoration: none; margin-left: 0.25em; } .ds-fn-mark { font-size: 0.75em; vertical-align: super; line-height: 0; margin-right: 0.25em; }"
+    },
+    {
+      "name": "Topic Index",
+      "kind": "custom",
+      "refersTo": "topic-index-part",
+      "description": "The home page outline: small-caps Part label, bold Topic head, Notes indented with Stage badges in ink; Tangents last.",
+      "html": "<section class=\"ds-topics\"><section class=\"ds-part\"><h2>Part 2, Core Concepts</h2><section class=\"ds-topic\"><h3>Caching</h3><ul><li><a href=\"#\">Cache-aside</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></li><li><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌱 Seedling</a></li></ul></section></section><section class=\"ds-part\"><h2>🐇 Tangents</h2><section class=\"ds-topic\"><h3>Thundering herd</h3><ul><li><a href=\"#\">Thundering herd</a> <a class=\"ds-badge\" href=\"#\">🌳 Evergreen</a></li></ul></section></section></section>",
+      "css": ".ds-topics { max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-part { margin-bottom: 2rem; } .ds-part h2 { font-size: 1.0625rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; margin: 0 0 0.25rem; } .ds-topic h3 { font-size: 1.1875rem; font-weight: 700; line-height: 1.3; margin: 0.625rem 0 0.125rem; } .ds-topic ul { list-style: none; margin: 0; padding: 0 0 0 1.5em; } .ds-topic li { margin-bottom: 0.1875rem; } .ds-topics a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-topics a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-topics a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-topics .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); }"
+    },
+    {
+      "name": "Recently Tended",
+      "kind": "custom",
+      "refersTo": "recently-tended-date",
+      "description": "After a hairline: small-caps label, newest Notes with badges, long dates in soft ink at the right; dates drop below 36rem.",
+      "html": "<section class=\"ds-recent\"><h2>Recently tended</h2><ol><li><span><a href=\"#\">Cache-aside</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></span> <time>13 November 2026</time></li><li><span><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌱 Seedling</a></span> <time>9 November 2026</time></li></ol></section>",
+      "css": ".ds-recent { max-width: 41rem; padding-top: 1rem; border-top: 0.8px solid #111111; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-recent h2 { font-size: 1.0625rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; margin: 0 0 0.5rem; } .ds-recent ol { list-style: none; margin: 0; padding: 0; } .ds-recent li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 1.5rem; margin-bottom: 0.25rem; } .ds-recent time { color: #4d4d4d; font-size: 0.9375rem; white-space: nowrap; } .ds-recent a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-recent a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-recent .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); } @media (max-width: 36rem) { .ds-recent li { display: block; margin-bottom: 0.5rem; } .ds-recent time { display: block; } }"
+    },
+    {
+      "name": "Topic Index Empty State",
+      "kind": "custom",
+      "refersTo": "topic-index-part",
+      "description": "An empty garden shows one centred line.",
+      "html": "<p class=\"ds-empty\">No Notes yet.</p>",
+      "css": ".ds-empty { max-width: 41rem; margin: 0; text-align: center; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; }"
     }
   ],
   "narrative": {
     "northStar": "The LaTeX Article",
-    "overview": "Every Note is typeset as a short LaTeX article: a centred \\maketitle block, the Stage where the abstract sits, numbered sections, booktabs rules, listings line numbers, a bibliography of where to walk next, and a short footnote rule. The page is plain white with near-black ink, set entirely in one family (Garden Modern, a subset and renamed New Computer Modern under the GUST Font License). It reads as a paper someone is still writing, which suits a garden that shows unfinished work honestly.\n\nDensity is that of a printed article: a single 41rem column, justified and hyphenated body at 19px, generous space only between sections. Colour appears in exactly two places, as hyperref would set it: blue for a reference that resolves, maroon with a ?? mark for one that is not written yet. There are no cards, fills, shadows or rounded corners; structure comes from type, counters and hairline rules.\n\nCoverage: this system is evidenced by the Note page (/notes/<slug>) and the shared layout. The home page (Progress map) and /about-stages only inherit the base layout and are not yet designed; their composition is not recorded here. The world is light only, by decision; there is no dark theme.",
+    "overview": "Every Note is typeset as a short LaTeX article: a centred \\maketitle block, the Stage where the abstract sits, numbered sections, booktabs rules, listings line numbers, a bibliography of where to walk next, and a short footnote rule. The page is plain white with near-black ink, set entirely in one family (Garden Modern, a subset and renamed New Computer Modern under the GUST Font License). It reads as a paper someone is still writing, which suits a garden that shows unfinished work honestly.\n\nDensity is that of a printed article: a single 41rem column, justified and hyphenated body at 19px, generous space only between sections. Colour appears in exactly two places, as hyperref would set it: blue for a reference that resolves, maroon with a ?? mark for one that is not written yet. There are no cards, fills, shadows or rounded corners; structure comes from type, counters and hairline rules.\n\nCoverage: this system is evidenced by the Note page (/notes/<slug>), the home page (Topic index, /) and the shared layout. /about-stages only inherits the base layout and is not yet designed; its composition is not recorded here. The world is light only, by decision; there is no dark theme.",
     "keyCharacteristics": [
       "One serif family (Garden Modern) for everything, with its mono sibling for code; small caps for labels.",
       "White page, near-black ink, colour reserved for link state.",
