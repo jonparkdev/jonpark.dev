@@ -1,4 +1,6 @@
 {
+  "title": "Hello Interview",
+  "subtitle": "System design notes, organised by the Hello Interview curriculum, kept in service of interview prep.",
   "parts": [
     {
       "title": "01 Orientation",

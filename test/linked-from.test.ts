@@ -1,11 +1,13 @@
 import { expect, test } from "vitest";
 import { buildFixtureSite } from "./helpers/build-fixture-site";
 
-const curriculum = {
+const course = {
+  title: "Test Course",
+  subtitle: "A course for tests.",
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
 };
 
-const note = (body: string, stage = "seedling") => `---\nstage: ${stage}\ntopic: caching\n---\n${body}\n`;
+const note = (body: string, stage = "seedling") => `---\nstage: ${stage}\ntopic: course/caching\n---\n${body}\n`;
 
 /** The "Linked from" section of a page, or undefined if there is none. */
 const linkedFrom = (html: string | undefined) =>
@@ -17,7 +19,7 @@ const items = (section: string | undefined) =>
 
 test("a Note lists every Note that links to it, each with its Stage badge and a link", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Cache invalidation.md": note("Hard."),
       "Read-through cache.md": note("See [[Cache invalidation]].", "evergreen"),
@@ -39,7 +41,7 @@ test("a Note lists every Note that links to it, each with its Stage badge and a 
 
 test("a Note that links to another several times appears once in its Linked from list", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Cache invalidation.md": note("Hard."),
       "Read-through cache.md": note(
@@ -56,7 +58,7 @@ test("a Note that links to another several times appears once in its Linked from
 
 test("a Note with no backlinks has no Linked from section", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Cache invalidation.md": note("Later: [[Write-behind cache]]."),
       "Read-through cache.md": note("See [[Cache invalidation]]."),
@@ -71,7 +73,7 @@ test("a Note with no backlinks has no Linked from section", () => {
 
 test("a Note that links to itself does not appear in its own Linked from list", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Cache invalidation.md": note("As [[Cache invalidation]] says, it's hard."),
       "Read-through cache.md": note("See [[Cache invalidation]]."),

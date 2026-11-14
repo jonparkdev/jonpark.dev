@@ -1,15 +1,17 @@
 import { expect, test } from "vitest";
 import { buildFixtureSite } from "./helpers/build-fixture-site";
 
-const curriculum = {
+const course = {
+  title: "Test Course",
+  subtitle: "A course for tests.",
   parts: [{ title: "Core Concepts", topics: [{ key: "caching", title: "Caching" }] }],
 };
 
-const note = (body: string) => `---\nstage: seedling\ntopic: caching\n---\n${body}\n`;
+const note = (body: string) => `---\nstage: seedling\ntopic: course/caching\n---\n${body}\n`;
 
 test("[[Note title]] renders as a link to that Note's page", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Read-through cache.md": note("See [[Cache invalidation]] for the hard part."),
       "Cache invalidation.md": note("Hard."),
@@ -24,7 +26,7 @@ test("[[Note title]] renders as a link to that Note's page", () => {
 
 test("wikilinks match the Note's filename ignoring case", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Read-through cache.md": note("See [[cache INVALIDATION]]."),
       "Cache invalidation.md": note("Hard."),
@@ -39,7 +41,7 @@ test("wikilinks match the Note's filename ignoring case", () => {
 
 test("[[Note title|label]] shows the label and links to the Note", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Read-through cache.md": note("Then [[Cache invalidation|it gets hard]]."),
       "Cache invalidation.md": note("Hard."),
@@ -54,7 +56,7 @@ test("[[Note title|label]] shows the label and links to the Note", () => {
 
 test("a wikilink to a Note that doesn't exist renders as styled unwritten text, not a link", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: { "Read-through cache.md": note("Later: [[Write-behind cache|write-behind]].") },
   });
 
@@ -68,7 +70,7 @@ test("a wikilink to a Note that doesn't exist renders as styled unwritten text, 
 
 test("[[Note#Heading]] links to the Note page, ignoring the heading", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
       "Read-through cache.md": note("See [[Cache invalidation#TTLs]] and [[Cache invalidation#TTLs|TTLs]]."),
       "Cache invalidation.md": note("## TTLs\nHard."),

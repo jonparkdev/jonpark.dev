@@ -1,6 +1,5 @@
 ---
 import NoteLink from "../components/NoteLink.astro";
-import { partLabel } from "../garden/curriculum";
 import { loadGarden } from "../garden/garden";
 import { tendedDay, tendedLong } from "../garden/tended";
 import Base from "../layouts/Base.astro";
@@ -13,47 +12,22 @@ const garden = loadGarden();
     <header class="title-block">
       <h1>jonpark.dev</h1>
       {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
-      <p>A garden of system design notes, kept in service of interview prep.</p>
+      <p>A garden of notes on what I'm learning.</p>
     </header>
 
-    <section class="topic-index" aria-label="Topics">
-      {garden.topicIndex.length === 0 && <p class="empty">No Notes yet.</p>}
-      {
-        garden.topicIndex.map(({ part, topics }) => (
-          <section class:list={["part", { tangents: part.isTangents }]}>
-            <h2>{partLabel(part)}</h2>
-            {topics.map(({ topic, notes }) => (
-              <section class="topic" data-topic={topic.key}>
-                <h3>{topic.title}</h3>
-                <ul>
-                  {notes.map((note) => (
-                    <li>
-                      <NoteLink note={note} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </section>
-        ))
-      }
-    </section>
-
+    {garden.byTended.length === 0 && <p class="empty">No Notes yet.</p>}
     {
-      garden.recentlyTended.length > 0 && (
-        <section class="recently-tended" data-recently-tended aria-labelledby="recent-head">
-          <h2 id="recent-head">Recently tended</h2>
-          <ol>
-            {garden.recentlyTended.map((note) => (
-              <li>
-                <span class="recent-note">
-                  <NoteLink note={note} />
-                </span>{" "}
-                <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
-              </li>
-            ))}
-          </ol>
-        </section>
+      garden.byTended.length > 0 && (
+        <ol class="note-list" data-note-list aria-label="Notes, most recently tended first">
+          {garden.byTended.map((note) => (
+            <li>
+              <span class="listed-note">
+                <NoteLink note={note} />
+              </span>{" "}
+              <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
+            </li>
+          ))}
+        </ol>
       )
     }
   </div>
@@ -81,62 +55,17 @@ const garden = loadGarden();
     margin: 0;
     font-size: 1.0625rem;
   }
-
-  /* The outline: small-caps Part labels, bold Topic heads, Notes indented */
-  .part {
-    margin-bottom: 2rem;
-  }
-  .part h2 {
-    font-size: 1.0625rem;
-    font-weight: 400;
-    font-variant: small-caps;
-    letter-spacing: 0.04em;
-    margin: 0 0 0.25rem;
-  }
-  .topic h3 {
-    font-size: 1.1875rem;
-    font-weight: 700;
-    line-height: 1.3;
-    margin: 0.625rem 0 0.125rem;
-  }
-  .topic ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 1.5em;
-  }
-  .topic li {
-    margin-bottom: 0.1875rem;
-  }
-  .topic-index :global(.stage-badge),
-  .recently-tended :global(.stage-badge) {
-    color: var(--ink);
-    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
-    font-size: 0.875em;
-    margin-left: 0.25em;
-  }
   .empty {
     text-align: center;
   }
 
-  /* Recently tended: after a hairline, newest first */
-  .recently-tended {
-    margin-top: 3rem;
-    padding-top: 1rem;
-    border-top: 0.8px solid var(--rule);
-  }
-  .recently-tended h2 {
-    font-size: 1.0625rem;
-    font-weight: 400;
-    font-variant: small-caps;
-    letter-spacing: 0.04em;
-    margin: 0 0 0.5rem;
-  }
-  .recently-tended ol {
+  /* Every Note, newest first: title and Stage on the left, the date flush right */
+  .note-list {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .recently-tended li {
+  .note-list li {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -144,7 +73,13 @@ const garden = loadGarden();
     gap: 0 1.5rem;
     margin-bottom: 0.25rem;
   }
-  .recently-tended :global(time) {
+  .note-list :global(.stage-badge) {
+    color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+    font-size: 0.875em;
+    margin-left: 0.25em;
+  }
+  .note-list :global(time) {
     color: var(--ink-soft);
     font-size: 0.9375rem;
     white-space: nowrap;
@@ -152,11 +87,11 @@ const garden = loadGarden();
 
   /* Narrow screens: the date always sits on its own line, so the list stays even */
   @media (max-width: 36rem) {
-    .recently-tended li {
+    .note-list li {
       display: block;
       margin-bottom: 0.5rem;
     }
-    .recently-tended :global(time) {
+    .note-list :global(time) {
       display: block;
     }
   }

@@ -1,0 +1,109 @@
+---
+import type { GetStaticPaths } from "astro";
+import NoteLink from "../components/NoteLink.astro";
+import { partLabel, type Course } from "../garden/course";
+import { loadGarden } from "../garden/garden";
+import { topicIndex } from "../garden/topic-index";
+import Base from "../layouts/Base.astro";
+
+export const getStaticPaths = (() =>
+  loadGarden().courses.map((course) => ({ params: { course: course.slug }, props: { course } }))) satisfies GetStaticPaths;
+
+interface Props {
+  course: Course;
+}
+
+const { course } = Astro.props;
+const index = topicIndex(course.curriculum, loadGarden().notes);
+---
+
+<Base title={`${course.title} · jonpark.dev`}>
+  <div class="course">
+    <header class="title-block">
+      <h1>{course.title}</h1>
+      <p>{course.subtitle}</p>
+    </header>
+
+    <section class="topic-index" aria-label="Topics">
+      {index.length === 0 && <p class="empty">No Notes yet.</p>}
+      {
+        index.map(({ part, topics }) => (
+          <section class:list={["part", { tangents: part.isTangents }]}>
+            <h2>{partLabel(part)}</h2>
+            {topics.map(({ topic, notes }) => (
+              <section class="topic" id={topic.key} data-topic={topic.key}>
+                <h3>{topic.title}</h3>
+                <ul>
+                  {notes.map((note) => (
+                    <li>
+                      <NoteLink note={note} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </section>
+        ))
+      }
+    </section>
+  </div>
+</Base>
+
+<style>
+  .course {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding-top: clamp(2rem, 6vw, 3.5rem);
+  }
+
+  /* \maketitle */
+  .title-block {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 0 0.625rem;
+  }
+  .title-block p {
+    margin: 0;
+    font-size: 1.0625rem;
+  }
+
+  /* The outline: small-caps Part labels, bold Topic heads, Notes indented */
+  .part {
+    margin-bottom: 2rem;
+  }
+  .part h2 {
+    font-size: 1.0625rem;
+    font-weight: 400;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.25rem;
+  }
+  .topic h3 {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0.625rem 0 0.125rem;
+  }
+  .topic ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5em;
+  }
+  .topic li {
+    margin-bottom: 0.1875rem;
+  }
+  .topic-index :global(.stage-badge) {
+    color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+    font-size: 0.875em;
+    margin-left: 0.25em;
+  }
+  .empty {
+    text-align: center;
+  }
+</style>

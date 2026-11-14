@@ -7,14 +7,17 @@ import { fileURLToPath } from "node:url";
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const astroBin = join(projectRoot, "node_modules/.bin/astro");
 
-/** A small garden for one test: Notes and Diagrams by filename, plus a Curriculum. */
+/** A small garden for one test: Notes and Diagrams by filename, plus Courses. */
 export interface FixtureGarden {
   /** Note filename (e.g. "Consistent hashing.md") to file contents. */
   notes?: Record<string, string>;
   /** Asset filename (e.g. "ring.svg") to file contents. */
   assets?: Record<string, string>;
-  /** Curriculum, written as JSON. Shape is defined by the site's Curriculum module. */
-  curriculum?: unknown;
+  /**
+   * Course slug (e.g. "hellointerview") to its definition, each written as
+   * `<slug>.json` in the courses folder. Shape is defined by the site's Course module.
+   */
+  courses?: Record<string, unknown>;
   /**
    * Git history for the fixture, oldest first, each commit at a controlled
    * date. With commits, the fixture root is a git repo; a Note left out of
@@ -40,8 +43,8 @@ export interface FixtureCommit {
 }
 
 export interface FixtureSiteBuild {
-  /** Where the fixture's Curriculum was written. */
-  curriculumPath: string;
+  /** The folder the fixture's Courses were written to. */
+  coursesDir: string;
   exitCode: number | null;
   stdout: string;
   stderr: string;
@@ -62,12 +65,17 @@ export function buildFixtureSite(garden: FixtureGarden = {}, options: BuildOptio
   const root = mkdtempSync(join(tmpdir(), "garden-"));
   const notesDir = join(root, "notes");
   const assetsDir = join(root, "assets");
-  const curriculumPath = join(root, "curriculum.json");
+  const coursesDir = join(root, "courses");
   const outDir = join(root, "dist");
 
   writeFiles(notesDir, garden.notes ?? {});
   writeFiles(assetsDir, garden.assets ?? {});
-  writeFileSync(curriculumPath, JSON.stringify(garden.curriculum ?? { parts: [] }, null, 2));
+  writeFiles(
+    coursesDir,
+    Object.fromEntries(
+      Object.entries(garden.courses ?? {}).map(([slug, course]) => [`${slug}.json`, JSON.stringify(course, null, 2)]),
+    ),
+  );
   if (garden.commits) commitHistory(root, garden.notes ?? {}, garden.commits);
 
   const result = spawnSync(astroBin, ["build", "--outDir", outDir], {
@@ -77,14 +85,14 @@ export function buildFixtureSite(garden: FixtureGarden = {}, options: BuildOptio
       ...process.env,
       GARDEN_NOTES_DIR: notesDir,
       GARDEN_ASSETS_DIR: assetsDir,
-      GARDEN_CURRICULUM: curriculumPath,
+      GARDEN_COURSES_DIR: coursesDir,
       NO_COLOR: "1",
       ...options.env,
     },
   });
 
   return {
-    curriculumPath,
+    coursesDir,
     exitCode: result.status,
     stdout: result.stdout,
     stderr: result.stderr,

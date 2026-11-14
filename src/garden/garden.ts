@@ -1,11 +1,10 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { loadCurriculum, type Part } from "./curriculum";
+import { loadCourses, type Course } from "./course";
 import { gardenInputs, type GardenInputs } from "./inputs";
 import { renderMarkdown } from "./markdown";
 import { noteProblem, notePath, readNote, type NoteFile } from "./note-file";
-import { recentlyTended, tendedDate } from "./tended";
-import { topicIndex, type PartEntry } from "./topic-index";
+import { byTended, tendedDate } from "./tended";
 
 /** One idea in the garden, ready to render. */
 export interface Note extends NoteFile {
@@ -18,8 +17,6 @@ export interface Note extends NoteFile {
   linksTo: Note[];
   /** The other Notes whose bodies wikilink to this one, ordered by title, each once. */
   linkedFrom: Note[];
-  /** The Curriculum Part the Note's Topic belongs to. */
-  part: Part;
   /** True if the Note's Topic is a Tangent. */
   isTangent: boolean;
   /** The Tangent Notes this Note's body links to, in footnote order (first mention first). */
@@ -32,10 +29,10 @@ export interface Note extends NoteFile {
 export interface Garden {
   /** All Notes, ordered by title. */
   notes: Note[];
-  /** The Topic index: Parts and Topics that have Notes, in Curriculum order, each Topic with its Notes. */
-  topicIndex: PartEntry[];
-  /** The five most recently Tended Notes, newest first (ties by title). */
-  recentlyTended: Note[];
+  /** Every Course, ordered by title. */
+  courses: Course[];
+  /** Every Note, most recently Tended first (ties by title). */
+  byTended: Note[];
 }
 
 /** Thrown when Notes break the garden's rules. Lists every problem, each naming its Note. */
@@ -64,7 +61,7 @@ export function loadGarden(inputs: GardenInputs = gardenInputs()): Garden {
 }
 
 function buildGarden(inputs: GardenInputs): Garden {
-  const curriculum = loadCurriculum(inputs.curriculumPath);
+  const courses = loadCourses(inputs.coursesDir);
   const problems: string[] = [];
 
   const filenames = readdirSync(inputs.notesDir, { withFileTypes: true })
@@ -72,18 +69,15 @@ function buildGarden(inputs: GardenInputs): Garden {
     .map((entry) => entry.name)
     .sort();
 
-  const partOf = new Map(curriculum.parts.flatMap((part) => part.topics.map((topic) => [topic.key, part] as const)));
   const notes: Note[] = [];
   const now = new Date();
   for (const filename of filenames) {
     const source = readFileSync(join(inputs.notesDir, filename), "utf8");
-    const file = readNote(filename, source, curriculum, (problem) => problems.push(noteProblem(filename, problem)));
+    const file = readNote(filename, source, courses, (problem) => problems.push(noteProblem(filename, problem)));
     if (file) {
-      const part = partOf.get(file.topic.key)!;
       notes.push({
         ...file,
-        part,
-        isTangent: part.isTangents,
+        isTangent: file.placement?.part.isTangents ?? false,
         html: "",
         linksTo: [],
         linkedFrom: [],
@@ -108,8 +102,8 @@ function buildGarden(inputs: GardenInputs): Garden {
 
   return {
     notes,
-    topicIndex: topicIndex(curriculum, notes),
-    recentlyTended: recentlyTended(notes),
+    courses,
+    byTended: byTended(notes),
   };
 }
 

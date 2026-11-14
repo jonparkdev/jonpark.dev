@@ -8,19 +8,19 @@ web
 
 ## Users
 
-- **The author (primary).** Jon, studying for system design interviews and planning to start applying around Jan 18, 2027. The garden is his learning tool and accountability record. He writes in Obsidian, and the site has to keep up with his study, never the other way round. When a design decision has to favour one reader, it favours him.
+- **The author (primary).** Jon, studying for system design interviews and planning to start applying around Jan 18, 2027, and writing up whatever else he is learning. The garden is his learning tool and accountability record. He writes in Obsidian, and the site has to keep up with his study, never the other way round. When a design decision has to favour one reader, it favours him.
 - **Fellow learners.** Other people preparing for system design interviews who read the Notes to learn. Jon wants to become a technical communicator and educator, so these readers should leave with something of value.
 - **Evaluators.** Recruiters and interviewers may visit too. They are not the design target, but what they see has to be honest.
 
 ## Product Purpose
 
-jonpark.dev is a public digital garden of system design Notes, organised around the Hello Interview Curriculum. It shows each Note at its honest Stage, grouped by the Topic it belongs to, and it publishes itself whenever he writes. It is about learning and curiosity per Topic, not about tracking progress through the syllabus.
+jonpark.dev is a public digital garden of whatever the author is learning. A Note is the atom: it can stand on its own, or sit in a Topic of a Course he follows, such as Hello Interview, whose page groups its Notes by its Curriculum. Every Note shows at its honest Stage, and the garden publishes itself whenever he writes. It is about learning and curiosity, not about tracking progress through a syllabus.
 
 Success: a visitor sees the quality of the author's thinking, but never at the cost of honesty. Unfinished and shaky Notes stay visible as exactly what they are.
 
 ## Positioning
 
-Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). The site is a truthful record of what one person is learning and how well they understand it, Topic by Topic, including the 🐇 Tangents curiosity led to. Most "notes" sites curate their best work. This one shows the work in progress, labelled honestly.
+Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). The site is a truthful record of what one person is learning and how well they understand it: inside each Course, Topic by Topic, including the 🐇 Tangents curiosity led to, and outside any Course too. Most "notes" sites curate their best work. This one shows the work in progress, labelled honestly.
 
 ## Operating Context
 
@@ -31,13 +31,14 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 
 ## Capabilities and Constraints
 
-- Note pages at `/notes/<slug>` with a Stage badge, Topic, wikilinks (links to unwritten Notes render as visibly unwritten text), embedded Diagrams, and "Linked from" backlinks.
-- Home page = Topic index: only Topics that have at least one Note, plus Tangents, in Curriculum order, each listing its Notes with their Stages. Topics without Notes are not shown, and the home page does not track progress or show per-Stage counts (changed 2026-11-13; this replaces the MVP's Progress map).
+- Note pages at `/notes/<slug>` with a Stage badge, Topic and Course (if the Note has one), wikilinks (links to unwritten Notes render as visibly unwritten text), embedded Diagrams, and "Linked from" backlinks.
+- Home page: every Note, most recently Tended first, with its Stage and date, wherever it comes from (changed 2026-11-14).
+- Course pages at `/<course>` (one `src/courses/<course>.json` each; Hello Interview is `/hellointerview`) = Topic index: only Topics that have at least one Note, plus Tangents, in Curriculum order, each listing its Notes with their Stages. No progress tracking or per-Stage counts. A `Courses ▾` dropdown in the header lists every Course.
 - `/about-stages` explains the Stages publicly.
-- Frontmatter is only `stage` and `topic` (plus `upgrades`). Invalid values fail the build, and the live site stays on its last good version.
+- Frontmatter is only `stage`, the optional `topic` as `<course>/<key>` (ADR 0002), and `upgrades`. Invalid values fail the build, and the live site stays on its last good version.
 - Upgrades (Diagram → Interactive → Explainer) are added only because of a felt gap, one at a time. Interactives come at most about once a month.
 - Deferred (`LATER.md`, non-study days only): search, RSS, graph view, dark-mode polish, comments.
-- Use the domain vocabulary in `GLOSSARY.md` (Note, Stage, Recall, Upgrade, Topic, Tangent…). Avoid its listed synonyms.
+- Use the domain vocabulary in `GLOSSARY.md` (Note, Stage, Recall, Upgrade, Course, Curriculum, Topic, Tangent…). Avoid its listed synonyms.
 
 ## Brand Commitments
 
@@ -45,12 +46,12 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 - **Unpolished is fine:** Seedlings are rough by design. The site never makes a Note look more finished than its Stage.
 - **Zero upkeep:** writing in Obsidian is the only input. Design must not add authoring steps, required frontmatter, curation flags, or manual work outside the vault.
 - **Look preference (stated by the author during shape, 2026-11-13):** he has "always been a fan of the LaTeX aesthetic" and likes the plain simplicity of a standard digital garden. Prefer the familiar end over bold reinventions.
-- Home page tagline: "A garden of system design notes, kept in service of interview prep." `scripts/setup-hosting.sh` checks for it, so change both together.
+- Home page tagline: "A garden of notes on what I'm learning." `scripts/setup-hosting.sh` checks for it, so change both together.
 
 ## Evidence on Hand
 
 - Real Notes in `garden/notes/` (early, and still sparse).
-- The Curriculum in `src/curriculum.json`: 12 Parts, 42 Topics, plus Tangents (`docs/curriculum-source.md`).
+- The Hello Interview Course in `src/courses/hellointerview.json`: 12 Parts, 42 Topics, plus Tangents (`docs/curriculum-source.md`).
 - No testimonials, readership numbers, or showcase pieces exist. Don't fabricate them.
 
 ## Product Principles
