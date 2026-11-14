@@ -105,11 +105,11 @@ test("each Topic lists its Notes by title, each linking to its page with its Sta
 
   const caching = topicEntry(html, "caching");
   expect(caching).toMatch(/<h3[^>]*>Caching<\/h3>/);
-  expect(caching).toMatch(noteItem("cache-aside", "Cache aside", "🌿 Budding"));
-  expect(caching).toMatch(noteItem("write-through", "Write through", "🌱 Seedling"));
+  expect(caching).toMatch(noteItem("cache-aside", "Cache aside", "<span aria-hidden=\"true\">🌿</span> Budding"));
+  expect(caching).toMatch(noteItem("write-through", "Write through", "<span aria-hidden=\"true\">🌱</span> Seedling"));
   expect(caching.indexOf("Cache aside")).toBeLessThan(caching.indexOf("Write through"));
   expect(caching).not.toContain("Bloom filter basics");
-  expect(topicEntry(html, "bloom-filters")).toMatch(noteItem("bloom-filter-basics", "Bloom filter basics", "🌳 Evergreen"));
+  expect(topicEntry(html, "bloom-filters")).toMatch(noteItem("bloom-filter-basics", "Bloom filter basics", "<span aria-hidden=\"true\">🌳</span> Evergreen"));
 });
 
 test("a Course's page is titled with the Course and its subtitle, and has no recent list", () => {
