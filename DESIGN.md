@@ -42,9 +42,32 @@ typography:
     fontWeight: 400
     letterSpacing: "0.04em"
     fontFeature: "smcp"
+  label-sub:
+    fontFamily: "Garden Modern, Latin Modern Roman, CMU Serif, STIX Two Text, Georgia, serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    letterSpacing: "0.04em"
+    fontFeature: "smcp"
+  abstract:
+    fontFamily: "Garden Modern, Latin Modern Roman, CMU Serif, STIX Two Text, Georgia, serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  table:
+    fontFamily: "Garden Modern, Latin Modern Roman, CMU Serif, STIX Two Text, Georgia, serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.55
+    fontFeature: "lnum, tnum"
   mono:
     fontFamily: "Garden Modern Mono, Latin Modern Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
     fontSize: "0.875em"
+    fontWeight: 400
+    lineHeight: 1.6
+    fontFeature: "lnum, tnum"
+  listing:
+    fontFamily: "Garden Modern Mono, Latin Modern Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: 1.6
     fontFeature: "lnum, tnum"
@@ -75,17 +98,19 @@ components:
     padding: "1.5rem clamp(1rem, 4vw, 4rem) 0"
   stage-abstract:
     textColor: "{colors.ink}"
+    typography: "{typography.abstract}"
     width: "35rem"
   section-heading:
     textColor: "{colors.ink}"
     typography: "{typography.headline}"
   listing:
     textColor: "{colors.ink}"
-    typography: "{typography.mono}"
+    typography: "{typography.listing}"
     rounded: "{rounded.none}"
     padding: "0.5rem 0"
   booktabs-table:
     textColor: "{colors.ink}"
+    typography: "{typography.table}"
     rounded: "{rounded.none}"
     padding: "0.3rem 0.75rem"
   footnote-target:
@@ -112,7 +137,7 @@ Every Note is typeset as a short LaTeX `article`: a centred `\maketitle` block, 
 
 Density is that of a printed article: a single 41rem column, justified and hyphenated body at 19px, generous space only between sections. Colour appears in exactly two places, as hyperref would set it: blue for a reference that resolves, maroon with a `??` mark for one that is not written yet. There are no cards, fills, shadows or rounded corners; structure comes from type, counters and hairline rules.
 
-Coverage: this system is evidenced by the Note page (`/notes/<slug>`), the home page (Topic index, `/`) and the shared layout. `/about-stages` only inherits the base layout and is not yet designed; its composition is not recorded here. The world is light only, by decision; there is no dark theme.
+Coverage: this system is evidenced by all three page types: the Note page (`/notes/<slug>`), About Stages (`/about-stages`), the home page (Topic index, `/`), plus the base layout and the shared article layout that the Note page and About Stages both use. The world is light only, by decision; there is no dark theme.
 
 **Key Characteristics:**
 - One serif family (Garden Modern) for everything, with its mono sibling for code; small caps for labels.
@@ -156,9 +181,13 @@ A black-on-white article palette where colour is a link-state signal and nothing
 - **Headline** (700, 1.375rem, 1.25): numbered sections (`1`, `2` in a 1.75em hanging slot) and the References heading.
 - **Title** (700, 1.1875rem): numbered subsections (`1.1` in a 2.5em slot). Fourth-level headings are bold at body size, unnumbered.
 - **Body** (400, 1.1875rem / 19px, 1.55): justified, auto-hyphenated, 41rem measure (about 66ch). Following paragraphs indent 1.5em; no gap-only paragraphing.
-- **Label** (400, small caps, 0.04em tracking): site line, References sub-heads ("Links to", "Linked from"), "Topic:" in the byline, Figure captions (0.9375rem, 0.03em), the home page's Part labels and "Recently tended" label (1.0625rem).
-- **Small** (0.9375rem to 1.0625rem, 1.5): byline, Stage abstract text (1rem), footnotes (0.9375rem), blockquotes (1.0625rem).
-- **Mono** (0.875em, lining tabular figures): inline code and listings.
+- **Label** (400, small caps, 0.04em tracking): site line, "Topic:" in the byline, Figure captions (0.9375rem, 0.03em), the home page's Part labels and "Recently tended" label (1.0625rem).
+- **Label Sub** (400, small caps, 0.04em tracking, 1rem): References sub-heads ("Links to", "Linked from").
+- **Small** (0.9375rem to 1.0625rem, 1.5): byline, the bold abstract head (0.9375rem), footnotes (0.9375rem), blockquotes (1.0625rem).
+- **Abstract** (400, 1rem, 1.5): abstract text on every article page.
+- **Table** (400, 1rem, lining tabular figures): booktabs tables.
+- **Mono** (0.875em, lining tabular figures): inline code.
+- **Listing** (0.875rem, 1.6, lining tabular figures): listings blocks, in the mono family.
 
 ### Named Rules
 **The One Family Rule.** Garden Modern sets everything. Do not introduce a sans, a display face, or system UI type.
@@ -169,7 +198,10 @@ A black-on-white article palette where colour is a link-state signal and nothing
 
 A single centred column of `measure` (41rem) inside a fluid side gutter (`clamp(1rem, 4vw, 4rem)`). The site line spans the gutter edges: site name left, nav right, wrapping on narrow screens. The article starts `clamp(2rem, 6vw, 3.5rem)` below it and the page ends with 5rem of space.
 
-Order of a Note: centred title block, Stage abstract (narrower, 35rem, centred), body, References, footnotes. Vertical rhythm uses the spacing scale: paragraphs 0.75rem apart, sections open 2.25rem above, subsections 1.75rem, listings and tables 1.25rem above and 1.5rem below, References and footnotes 3rem above.
+Order of a Note: centred title block, Stage abstract (narrower, 35rem, centred), body, References, footnotes. Order of About Stages: centred title block (title only, no byline), the abstract, then the numbered body (1 The Stages with 1.1 to 1.3, one per Stage; 2 How Stages change; 3 🐇 Tangents); no References or footnotes. Vertical rhythm uses the spacing scale: paragraphs 0.75rem apart, sections open 2.25rem above, subsections 1.75rem, listings and tables 1.25rem above and 1.5rem below, References and footnotes 3rem above.
+
+### Named Rules
+**The One Article Rule.** Every reading page is the same LaTeX article from one shared layout: centred title block, an abstract with a centred bold head, a numbered justified body. Only the abstract head's content changes by page; the shape never does.
 
 Order of the home page: centred title block ("jonpark.dev" at Display size, the tagline at 1.0625rem beneath, 2.5rem below), the Topic index (Parts 2rem apart), then Recently tended 3rem below after a hairline. One column at every width; no side-by-side panels.
 
@@ -197,22 +229,25 @@ Square and ruled. No border radius on any surface, the focus outline included; t
 Small caps, 1.0625rem, 0.04em tracking, ink colour with no underline at rest, a 1px underline on hover. "jonpark.dev" left; "Topics" and "About Stages" right. A skip link sits above it, revealed on focus.
 
 ### Title block and Stage abstract
-Centred title, then a byline: small-caps "Topic:", Topic · "Part N, Title", line break, "Tended" plus a long date. Below, the Stage sits where an abstract would: a bold centred head "Stage:" with the Stage badge, then one Stage-specific sentence at 1rem in a 35rem column. The page shape never changes by Stage.
+One article shell serves the Note page and About Stages: a centred title block, an abstract in a 35rem column (Abstract style, 1rem) under a bold centred head at 0.9375rem, and the numbered body. On a Note the title is followed by a byline: small-caps "Topic:", Topic · "Part N, Title", line break, "Tended" plus a long date. Below, the Stage sits where an abstract would: the head reads "Stage:" with the Stage badge, then one Stage-specific sentence. On About Stages there is no byline, and the head reads "Abstract", as LaTeX prints it. The page shape never changes by Stage.
+
+### Article body
+Numbered sections and subsections per the Typography hierarchy; justified, hyphenated paragraphs with a 1.5em indent on following paragraphs; lists indented 1.75em; blockquotes indented 2em at 1.0625rem; a centred 40%-width hairline `hr`. Defined terms are set in bold where they are introduced (**Recall**, **Demotion**, **Tangent**), and quotations use curly quotes. On About Stages each Stage is its own numbered subsection whose head is emoji plus label ("1.1 🌱 Seedling"), and sections carry stable anchors (`#seedling`, `#budding`, `#evergreen`, `#how-stages-change`, `#tangents`).
 
 ### Stage badge
 Emoji plus label ("🌱 Seedling", "🌿 Budding", "🌳 Evergreen"), linked to `/about-stages`, never wrapped. In the abstract and lists it takes ink colour with a soft 30% ink underline at 0.875em; Stage is never shown by colour alone.
 
 ### Listings
-Mono at 0.875rem, line height 1.6, between two 0.8px rules with 0.5rem padding; line numbers in Soft Ink, right-aligned in a 2.25rem gutter, unselectable. Tab size 4. Scrolls horizontally.
+Listing style (mono at 0.875rem), line height 1.6, between two 0.8px rules with 0.5rem padding; line numbers in Soft Ink, right-aligned in a 2.25rem gutter, unselectable. Tab size 4. Scrolls horizontally.
 
 ### Booktabs tables
-Centred, fit to content, 1rem, tabular lining figures, left-aligned cells padded 0.3rem 0.75rem, bold header row; three horizontal rules per the Booktabs Rule.
+Centred, fit to content, Table style (1rem, tabular lining figures), left-aligned cells padded 0.3rem 0.75rem, bold header row; three horizontal rules per the Booktabs Rule.
 
 ### Figures
 Diagrams are centred, numbered by a counter, and captioned "Figure n" in small caps beneath. The Diagram artwork itself is the author's Excalidraw export and is not restyled.
 
 ### References (bibliography)
-A "References" headline, then small-caps sub-heads "Links to" and "Linked from"; one counter runs straight through both lists, printed as hanging `[n]` labels in a 2.5em indent. Each entry is the Note link plus its Stage badge, and "🐇 Tangent" when the target is a Tangent.
+A "References" headline, then Label Sub sub-heads "Links to" and "Linked from"; one counter runs straight through both lists, printed as hanging `[n]` labels in a 2.5em indent. Each entry is the Note link plus its Stage badge, and "🐇 Tangent" when the target is a Tangent.
 
 ### Tangent footnotes
 In text, a Tangent link carries a superscript 🐇n mark (0.7em, no underline) linking to its footnote. Footnotes sit under a 10rem hairline at 0.9375rem: superscript 🐇n, "Tangent:", the Note link with its badge, and a ↑ back-link. The targeted footnote gets a Selection Blue background.
