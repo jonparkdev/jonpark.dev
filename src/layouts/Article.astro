@@ -48,6 +48,13 @@ const { title, class: className } = Astro.props;
     letter-spacing: 0.03em;
   }
 
+  /* No paragraph ends on a lone word, as TeX's line breaker avoids */
+  .article p,
+  .article li,
+  .article td {
+    text-wrap: pretty;
+  }
+
   /* \begin{abstract} */
   .article .abstract {
     max-width: 35rem;
