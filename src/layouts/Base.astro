@@ -1,9 +1,13 @@
 ---
+import { coursePath } from "../garden/course";
+import { loadGarden } from "../garden/garden";
+
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
+const { courses } = loadGarden();
 ---
 
 <html lang="en">
@@ -18,7 +22,18 @@ const { title } = Astro.props;
     <header class="site-line">
       <a href="/" class="site-name">jonpark.dev</a>
       <nav aria-label="Site">
-        <a href="/">Topics</a>
+        <details class="courses-menu">
+          <summary>Courses</summary>
+          <ul>
+            {
+              courses.map((course) => (
+                <li>
+                  <a href={coursePath(course)}>{course.title}</a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
         <a href="/about-stages">About Stages</a>
       </nav>
     </header>
@@ -173,6 +188,44 @@ const { title } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 1.75rem;
+  }
+
+  /* Courses ▾: a plain disclosure, its list dropping below the nav */
+  .courses-menu {
+    position: relative;
+  }
+  .courses-menu summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .courses-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .courses-menu summary::after {
+    content: " ▾" / "";
+  }
+  .courses-menu[open] summary::after {
+    content: " ▴" / "";
+  }
+  .courses-menu summary:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .courses-menu ul {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    min-width: max-content;
+    margin: 0.375rem 0 0;
+    padding: 0.375rem 0;
+    list-style: none;
+    background: var(--page);
+    /* The Booktabs Rule: horizontal hairlines only, never a box */
+    border-top: 0.8px solid var(--rule);
+    border-bottom: 0.8px solid var(--rule);
+  }
+  .courses-menu li + li {
+    margin-top: 0.25rem;
   }
 
   main {

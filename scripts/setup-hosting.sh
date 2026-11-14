@@ -211,7 +211,7 @@ DOMAIN="jonpark.dev"
 SECRET_NAME="FLY_API_TOKEN"                        # .github/workflows/deploy.yml
 # Text the home page always shows: the tagline in src/pages/index.astro
 # (test/home.test.ts checks the built home page contains it).
-HOME_PAGE_TEXT="A garden of system design notes, kept in service of interview prep."
+HOME_PAGE_TEXT="A garden of notes on what I'm learning."
 
 banner "jonpark.dev hosting: Fly.io behind Cloudflare"
 

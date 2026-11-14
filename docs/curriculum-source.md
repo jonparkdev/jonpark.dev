@@ -1,6 +1,6 @@
 # Curriculum source
 
-`src/curriculum.json` follows Hello Interview's System Design Course in its published order. It was checked against the source on 2026-11-12.
+`src/courses/hellointerview.json` (the Hello Interview Course) follows Hello Interview's System Design Course in its published order. It was checked against the source on 2026-11-12.
 
 ## Source
 

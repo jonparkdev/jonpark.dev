@@ -1,17 +1,19 @@
 import { expect, test } from "vitest";
 import { buildFixtureSite } from "./helpers/build-fixture-site";
 
-const curriculum = {
+const course = {
+  title: "Test Course",
+  subtitle: "A course for tests.",
   parts: [{ title: "03 Thinking in Scale", topics: [{ key: "caching", title: "Caching" }] }],
   tangents: [{ key: "herds", title: "Thundering Herds" }],
 };
 
 test("a link to a Tangent Note gets a 🐇 footnote mark and a footnote naming it", () => {
   const build = buildFixtureSite({
-    curriculum,
+    courses: { course },
     notes: {
-      "Cache-aside.md": "---\nstage: seedling\ntopic: caching\n---\nMisses stampede: [[Thundering herd]]. Again [[thundering herd|the herd]].\n",
-      "Thundering herd.md": "---\nstage: budding\ntopic: herds\n---\nBack to [[Cache-aside]].\n",
+      "Cache-aside.md": "---\nstage: seedling\ntopic: course/caching\n---\nMisses stampede: [[Thundering herd]]. Again [[thundering herd|the herd]].\n",
+      "Thundering herd.md": "---\nstage: budding\ntopic: course/herds\n---\nBack to [[Cache-aside]].\n",
     },
   });
 
@@ -29,18 +31,18 @@ test("a link to a Tangent Note gets a 🐇 footnote mark and a footnote naming i
 
 test("the title block names the Topic and the numbered Part", () => {
   const build = buildFixtureSite({
-    curriculum,
-    notes: { "Cache-aside.md": "---\nstage: seedling\ntopic: caching\n---\nBody\n" },
+    courses: { course },
+    notes: { "Cache-aside.md": "---\nstage: seedling\ntopic: course/caching\n---\nBody\n" },
   });
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
-  expect(build.page("/notes/cache-aside")).toContain("Caching · Part 3, Thinking in Scale");
+  expect(build.page("/notes/cache-aside")).toMatch(/>Caching<\/a> · Part 3, Thinking in Scale · /);
 });
 
 test("code blocks render one numbered line per source line", () => {
   const build = buildFixtureSite({
-    curriculum,
-    notes: { "Cache-aside.md": "---\nstage: seedling\ntopic: caching\n---\n```python\na = 1 < 2\nb = 3\n```\n" },
+    courses: { course },
+    notes: { "Cache-aside.md": "---\nstage: seedling\ntopic: course/caching\n---\n```python\na = 1 < 2\nb = 3\n```\n" },
   });
 
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);

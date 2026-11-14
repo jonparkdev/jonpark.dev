@@ -160,7 +160,7 @@ A black-on-white article palette where colour is a link-state signal and nothing
 - **Paper White** (`page`): the page. No off-white, no cream.
 - **Ink** (`ink`): all text, headings, site line, Stage badges outside running text.
 - **Rule Ink** (`rule`): horizontal rules (listings, booktabs, footnote rule, `hr`). Same value as ink; kept as its own role.
-- **Soft Ink** (`ink-soft`): listings line numbers and Recently tended dates only.
+- **Soft Ink** (`ink-soft`): listings line numbers and the home page's Tended dates only.
 - **Selection Blue** (`select`): text selection and the targeted footnote row.
 
 ### Named Rules
@@ -181,7 +181,7 @@ A black-on-white article palette where colour is a link-state signal and nothing
 - **Headline** (700, 1.375rem, 1.25): numbered sections (`1`, `2` in a 1.75em hanging slot) and the References heading.
 - **Title** (700, 1.1875rem): numbered subsections (`1.1` in a 2.5em slot). Fourth-level headings are bold at body size, unnumbered.
 - **Body** (400, 1.1875rem / 19px, 1.55): justified, auto-hyphenated, 41rem measure (about 66ch). Following paragraphs indent 1.5em; no gap-only paragraphing.
-- **Label** (400, small caps, 0.04em tracking): site line, "Topic:" in the byline, Figure captions (0.9375rem, 0.03em), the home page's Part labels and "Recently tended" label (1.0625rem).
+- **Label** (400, small caps, 0.04em tracking): site line, "Topic:" in the byline, Figure captions (0.9375rem, 0.03em), the Course page's Part labels (1.0625rem).
 - **Label Sub** (400, small caps, 0.04em tracking, 1rem): References sub-heads ("Links to", "Linked from").
 - **Small** (0.9375rem to 1.0625rem, 1.5): byline, the bold abstract head (0.9375rem), footnotes (0.9375rem), blockquotes (1.0625rem).
 - **Abstract** (400, 1rem, 1.5): abstract text on every article page.
@@ -203,9 +203,9 @@ Order of a Note: centred title block, Stage abstract (narrower, 35rem, centred),
 ### Named Rules
 **The One Article Rule.** Every reading page is the same LaTeX article from one shared layout: centred title block, an abstract with a centred bold head, a numbered justified body. Only the abstract head's content changes by page; the shape never does.
 
-Order of the home page: centred title block ("jonpark.dev" at Display size, the tagline at 1.0625rem beneath, 2.5rem below), the Topic index (Parts 2rem apart), then Recently tended 3rem below after a hairline. One column at every width; no side-by-side panels.
+Order of the home page: centred title block ("jonpark.dev" at Display size, the tagline at 1.0625rem beneath, 2.5rem below), then the Note list. Order of a Course page: centred title block (the Course title at Display size, its subtitle at 1.0625rem beneath, 2.5rem below), then its Topic index (Parts 2rem apart). One column at every width; no side-by-side panels.
 
-Responsive (below 36rem): body switches from justified to ragged left with manual hyphenation; blockquote indent halves to 1em; Diagrams keep their drawn size and scroll sideways with a sticky centred caption. Tables and listings scroll horizontally inside their rules rather than shrinking. Recently tended dates drop to their own line under each Note.
+Responsive (below 36rem): body switches from justified to ragged left with manual hyphenation; blockquote indent halves to 1em; Diagrams keep their drawn size and scroll sideways with a sticky centred caption. Tables and listings scroll horizontally inside their rules rather than shrinking. On the home page's Note list, dates drop to their own line under each Note.
 
 ## Elevation & Depth
 
@@ -226,10 +226,10 @@ Square and ruled. No border radius on any surface, the focus outline included; t
 - **Focus:** 2px Hyperref Blue outline, 2px offset, on every focusable element.
 
 ### Navigation (site line)
-Small caps, 1.0625rem, 0.04em tracking, ink colour with no underline at rest, a 1px underline on hover. "jonpark.dev" left; "Topics" and "About Stages" right. A skip link sits above it, revealed on focus.
+Small caps, 1.0625rem, 0.04em tracking, ink colour with no underline at rest, a 1px underline on hover. "jonpark.dev" left (it leads home); "Courses ▾" and "About Stages" right. "Courses" is a plain disclosure, always shown however many Courses there are: its list of Course links, ordered by title, drops below it right-aligned on the white page between two horizontal hairlines, with no box. The ▾ turns to ▴ while open. A skip link sits above it, revealed on focus.
 
 ### Title block and Stage abstract
-One article shell serves the Note page and About Stages: a centred title block, an abstract in a 35rem column (Abstract style, 1rem) under a bold centred head at 0.9375rem, and the numbered body. On a Note the title is followed by a byline: small-caps "Topic:", Topic · "Part N, Title", line break, "Tended" plus a long date. Below, the Stage sits where an abstract would: the head reads "Stage:" with the Stage badge, then one Stage-specific sentence. On About Stages there is no byline, and the head reads "Abstract", as LaTeX prints it. The page shape never changes by Stage.
+One article shell serves the Note page and About Stages: a centred title block, an abstract in a 35rem column (Abstract style, 1rem) under a bold centred head at 0.9375rem, and the numbered body. On a Note the title is followed by a byline: small-caps "Topic:", the Topic (linked to its place on the Course page) · "Part N, Title" · the Course (linked to its page), line break, "Tended" plus a long date. A Note with no Topic has no Topic line; the byline is just "Tended" plus the date. Below, the Stage sits where an abstract would: the head reads "Stage:" with the Stage badge, then one Stage-specific sentence. On About Stages there is no byline, and the head reads "Abstract", as LaTeX prints it. The page shape never changes by Stage.
 
 ### Article body
 Numbered sections and subsections per the Typography hierarchy; justified, hyphenated paragraphs with a 1.5em indent on following paragraphs; lists indented 1.75em; blockquotes indented 2em at 1.0625rem; a centred 40%-width hairline `hr`. Defined terms are set in bold where they are introduced (**Recall**, **Demotion**, **Tangent**), and quotations use curly quotes. On About Stages each Stage is its own numbered subsection whose head is emoji plus label ("1.1 🌱 Seedling"), and sections carry stable anchors (`#seedling`, `#budding`, `#evergreen`, `#how-stages-change`, `#tangents`).
@@ -253,12 +253,12 @@ A "References" headline, then Label Sub sub-heads "Links to" and "Linked from"; 
 In text, a Tangent link carries a superscript 🐇n mark (0.7em, no underline) linking to its footnote. Footnotes sit under a 10rem hairline at 0.9375rem: superscript 🐇n, "Tangent:", the Note link with its badge, and a ↑ back-link. The targeted footnote gets a Selection Blue background.
 
 ### Topic index
-The home page's outline of what has been written, set like a LaTeX document's structure. Each Part opens with a small-caps label as its `h2` ("Part N, Title", Label style at 1.0625rem, 0.04em); it is the Part's heading, not an eyebrow over a Topic. Under it, each Topic is a bold `h3` (1.1875rem, 700, line height 1.3), and its Notes follow as an unmarked list indented 1.5em, each Note link followed by its Stage badge in ink (0.875em, 30% ink underline). Parts follow Curriculum order with 🐇 Tangents always last. Only Topics with at least one Note appear: no counts, no progress, no untouched rows. One column at every width.
+A Course page's outline of what has been written in it, set like a LaTeX document's structure. Each Topic carries its key as an anchor (`/hellointerview#caching`). Each Part opens with a small-caps label as its `h2` ("Part N, Title", Label style at 1.0625rem, 0.04em); it is the Part's heading, not an eyebrow over a Topic. Under it, each Topic is a bold `h3` (1.1875rem, 700, line height 1.3), and its Notes follow as an unmarked list indented 1.5em, each Note link followed by its Stage badge in ink (0.875em, 30% ink underline). Parts follow Curriculum order with 🐇 Tangents always last. Only Topics with at least one Note appear: no counts, no progress, no untouched rows. One column at every width.
 
-Empty state: when the garden has no Notes, the index is the single centred line "No Notes yet."
+Empty state: when the Course has no Notes, the index is the single centred line "No Notes yet."
 
-### Recently tended
-Below the Topic index, after a 0.8px ink hairline across the column (3rem above, 1rem below), a small-caps "Recently tended" label heads the five newest Notes, newest first. Each row is the Note link plus its Stage badge, with the long-format Tended date ("13 November 2026") in Soft Ink at 0.9375rem pushed to the right on the same baseline. Below 36rem the date drops to its own line under the Note.
+### Note list
+The home page's body, directly under the title block with no heading: every Note in the garden, whatever its Course or none, most recently Tended first. Each row is the Note link plus its Stage badge, with the long-format Tended date ("13 November 2026") in Soft Ink at 0.9375rem pushed to the right on the same baseline. No Topic or Course is shown; the home page doesn't care where a Note comes from. Below 36rem the date drops to its own line under the Note. Empty state: the single centred line "No Notes yet."
 
 ## Do's and Don'ts
 

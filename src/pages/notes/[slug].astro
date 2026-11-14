@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import NoteLink from "../../components/NoteLink.astro";
-import { partLabel } from "../../garden/curriculum";
+import { coursePath, partLabel } from "../../garden/course";
 import StageBadge from "../../components/StageBadge.astro";
 import { loadGarden, type Note } from "../../garden/garden";
 import { stageCue } from "../../garden/stage";
@@ -26,7 +26,14 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     <header class="title-block">
       <h1>{note.title}</h1>
       <p class="byline">
-        <span class="sc">Topic:</span>{" "}{note.topic.title} · {partLabel(note.part)}<br />
+        {note.placement && (
+          <>
+            <span class="sc">Topic:</span>{" "}
+            <a href={`${coursePath(note.placement.course)}#${note.placement.topic.key}`}>{note.placement.topic.title}</a>
+            {" · "}{partLabel(note.placement.part)}{" · "}
+            <a href={coursePath(note.placement.course)}>{note.placement.course.title}</a><br />
+          </>
+        )}
         Tended <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
       </p>
     </header>

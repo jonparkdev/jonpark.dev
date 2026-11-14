@@ -1,4 +1,4 @@
-import type { Curriculum, Part, Topic } from "./curriculum";
+import type { Curriculum, Part, Topic } from "./course";
 import type { Note } from "./garden";
 
 /** One Topic on the Topic index, with its Notes. */
@@ -20,12 +20,12 @@ export interface PartEntry {
  * last. `notes` must be ordered by title; each Topic keeps that order.
  */
 export function topicIndex(curriculum: Curriculum, notes: Note[]): PartEntry[] {
-  const byTopic = Map.groupBy(notes, (note) => note.topic.key);
+  const byTopic = Map.groupBy(notes, (note) => note.placement?.topic);
   return curriculum.parts
     .map((part) => ({
       part,
       topics: part.topics.flatMap((topic) => {
-        const topicNotes = byTopic.get(topic.key);
+        const topicNotes = byTopic.get(topic);
         return topicNotes ? [{ topic, notes: topicNotes }] : [];
       }),
     }))
