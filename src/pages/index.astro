@@ -1,5 +1,6 @@
 ---
 import NoteLink from "../components/NoteLink.astro";
+import StageBadge from "../components/StageBadge.astro";
 import { loadGarden } from "../garden/garden";
 import { tendedDay, tendedLong } from "../garden/tended";
 import Base from "../layouts/Base.astro";
@@ -21,10 +22,12 @@ const garden = loadGarden();
         <ol class="note-list" data-note-list aria-label="Notes, most recently tended first">
           {garden.byTended.map((note) => (
             <li>
-              <span class="listed-note">
-                <NoteLink note={note} />
-              </span>{" "}
-              <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
+              <NoteLink note={note} badge={false} />{" "}
+              <span class="note-meta">
+                <StageBadge stage={note.stage} linked={false} />
+                <span class="sep" aria-hidden="true">·</span>
+                <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
+              </span>
             </li>
           ))}
         </ol>
@@ -54,45 +57,69 @@ const garden = loadGarden();
   .title-block p {
     margin: 0;
     font-size: 1.0625rem;
+    text-wrap: balance;
   }
   .empty {
     text-align: center;
   }
 
-  /* Every Note, newest first: title and Stage on the left, the date flush right */
+  /* Every Note, newest first: the title is the row's one link; Stage and date
+     sit flush right as one quiet line of metadata */
   .note-list {
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .note-list li {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0 1.5rem;
-    margin-bottom: 0.25rem;
+    text-wrap: pretty;
   }
-  .note-list :global(.stage-badge) {
-    color: var(--ink);
-    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
-    font-size: 0.875em;
-    margin-left: 0.25em;
-  }
-  .note-list :global(time) {
+  .note-meta {
     color: var(--ink-soft);
     font-size: 0.9375rem;
     white-space: nowrap;
   }
+  .note-meta :global(.stage-badge) {
+    font-variant-caps: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .sep {
+    margin: 0 0.4em;
+  }
 
-  /* Narrow screens: the date always sits on its own line, so the list stays even */
+  /* Wide: an unruled tabular of three columns. Long titles wrap in their own
+     column; Stages align left, dates flush right, all on the first baseline. */
+  @media (min-width: 36.0625rem) {
+    .note-list {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      column-gap: 1.25rem;
+      row-gap: 0.5rem;
+    }
+    .note-list li {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
+      align-items: baseline;
+    }
+    .note-meta {
+      display: contents;
+    }
+    .note-meta time {
+      text-align: right;
+    }
+    .sep {
+      display: none;
+    }
+  }
+
+  /* Narrow: Stage and date share their own line under the title */
   @media (max-width: 36rem) {
     .note-list li {
-      display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
-    .note-list :global(time) {
+    .note-meta {
       display: block;
+      margin-top: 0.125rem;
     }
   }
 </style>
