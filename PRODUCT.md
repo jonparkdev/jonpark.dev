@@ -14,13 +14,13 @@ web
 
 ## Product Purpose
 
-jonpark.dev is a public digital garden of system design Notes, organised around the Hello Interview Curriculum. It shows each Note at its honest Stage and how far through the Curriculum the author is, and it publishes itself whenever he writes.
+jonpark.dev is a public digital garden of system design Notes, organised around the Hello Interview Curriculum. It shows each Note at its honest Stage, grouped by the Topic it belongs to, and it publishes itself whenever he writes. It is about learning and curiosity per Topic, not about tracking progress through the syllabus.
 
-Success: a visitor sees the quality of the author's thinking, but never at the cost of honesty. Unfinished, shaky, and untouched work stays visible as exactly what it is.
+Success: a visitor sees the quality of the author's thinking, but never at the cost of honesty. Unfinished and shaky Notes stay visible as exactly what they are.
 
 ## Positioning
 
-Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). The site is a truthful map of what one person is learning, how far they've got, and how well they understand it, untouched Topics included. Most "notes" sites curate their best work. This one shows the work in progress, labelled honestly.
+Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). The site is a truthful record of what one person is learning and how well they understand it, Topic by Topic, including the 🐇 Tangents curiosity led to. Most "notes" sites curate their best work. This one shows the work in progress, labelled honestly.
 
 ## Operating Context
 
@@ -32,7 +32,7 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 ## Capabilities and Constraints
 
 - Note pages at `/notes/<slug>` with a Stage badge, Topic, wikilinks (links to unwritten Notes render as visibly unwritten text), embedded Diagrams, and "Linked from" backlinks.
-- Home page = Progress map: every Part and Topic in Hello Interview order, each Topic marked with the Stage of its most advanced Note, plus per-Stage counts and "Recently tended".
+- Home page = Topic index: only Topics that have at least one Note, plus Tangents, in Curriculum order, each listing its Notes with their Stages. Topics without Notes are not shown, and the home page does not track progress or show per-Stage counts (changed 2026-11-13; this replaces the MVP's Progress map).
 - `/about-stages` explains the Stages publicly.
 - Frontmatter is only `stage` and `topic` (plus `upgrades`). Invalid values fail the build, and the live site stays on its last good version.
 - Upgrades (Diagram → Interactive → Explainer) are added only because of a felt gap, one at a time. Interactives come at most about once a month.
@@ -56,7 +56,7 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 ## Product Principles
 
 1. **The garden follows the study.** Nothing on the site may cost study time or add authoring work.
-2. **Honesty before impressiveness.** Stage, progress, and gaps are shown as they are. Untouched Topics stay visible.
+2. **Honesty before impressiveness.** Every Note shows its true Stage. The site never makes a Note look more finished than it is.
 3. **Every Note should be worth a learner's time.** Teaching value comes through clear Notes and good Diagrams, not a showcase layer. Upgraded Notes are not singled out.
 4. **Stage is the reader's trust signal.** A visitor should always know how far to trust what they're reading.
 

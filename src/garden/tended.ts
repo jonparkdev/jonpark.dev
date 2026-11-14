@@ -25,6 +25,11 @@ export function recentlyTended(notes: Note[]): Note[] {
   return [...notes].sort((a, b) => b.tended.getTime() - a.tended.getTime()).slice(0, RECENTLY_TENDED_COUNT);
 }
 
+/** A Tended date written out, e.g. "13 November 2026" (UTC). */
+export function tendedLong(date: Date): string {
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}
+
 /** A Tended date as YYYY-MM-DD (UTC). */
 export function tendedDay(date: Date): string {
   return date.toISOString().slice(0, 10);
