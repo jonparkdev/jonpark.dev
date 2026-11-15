@@ -122,7 +122,7 @@ components:
   topic-index-topic:
     textColor: "{colors.ink}"
     typography: "{typography.title}"
-  recently-tended-date:
+  note-list-meta:
     textColor: "{colors.ink-soft}"
     typography: "{typography.small}"
 ---
@@ -160,7 +160,7 @@ A black-on-white article palette where colour is a link-state signal and nothing
 - **Paper White** (`page`): the page. No off-white, no cream.
 - **Ink** (`ink`): all text, headings, site line, Stage badges outside running text.
 - **Rule Ink** (`rule`): horizontal rules (listings, booktabs, footnote rule, `hr`). Same value as ink; kept as its own role.
-- **Soft Ink** (`ink-soft`): listings line numbers and the home page's Tended dates only.
+- **Soft Ink** (`ink-soft`): listings line numbers and the home page's Note metadata (Stage and Tended date) only.
 - **Selection Blue** (`select`): text selection and the targeted footnote row.
 
 ### Named Rules
@@ -203,9 +203,9 @@ Order of a Note: centred title block, Stage abstract (narrower, 35rem, centred),
 ### Named Rules
 **The One Article Rule.** Every reading page is the same LaTeX article from one shared layout: centred title block, an abstract with a centred bold head, a numbered justified body. Only the abstract head's content changes by page; the shape never does.
 
-Order of the home page: centred title block ("jonpark.dev" at Display size, the tagline at 1.0625rem beneath, 2.5rem below), then the Note list. Order of a Course page: centred title block (the Course title at Display size, its subtitle at 1.0625rem beneath, 2.5rem below), then its Topic index (Parts 2rem apart). One column at every width; no side-by-side panels.
+Order of the home page: centred title block ("jonpark.dev" at Display size, the tagline at 1.0625rem beneath, balanced, 2.5rem below), then the Note list. Order of a Course page: centred title block (the Course title at Display size, its subtitle at 1.0625rem beneath, 2.5rem below), then its Topic index (Parts 2rem apart). One column at every width; no side-by-side panels.
 
-Responsive (below 36rem): body switches from justified to ragged left with manual hyphenation; blockquote indent halves to 1em; Diagrams keep their drawn size and scroll sideways with a sticky centred caption. Tables and listings scroll horizontally inside their rules rather than shrinking. On the home page's Note list, dates drop to their own line under each Note.
+Responsive (below 36rem): body switches from justified to ragged left with manual hyphenation; blockquote indent halves to 1em; Diagrams keep their drawn size and scroll sideways with a sticky centred caption. Tables and listings scroll horizontally inside their rules rather than shrinking. On the home page's Note list, the Stage and date drop to their own line under each Note.
 
 ## Elevation & Depth
 
@@ -235,7 +235,7 @@ One article shell serves the Note page and About Stages: a centred title block, 
 Numbered sections and subsections per the Typography hierarchy; justified, hyphenated paragraphs with a 1.5em indent on following paragraphs; lists indented 1.75em; blockquotes indented 2em at 1.0625rem; a centred 40%-width hairline `hr`. Defined terms are set in bold where they are introduced (**Recall**, **Demotion**, **Tangent**), and quotations use curly quotes. On About Stages the Stages are one booktabs table, captioned above ("Table 1 The Stages, from least to most understood"), with columns Stage | Means | Earned by, full measure, the Stage cell a bold, unwrapped row header carrying the Stage's anchor (`#seedling`, `#budding`, `#evergreen`); the row a visitor arrives at is filled with Selection Blue. Below 36rem the table restacks to one ruled block per Stage with small-caps bold "Means" and "Earned by" run-in labels. Section 2 carries Figure 1, the Stage ladder: the three Stages in bold on one line, with a small-caps "Recall" over a hairline right arrow and a left arrow over "Demotion" between each pair, captioned "Figure 1 How a Note changes Stage" beneath; when its column is narrower than 38rem it runs top to bottom. Sections also carry `#how-stages-change` and `#tangents`.
 
 ### Stage badge
-Emoji plus label ("🌱 Seedling", "🌿 Budding", "🌳 Evergreen"), linked to `/about-stages`, never wrapped. In the abstract and lists it takes ink colour with a soft 30% ink underline at 0.875em; Stage is never shown by colour alone.
+Emoji plus label ("🌱 Seedling", "🌿 Budding", "🌳 Evergreen"), linked to `/about-stages`, never wrapped. In the abstract and lists it takes ink colour with a soft 30% ink underline at 0.875em. The exception is the home page's Note list, where it is unlinked metadata (see Note list). Stage is never shown by colour alone. The emoji is hidden from screen readers, so the Stage is announced once, by its label.
 
 ### Listings
 Listing style (mono at 0.875rem), line height 1.6, between two 0.8px rules with 0.5rem padding; line numbers in Soft Ink, right-aligned in a 2.25rem gutter, unselectable. Tab size 4. Scrolls horizontally.
@@ -258,7 +258,7 @@ A Course page's outline of what has been written in it, set like a LaTeX documen
 Empty state: when the Course has no Notes, the index is the single centred line "No Notes yet."
 
 ### Note list
-The home page's body, directly under the title block with no heading: every Note in the garden, whatever its Course or none, most recently Tended first. Each row is the Note link plus its Stage badge, with the long-format Tended date ("13 November 2026") in Soft Ink at 0.9375rem pushed to the right on the same baseline. No Topic or Course is shown; the home page doesn't care where a Note comes from. Below 36rem the date drops to its own line under the Note. Empty state: the single centred line "No Notes yet."
+The home page's body, directly under the title block with no heading: every Note in the garden, whatever its Course or none, most recently Tended first. The Note title is the row's only link. On wide screens the list is an unruled three-column tabular: the title (long titles wrap within their column, `text-wrap: pretty`), the Stage badge unlinked in small caps (0.04em), and the long-format Tended date ("13 November 2026") flush right; Stage and date are Soft Ink at 0.9375rem, columns 1.25rem apart, rows 0.5rem apart, all on the first baseline. The badge isn't linked here because the site line already links About Stages, and a link on every row would compete with the title. No Topic or Course is shown; the home page doesn't care where a Note comes from. Below 36rem the Stage and date share their own line under the title, joined by a middle dot ("🌱 Seedling · 13 November 2026"), rows 0.75rem apart. Empty state: the single centred line "No Notes yet."
 
 ## Do's and Don'ts
 
