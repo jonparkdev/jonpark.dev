@@ -5,9 +5,11 @@ import StageBadge from "./StageBadge.astro";
 
 interface Props {
   note: Note;
+  /** Follow the link with its Stage badge. Off where the page sets the Stage elsewhere in the row. */
+  badge?: boolean;
 }
 
-const { note } = Astro.props;
+const { note, badge = true } = Astro.props;
 ---
 
-<a href={notePath(note.slug)}>{note.title}</a> <StageBadge stage={note.stage} />
+<a href={notePath(note.slug)}>{note.title}</a>{badge && " "}{badge && <StageBadge stage={note.stage} />}

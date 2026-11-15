@@ -46,9 +46,9 @@ test("a Note's Topic line names its Topic, Part and Course, linking the Topic to
 });
 
 test.each([
-  ["seedling", "🌱 Seedling"],
-  ["budding", "🌿 Budding"],
-  ["evergreen", "🌳 Evergreen"],
+  ["seedling", '<span aria-hidden="true">🌱</span> Seedling'],
+  ["budding", '<span aria-hidden="true">🌿</span> Budding'],
+  ["evergreen", '<span aria-hidden="true">🌳</span> Evergreen'],
 ])("a %s Note shows its Stage badge, linking to /about-stages", (stage, badge) => {
   const build = buildFixtureSite({
     courses: { course },

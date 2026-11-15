@@ -3,9 +3,15 @@ import { stageEmoji, stageLabel, type Stage } from "../garden/stage";
 
 interface Props {
   stage: Stage;
+  /** Link to /about-stages. Off where the page already links there once, such as the home page's Note list. */
+  linked?: boolean;
 }
 
-const { stage } = Astro.props;
+const { stage, linked = true } = Astro.props;
+const Tag = linked ? "a" : "span";
+// The emoji is hidden from screen readers so the Stage is announced once, by its label.
+const emoji = stageEmoji(stage);
+const label = ` ${stageLabel(stage)}`;
 ---
 
-<a href="/about-stages" class={`stage-badge stage-${stage}`}>{stageEmoji(stage)} {stageLabel(stage)}</a>
+<Tag href={linked ? "/about-stages" : undefined} class={`stage-badge stage-${stage}`}><span aria-hidden="true">{emoji}</span>{label}</Tag>
