@@ -26,7 +26,7 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 
 - Notes are written in Obsidian (vault: `garden/`). Diagrams are drawn in Excalidraw and auto-exported as SVG to `garden/assets/`.
 - Obsidian Git auto-pushes every 30 minutes, and each push builds and deploys the static Astro site to Fly.io behind Cloudflare (`docs/hosting.md`, ADR 0001).
-- Study rhythm: a tiered daily floor, a weekly 45-minute Gardening session, and solo and human Mocks (`docs/plans/PLAN-0001.md`).
+- Study rhythm: a tiered daily floor, a weekly 45-minute Gardening session, and solo and human Mocks (`docs/study-plan.md`).
 - The Inbox and solo Mock recordings are private and never published.
 
 ## Capabilities and Constraints
@@ -37,7 +37,7 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 - `/about-stages` explains the Stages publicly.
 - Frontmatter is only `stage`, the optional `topic` as `<course>/<key>` (ADR 0002), and `upgrades`. Invalid values fail the build, and the live site stays on its last good version.
 - Upgrades (Diagram → Interactive → Explainer) are added only because of a felt gap, one at a time. Interactives come at most about once a month.
-- Deferred (`LATER.md`, non-study days only): search, RSS, graph view, dark-mode polish, comments.
+- Deferred (non-study days only): search, RSS, graph view, dark-mode polish, comments.
 - Use the domain vocabulary in `GLOSSARY.md` (Note, Stage, Recall, Upgrade, Course, Curriculum, Topic, Tangent…). Avoid its listed synonyms.
 
 ## Brand Commitments

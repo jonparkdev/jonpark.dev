@@ -9,17 +9,17 @@ One idea written up in the garden: the atom. It sits at exactly one Stage and be
 _Avoid_: Post, article, page
 
 **Stage**:
-How well a Note is understood: Seedling, Budding, or Evergreen. It changes only through Recall events, never through polish.
+How well a Note is understood: Seedling, Budding, or Evergreen. It changes only through Recall events, never through polish, and never skips a Stage.
 _Avoid_: Status, level, maturity
 
 **Seedling** (🌱):
-The first Stage: "I'm thinking about this." Written from memory with the source closed.
+The first Stage: "I'm thinking about this." Written from memory with the source closed, and linked to its Topic if it has one.
 
 **Budding** (🌿):
-The second Stage: "I understand the core idea." Re-explained from memory on a different day and corrected against the source.
+The second Stage: "I understand the core idea." Re-explained from memory on a different day and corrected against the source. Has an example or sketch, links to at least one other Note, and lists its open questions.
 
 **Evergreen** (🌳):
-The third Stage: "I can use this." Applied somewhere real, such as a Mock, a design problem, or an Explainer. Stable, not finished.
+The third Stage: "I can use this." Applied somewhere real, such as a Mock, a design problem, or an Explainer, and has a "Trade-offs / when NOT to use this" section. Stable, not finished.
 
 **Recall**:
 Explaining an idea from memory with the source closed. The only thing that justifies moving a Note's Stage.
