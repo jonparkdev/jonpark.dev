@@ -1,0 +1,258 @@
+/* Scan src/ only: the Obsidian vault's plugin bundles would otherwise yield junk utilities. */
+@import "tailwindcss" source("../");
+
+/*
+ * The LaTeX article: a white page, black ink, hyperref blue for references.
+ * Pages style themselves with utilities; this file holds only the tokens, the
+ * element defaults, and the rules for HTML rendered from Markdown, which has
+ * no markup to put utilities on.
+ */
+
+@theme {
+  /* A closed palette: only the article's inks */
+  --color-*: initial;
+  --color-page: #ffffff;
+  --color-ink: #111111;
+  --color-ink-soft: #4d4d4d;
+  --color-rule: #111111;
+  --color-ref: #1f4e8c;
+  --color-undefined: #8b1a1a;
+  --color-select: #d6e2f2;
+
+  --font-serif: "Garden Modern", "Latin Modern Roman", "CMU Serif", "STIX Two Text", Georgia, serif;
+  --font-mono: "Garden Modern Mono", "Latin Modern Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --default-font-family: var(--font-serif);
+  --default-mono-font-family: var(--font-mono);
+
+  /* A closed type scale. Line heights are set where they're used. */
+  --text-*: initial;
+  --text-title: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
+  --text-title--line-height: 1.15;
+  --text-section: 1.375rem;
+  --text-body: 1.1875rem;
+  --text-sub: 1.0625rem;
+  --text-base: 1rem;
+  --text-meta: 0.9375rem;
+  --text-code: 0.875rem;
+
+  --container-measure: 41rem;
+  --spacing-gutter: clamp(1rem, 4vw, 4rem);
+  --spacing-page-top: clamp(2rem, 6vw, 3.5rem);
+
+  /* One breakpoint: sm: is wide, max-sm: is a phone */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 36.0625rem;
+}
+
+@font-face {
+  font-family: "Garden Modern";
+  src: url("/fonts/garden-modern-book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Garden Modern";
+  src: url("/fonts/garden-modern-book-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Garden Modern";
+  src: url("/fonts/garden-modern-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Garden Modern";
+  src: url("/fonts/garden-modern-bold-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Garden Modern Mono";
+  src: url("/fonts/garden-modern-mono-book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Tailwind has no font-variant-caps utility */
+@utility small-caps {
+  font-variant-caps: small-caps;
+}
+
+@layer base {
+  html {
+    @apply scheme-light bg-page text-ink;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply text-body leading-[1.55] lining-nums proportional-nums;
+    font-kerning: normal;
+  }
+
+  ::selection {
+    @apply bg-select text-ink;
+  }
+
+  a {
+    @apply text-ref underline decoration-ref/45 decoration-1 underline-offset-[0.18em];
+    @apply hover:decoration-current hover:decoration-2;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ref;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-balance;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    @apply text-[0.875em] lining-nums tabular-nums;
+  }
+}
+
+@layer components {
+  .stage-badge {
+    @apply whitespace-nowrap;
+  }
+
+  /* Article body: justified, hyphenated, numbered sections */
+  .article-body {
+    counter-reset: section figure;
+
+    & p {
+      @apply mb-3 text-justify hyphens-auto;
+      @apply max-sm:text-left max-sm:hyphens-manual;
+    }
+    & p + p {
+      @apply indent-[1.5em];
+    }
+
+    & h2 {
+      counter-increment: section;
+      counter-reset: subsection;
+      @apply mt-9 mb-3 text-section leading-[1.25] font-bold;
+    }
+    & h2::before {
+      content: counter(section);
+      @apply inline-block min-w-[1.75em];
+    }
+    & h3 {
+      counter-increment: subsection;
+      @apply mt-7 mb-2 text-body font-bold;
+    }
+    & h3::before {
+      content: counter(section) "." counter(subsection);
+      @apply inline-block min-w-[2.5em];
+    }
+    & h4 {
+      @apply mt-5 mb-1 text-[1em] font-bold;
+    }
+
+    & ul,
+    & ol {
+      @apply mb-3 pl-[1.75em];
+    }
+    & ul {
+      @apply list-disc;
+    }
+    & ul ul {
+      @apply list-[circle];
+    }
+    & ol {
+      @apply list-decimal;
+    }
+    & li + li {
+      @apply mt-1;
+    }
+
+    & blockquote {
+      @apply mx-[2em] my-4 text-sub max-sm:mx-[1em];
+    }
+    & hr {
+      @apply mx-auto my-8 w-2/5 border-0 border-t-[0.8px] border-rule;
+    }
+  }
+
+  /* What src/garden/markdown.ts emits into a Note's body */
+  .note-body {
+    /* Wikilinks: LaTeX's ?? for a reference that isn't defined yet */
+    & .unwritten {
+      @apply text-undefined underline decoration-dashed decoration-1 underline-offset-[0.18em];
+    }
+    & .unwritten::after {
+      content: "??";
+      content: "??" / "";
+      @apply ml-[0.1em] align-super text-[0.7em] leading-0 font-bold;
+    }
+    & .tangent-mark {
+      @apply ml-[0.1em] text-[0.7em] leading-0;
+    }
+    & .tangent-mark a {
+      @apply no-underline;
+    }
+
+    /* lstlisting: rules above and below, line numbers in the margin */
+    & pre.listing {
+      counter-reset: line;
+      @apply mt-5 mb-6 overflow-x-auto border-y-[0.8px] border-rule py-2 text-code leading-[1.6] [tab-size:4];
+    }
+    & pre.listing code {
+      @apply text-[1em];
+    }
+    & pre.listing .line {
+      counter-increment: line;
+    }
+    & pre.listing .line::before {
+      content: counter(line);
+      @apply inline-block w-9 pr-3.5 text-right text-[0.8em] text-ink-soft select-none;
+    }
+
+    /* booktabs: horizontal rules only, heavier at top and bottom */
+    & table {
+      @apply mx-auto mt-5 mb-6 block w-fit max-w-full overflow-x-auto text-base lining-nums tabular-nums;
+    }
+    & thead {
+      @apply border-t-[1.5px] border-b-[0.8px] border-rule;
+    }
+    & tbody {
+      @apply border-b-[1.5px] border-rule;
+    }
+    & th,
+    & td {
+      @apply px-3 py-[0.3rem] text-left align-top;
+    }
+    & th {
+      @apply font-bold;
+    }
+
+    /* Diagrams as numbered figures. On a phone, keep labels at their drawn
+       size and scroll sideways instead of shrinking. */
+    & .diagram {
+      counter-increment: figure;
+      @apply my-6 block indent-0 text-center;
+      @apply max-sm:overflow-x-auto max-sm:text-left;
+    }
+    & .diagram svg {
+      @apply inline h-auto max-w-full align-baseline max-sm:max-w-none;
+    }
+    & .diagram::after {
+      content: "Figure " counter(figure);
+      @apply mt-2 block text-meta small-caps tracking-[0.03em];
+      @apply max-sm:sticky max-sm:left-0 max-sm:text-center;
+    }
+  }
+}

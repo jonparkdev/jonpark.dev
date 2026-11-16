@@ -34,9 +34,9 @@ test("a Note lists every Note that links to it, each with its Stage badge and a 
   const entries = items(section);
   expect(entries).toHaveLength(2);
   expect(entries[0]).toMatch(/<a[^>]*href="\/notes\/read-through-cache"[^>]*>Read-through cache<\/a>/);
-  expect(entries[0]).toMatch(/class="stage-badge stage-evergreen"/);
+  expect(entries[0]).toMatch(/class="stage-badge stage-evergreen[ "]/);
   expect(entries[1]).toMatch(/<a[^>]*href="\/notes\/write-through-cache"[^>]*>Write-through cache<\/a>/);
-  expect(entries[1]).toMatch(/class="stage-badge stage-budding"/);
+  expect(entries[1]).toMatch(/class="stage-badge stage-budding[ "]/);
 });
 
 test("a Note that links to another several times appears once in its Linked from list", () => {

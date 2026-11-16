@@ -1,0 +1,17 @@
+---
+// \maketitle: the centred title, then whatever the page sets under it
+// (a subtitle, or an article's byline).
+
+interface Props {
+  title: string;
+  /** An article's title sits closer to the abstract that follows it. */
+  article?: boolean;
+}
+
+const { title, article = false } = Astro.props;
+---
+
+<header class:list={["text-center", article ? "mb-7" : "mb-10"]}>
+  <h1 class:list={["text-title font-normal", article ? "mb-3.5" : "mb-2.5"]}>{title}</h1>
+  <slot />
+</header>

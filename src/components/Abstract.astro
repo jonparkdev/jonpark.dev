@@ -1,0 +1,15 @@
+---
+// \begin{abstract}: a narrower block with a bold centred head.
+
+interface Props {
+  /** Names the section for screen readers, and is the head unless a "head" slot is given. */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<section class="mx-auto mb-9 max-w-[35rem] text-base leading-normal" aria-label={label}>
+  <p class="mb-1 text-center text-meta font-bold"><slot name="head">{label}</slot></p>
+  <slot />
+</section>

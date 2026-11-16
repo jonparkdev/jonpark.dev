@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { note, badge = true } = Astro.props;
+// The badge is quieter than the link it follows: ink, not hyperref blue.
+const quiet = "ml-[0.25em] text-[0.875em] text-ink decoration-ink/30";
 ---
 
-<a href={notePath(note.slug)}>{note.title}</a>{badge && " "}{badge && <StageBadge stage={note.stage} />}
+<a href={notePath(note.slug)}>{note.title}</a>{badge && " "}{badge && <StageBadge stage={note.stage} class={quiet} />}

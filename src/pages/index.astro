@@ -1,6 +1,7 @@
 ---
 import NoteLink from "../components/NoteLink.astro";
 import StageBadge from "../components/StageBadge.astro";
+import TitleBlock from "../components/TitleBlock.astro";
 import { loadGarden } from "../garden/garden";
 import { tendedDay, tendedLong } from "../garden/tended";
 import Base from "../layouts/Base.astro";
@@ -9,24 +10,32 @@ const garden = loadGarden();
 ---
 
 <Base title="jonpark.dev">
-  <div class="home">
-    <header class="title-block">
-      <h1>jonpark.dev</h1>
+  <div class="mx-auto max-w-measure pt-page-top">
+    <TitleBlock title="jonpark.dev">
       {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
-      <p>A garden of notes on what I'm learning.</p>
-    </header>
+      <p class="text-sub text-balance">A garden of notes on what I'm learning.</p>
+    </TitleBlock>
 
-    {garden.byTended.length === 0 && <p class="empty">No Notes yet.</p>}
+    {garden.byTended.length === 0 && <p class="my-[1em] text-center">No Notes yet.</p>}
     {
       garden.byTended.length > 0 && (
-        <ol class="note-list" data-note-list aria-label="Notes, most recently tended first">
+        /* Every Note, newest first: the title is the row's one link; Stage and date
+           sit flush right as one quiet line of metadata.
+           Wide: an unruled tabular of three columns. Long titles wrap in their own
+           column; Stages align left, dates flush right, all on the first baseline.
+           Narrow: Stage and date share their own line under the title. */
+        <ol
+          class="text-pretty sm:grid sm:grid-cols-[1fr_auto_auto] sm:gap-x-5 sm:gap-y-2"
+          data-note-list
+          aria-label="Notes, most recently tended first"
+        >
           {garden.byTended.map((note) => (
-            <li>
+            <li class="max-sm:mb-3 sm:col-span-full sm:grid sm:grid-cols-subgrid sm:items-baseline">
               <NoteLink note={note} badge={false} />{" "}
-              <span class="note-meta">
-                <StageBadge stage={note.stage} linked={false} />
-                <span class="sep" aria-hidden="true">·</span>
-                <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
+              <span class="text-meta whitespace-nowrap text-ink-soft max-sm:mt-0.5 max-sm:block sm:contents">
+                <StageBadge stage={note.stage} linked={false} class="tracking-[0.04em] small-caps" />
+                <span class="mx-[0.4em] sm:hidden" aria-hidden="true">·</span>
+                <time datetime={tendedDay(note.tended)} class="sm:text-right">{tendedLong(note.tended)}</time>
               </span>
             </li>
           ))}
@@ -35,91 +44,3 @@ const garden = loadGarden();
     }
   </div>
 </Base>
-
-<style>
-  .home {
-    max-width: var(--measure);
-    margin: 0 auto;
-    padding-top: clamp(2rem, 6vw, 3.5rem);
-  }
-
-  /* \maketitle */
-  .title-block {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.625rem;
-  }
-  .title-block p {
-    margin: 0;
-    font-size: 1.0625rem;
-    text-wrap: balance;
-  }
-  .empty {
-    text-align: center;
-  }
-
-  /* Every Note, newest first: the title is the row's one link; Stage and date
-     sit flush right as one quiet line of metadata */
-  .note-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .note-list li {
-    text-wrap: pretty;
-  }
-  .note-meta {
-    color: var(--ink-soft);
-    font-size: 0.9375rem;
-    white-space: nowrap;
-  }
-  .note-meta :global(.stage-badge) {
-    font-variant-caps: small-caps;
-    letter-spacing: 0.04em;
-  }
-  .sep {
-    margin: 0 0.4em;
-  }
-
-  /* Wide: an unruled tabular of three columns. Long titles wrap in their own
-     column; Stages align left, dates flush right, all on the first baseline. */
-  @media (min-width: 36.0625rem) {
-    .note-list {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      column-gap: 1.25rem;
-      row-gap: 0.5rem;
-    }
-    .note-list li {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: subgrid;
-      align-items: baseline;
-    }
-    .note-meta {
-      display: contents;
-    }
-    .note-meta time {
-      text-align: right;
-    }
-    .sep {
-      display: none;
-    }
-  }
-
-  /* Narrow: Stage and date share their own line under the title */
-  @media (max-width: 36rem) {
-    .note-list li {
-      margin-bottom: 0.75rem;
-    }
-    .note-meta {
-      display: block;
-      margin-top: 0.125rem;
-    }
-  }
-</style>

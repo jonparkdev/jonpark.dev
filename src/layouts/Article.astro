@@ -1,9 +1,10 @@
 ---
 import Base from "./Base.astro";
 
-// The LaTeX article every reading page shares: \maketitle, the abstract, and
-// the body's typesetting with numbered sections. Pages put their prose in an
-// element with class "article-body".
+// The LaTeX article every reading page shares: \maketitle (TitleBlock), the
+// abstract (Abstract), and the body's typesetting with numbered sections.
+// Pages put their prose in an element with class "article-body", styled in
+// src/styles/global.css.
 
 interface Props {
   title: string;
@@ -15,135 +16,8 @@ const { title, class: className } = Astro.props;
 ---
 
 <Base title={title}>
-  <article class:list={["article", className]}>
+  {/* text-pretty: no paragraph ends on a lone word, as TeX's line breaker avoids */}
+  <article class:list={["mx-auto max-w-measure pt-page-top text-pretty", className]}>
     <slot />
   </article>
 </Base>
-
-<style is:global>
-  .article {
-    max-width: var(--measure);
-    margin: 0 auto;
-    padding-top: clamp(2rem, 6vw, 3.5rem);
-  }
-
-  /* \maketitle */
-  .article .title-block {
-    text-align: center;
-    margin-bottom: 1.75rem;
-  }
-  .article h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.875rem;
-  }
-  .article .byline {
-    margin: 0;
-    font-size: 1.0625rem;
-    line-height: 1.5;
-  }
-  .article .sc {
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
-  }
-
-  /* No paragraph ends on a lone word, as TeX's line breaker avoids */
-  .article p,
-  .article li,
-  .article td {
-    text-wrap: pretty;
-  }
-
-  /* \begin{abstract} */
-  .article .abstract {
-    max-width: 35rem;
-    margin: 0 auto 2.25rem;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .article .abstract p {
-    margin: 0;
-  }
-  .article .abstract .abstract-head {
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    margin-bottom: 0.25rem;
-  }
-
-  /* Body: justified, hyphenated, numbered sections */
-  .article-body {
-    counter-reset: section figure;
-  }
-  .article-body p {
-    margin: 0 0 0.75rem;
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-  }
-  .article-body p + p {
-    text-indent: 1.5em;
-  }
-  .article-body h2 {
-    counter-increment: section;
-    counter-reset: subsection;
-    font-size: 1.375rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin: 2.25rem 0 0.75rem;
-  }
-  .article-body h2::before {
-    content: counter(section);
-    display: inline-block;
-    min-width: 1.75em;
-  }
-  .article-body h3 {
-    counter-increment: subsection;
-    font-size: 1.1875rem;
-    font-weight: 700;
-    margin: 1.75rem 0 0.5rem;
-  }
-  .article-body h3::before {
-    content: counter(section) "." counter(subsection);
-    display: inline-block;
-    min-width: 2.5em;
-  }
-  .article-body h4 {
-    font-size: 1em;
-    font-weight: 700;
-    margin: 1.25rem 0 0.25rem;
-  }
-  .article-body ul,
-  .article-body ol {
-    margin: 0 0 0.75rem;
-    padding-left: 1.75em;
-  }
-  .article-body li + li {
-    margin-top: 0.25rem;
-  }
-  .article-body blockquote {
-    margin: 1rem 2em;
-    font-size: 1.0625rem;
-  }
-  .article-body hr {
-    border: 0;
-    border-top: 0.8px solid var(--rule);
-    width: 40%;
-    margin: 2rem auto;
-  }
-  .article-body :not(pre) > code {
-    font-size: 0.875em;
-  }
-
-  @media (max-width: 36rem) {
-    .article-body p {
-      text-align: left;
-      hyphens: manual;
-      -webkit-hyphens: manual;
-    }
-    .article-body blockquote {
-      margin: 1rem 1em;
-    }
-  }
-</style>

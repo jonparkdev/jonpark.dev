@@ -1,4 +1,6 @@
 ---
+import Abstract from "../components/Abstract.astro";
+import TitleBlock from "../components/TitleBlock.astro";
 import { STAGES, stageEmoji, stageLabel, type Stage } from "../garden/stage";
 import Article from "../layouts/Article.astro";
 
@@ -20,41 +22,63 @@ const stageRows: Record<Stage, { means: string; earnedBy: string }> = {
 
 const ladderLabel =
   "Recall moves a Note up one Stage, from Seedling to Budding to Evergreen. Demotion moves it back one Stage.";
+
+// Table 1 is booktabs: horizontal rules only, heavier at top and bottom, cells
+// flush with the table's edges. On a phone it restacks into one block per
+// Stage, each column labelled inline.
+const headCell = "px-3 py-[0.45rem] text-left align-top hyphens-auto first:pl-0 last:pr-0";
+const rowHead =
+  "scroll-mt-8 py-[0.45rem] pr-5 pl-0 text-left align-top whitespace-nowrap hyphens-auto max-sm:mb-1 max-sm:block max-sm:p-0";
+const cell =
+  "px-3 py-[0.45rem] align-top hyphens-auto last:pr-0 max-sm:block max-sm:p-0 " +
+  "max-sm:before:font-bold max-sm:before:tracking-[0.03em] max-sm:before:small-caps max-sm:before:content-[attr(data-label)_'_']";
+// Arriving from a Stage badge marks the row you came for.
+const row =
+  "sm:first:*:pt-2.5 sm:last:*:pb-2.5 sm:has-[th:target]:*:bg-select " +
+  "max-sm:block max-sm:py-3 max-sm:not-first:border-t-[0.8px] max-sm:not-first:border-rule max-sm:has-[th:target]:bg-select";
+
+// Figure 1 turns vertical once its column (the "ladder" container) is too
+// narrow for the row: Recall then reads downward, Demotion upward.
+// Class names are written out in full so Tailwind's scanner finds them.
+const track =
+  "inline-grid grid-flow-col items-center gap-x-3.5 @max-[38rem]/ladder:grid-flow-row @max-[38rem]/ladder:gap-y-2";
+const step =
+  "grid gap-y-0.5 text-meta leading-[1.2] tracking-[0.03em] small-caps @max-[38rem]/ladder:grid-flow-col @max-[38rem]/ladder:gap-x-5";
+const arrow = "block flex-none @max-[38rem]/ladder:h-auto @max-[38rem]/ladder:w-5 @max-[38rem]/ladder:rotate-90";
 ---
 
 <Article title="About Stages">
-  <header class="title-block">
-    <h1>About Stages</h1>
-  </header>
+  <TitleBlock title="About Stages" article />
 
-  <section class="abstract" aria-label="Abstract">
-    <p class="abstract-head">Abstract</p>
+  <Abstract label="Abstract">
     <p>
       Every Note in this garden carries a Stage: an honest mark of how well I understand the idea right now,
       not of how polished the writing is.
     </p>
-  </section>
+  </Abstract>
 
   <div class="article-body">
     <h2 id="the-stages">The Stages</h2>
-    <table class="stage-table">
-      <caption><span class="sc">Table 1</span>&ensp;The Stages, from least to most understood</caption>
-      <thead>
+    <table class="mt-5 mb-6 w-full text-base leading-normal max-sm:block">
+      <caption class="mb-2.5 caption-top text-center text-meta max-sm:block">
+        <span class="tracking-[0.03em] small-caps">Table 1</span>&ensp;The Stages, from least to most understood
+      </caption>
+      <thead class="border-t-[1.5px] border-b-[0.8px] border-rule max-sm:hidden">
         <tr>
-          <th scope="col">Stage</th>
-          <th scope="col">Means</th>
-          <th scope="col">Earned by</th>
+          <th scope="col" class={headCell}>Stage</th>
+          <th scope="col" class={headCell}>Means</th>
+          <th scope="col" class={headCell}>Earned by</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="border-b-[1.5px] border-rule max-sm:block max-sm:border-t-[1.5px]">
         {
           STAGES.map((stage) => (
-            <tr>
-              <th scope="row" id={stage}>
+            <tr class={row}>
+              <th scope="row" id={stage} class={rowHead}>
                 <span aria-hidden="true">{stageEmoji(stage)}</span> {stageLabel(stage)}
               </th>
-              <td data-label="Means">{stageRows[stage].means}</td>
-              <td data-label="Earned by">{stageRows[stage].earnedBy}</td>
+              <td data-label="Means" class:list={[cell, "w-[38%] max-sm:w-auto"]}>{stageRows[stage].means}</td>
+              <td data-label="Earned by" class:list={[cell, "max-sm:mt-1"]}>{stageRows[stage].earnedBy}</td>
             </tr>
           ))
         }
@@ -67,35 +91,37 @@ const ladderLabel =
       source closed. Editing, tidying or adding pictures never changes a Stage.
     </p>
 
-    <figure class="ladder">
-      <div class="ladder-track" role="img" aria-label={ladderLabel}>
+    <figure class="@container/ladder mt-7 mb-6 text-center">
+      <div class={track} role="img" aria-label={ladderLabel}>
         {
           STAGES.map((stage, i) => (
             <>
               {i > 0 && (
-                <span class="step">
-                  <span class="step-up">
+                <span class={step}>
+                  <span class="flex items-center justify-center gap-1.5">
                     Recall
-                    <svg viewBox="0 0 48 8" width="48" height="8">
-                      <path d="M0 4H46.5M41.5 1l5 3-5 3" />
+                    <svg viewBox="0 0 48 8" width="48" height="8" class={arrow}>
+                      <path d="M0 4H46.5M41.5 1l5 3-5 3" class="fill-none stroke-current stroke-[0.9]" />
                     </svg>
                   </span>
-                  <span class="step-down">
-                    <svg viewBox="0 0 48 8" width="48" height="8">
-                      <path d="M48 4H1.5M6.5 1l-5 3 5 3" />
+                  <span class="flex items-center justify-center gap-1.5">
+                    <svg viewBox="0 0 48 8" width="48" height="8" class={arrow}>
+                      <path d="M48 4H1.5M6.5 1l-5 3 5 3" class="fill-none stroke-current stroke-[0.9]" />
                     </svg>
                     Demotion
                   </span>
                 </span>
               )}
-              <span class="rung">
+              <span class="font-bold whitespace-nowrap">
                 {stageEmoji(stage)} {stageLabel(stage)}
               </span>
             </>
           ))
         }
       </div>
-      <figcaption><span class="sc">Figure 1</span>&ensp;How a Note changes Stage</figcaption>
+      <figcaption class="mt-3.5 text-meta">
+        <span class="tracking-[0.03em] small-caps">Figure 1</span>&ensp;How a Note changes Stage
+      </figcaption>
     </figure>
 
     <p>
@@ -107,7 +133,7 @@ const ladderLabel =
     <p>
       Each Course I follow, such as <a href="/hellointerview">Hello Interview</a>, has a syllabus of Topics.
       A <strong>Tangent</strong> is a Topic I added that isn’t in the syllabus, reached by following a rabbit hole
-      from a Topic that is. Each Course’s page lists its Tangents last, under <span class="nowrap">🐇 Tangents</span>.
+      from a Topic that is. Each Course’s page lists its Tangents last, under <span class="whitespace-nowrap">🐇 Tangents</span>.
     </p>
     <p>
       When a Note in a syllabus Topic links to a Tangent, the link gets a numbered 🐇 mark, and the Tangent is named in a footnote at
@@ -115,184 +141,3 @@ const ladderLabel =
     </p>
   </div>
 </Article>
-
-<style>
-  .nowrap {
-    white-space: nowrap;
-  }
-
-  /* Table 1: booktabs, caption above as LaTeX sets it */
-  .stage-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.25rem 0 1.5rem;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .stage-table caption {
-    caption-side: top;
-    text-align: center;
-    font-size: 0.9375rem;
-    margin-bottom: 0.625rem;
-  }
-  .stage-table thead {
-    border-top: 1.5px solid var(--rule);
-    border-bottom: 0.8px solid var(--rule);
-  }
-  .stage-table tbody {
-    border-bottom: 1.5px solid var(--rule);
-  }
-  .stage-table th,
-  .stage-table td {
-    padding: 0.45rem 0.75rem;
-    text-align: left;
-    vertical-align: top;
-    hyphens: auto;
-    -webkit-hyphens: auto;
-  }
-  .stage-table th:first-child,
-  .stage-table td:first-child {
-    padding-left: 0;
-  }
-  .stage-table th:last-child,
-  .stage-table td:last-child {
-    padding-right: 0;
-  }
-  .stage-table tbody tr:first-child > * {
-    padding-top: 0.625rem;
-  }
-  .stage-table tbody tr:last-child > * {
-    padding-bottom: 0.625rem;
-  }
-  .stage-table tbody th {
-    white-space: nowrap;
-    padding-right: 1.25rem;
-    scroll-margin-top: 2rem;
-  }
-  .stage-table td:nth-child(2) {
-    width: 38%;
-  }
-  /* Arriving from a Stage badge marks the row you came for */
-  .stage-table tr:has(th:target) > * {
-    background: var(--select);
-  }
-
-  /* Figure 1: the Stage ladder */
-  .ladder {
-    container: ladder / inline-size;
-    margin: 1.75rem 0 1.5rem;
-    text-align: center;
-  }
-  .ladder-track {
-    display: inline-grid;
-    grid-auto-flow: column;
-    align-items: center;
-    column-gap: 0.875rem;
-  }
-  .rung {
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .step {
-    display: grid;
-    row-gap: 0.125rem;
-    font-size: 0.9375rem;
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
-    line-height: 1.2;
-  }
-  .step-up,
-  .step-down {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.375rem;
-  }
-  .step svg {
-    display: block;
-    flex: none;
-  }
-  .step path {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 0.9;
-  }
-  .ladder figcaption {
-    margin-top: 0.875rem;
-    font-size: 0.9375rem;
-  }
-
-  @media (max-width: 36rem) {
-    /* Table 1 restacks: one block per Stage, its columns labelled inline */
-    .stage-table,
-    .stage-table tbody,
-    .stage-table tr,
-    .stage-table th,
-    .stage-table td {
-      display: block;
-    }
-    .stage-table thead {
-      display: none;
-    }
-    .stage-table tbody {
-      border-top: 1.5px solid var(--rule);
-    }
-    .stage-table caption {
-      display: block;
-    }
-    .stage-table tr {
-      padding: 0.75rem 0;
-    }
-    .stage-table tr + tr {
-      border-top: 0.8px solid var(--rule);
-    }
-    .stage-table th,
-    .stage-table td,
-    .stage-table tbody tr:first-child > *,
-    .stage-table tbody tr:last-child > * {
-      padding: 0;
-    }
-    .stage-table td:nth-child(2) {
-      width: auto;
-    }
-    .stage-table tbody th {
-      margin-bottom: 0.25rem;
-    }
-    .stage-table td + td {
-      margin-top: 0.25rem;
-    }
-    .stage-table td::before {
-      content: attr(data-label) " ";
-      font-variant: small-caps;
-      letter-spacing: 0.03em;
-      font-weight: 700;
-    }
-    .stage-table tr:has(th:target) {
-      background: var(--select);
-    }
-    .stage-table tr:has(th:target) > * {
-      background: none;
-    }
-  }
-
-  /* Figure 1 turns vertical once its column is too narrow for the row */
-  @container ladder (max-width: 38rem) {
-    /* Recall reads downward, Demotion upward */
-    .ladder-track {
-      grid-auto-flow: row;
-      row-gap: 0.5rem;
-    }
-    .step {
-      grid-auto-flow: column;
-      column-gap: 1.25rem;
-    }
-    .step svg {
-      transform: rotate(90deg);
-      width: 1.25rem;
-      height: auto;
-    }
-    .step-up {
-      flex-direction: row;
-    }
-  }
-</style>

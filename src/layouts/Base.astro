@@ -1,4 +1,5 @@
 ---
+import "../styles/global.css";
 import { coursePath } from "../garden/course";
 import { loadGarden } from "../garden/garden";
 
@@ -8,6 +9,9 @@ interface Props {
 
 const { title } = Astro.props;
 const { courses } = loadGarden();
+
+// The site line reads as running head, not as references: ink, underlined only on hover.
+const navLink = "text-ink no-underline hover:underline hover:decoration-1";
 ---
 
 <html lang="en">
@@ -18,233 +22,33 @@ const { courses } = loadGarden();
     <link rel="preload" href="/fonts/garden-modern-book.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-line">
-      <a href="/" class="site-name">jonpark.dev</a>
-      <nav aria-label="Site">
-        <details class="courses-menu">
-          <summary>Courses</summary>
-          <ul>
+    <a class="absolute -top-12 left-gutter bg-page px-3 py-2 focus:top-2" href="#main">Skip to content</a>
+    <header class="flex flex-wrap items-baseline justify-between gap-x-7 gap-y-1 px-gutter pt-6 text-sub tracking-[0.04em] small-caps">
+      <a href="/" class={navLink}>jonpark.dev</a>
+      <nav aria-label="Site" class="flex flex-wrap gap-x-7 gap-y-1">
+        {/* Courses ▾: a plain disclosure, its list dropping below the nav */}
+        <details class="group relative">
+          <summary
+            class="cursor-pointer list-none after:content-['_▾'_/_''] hover:underline hover:decoration-1 group-open:after:content-['_▴'_/_''] [&::-webkit-details-marker]:hidden"
+          >Courses</summary>
+          {/* The Booktabs Rule: horizontal hairlines only, never a box */}
+          <ul class="absolute right-0 z-1 mt-1.5 min-w-max space-y-1 border-y-[0.8px] border-rule bg-page py-1.5">
             {
               courses.map((course) => (
                 <li>
-                  <a href={coursePath(course)}>{course.title}</a>
+                  <a href={coursePath(course)} class={navLink}>
+                    {course.title}
+                  </a>
                 </li>
               ))
             }
           </ul>
         </details>
-        <a href="/about-stages">About Stages</a>
+        <a href="/about-stages" class={navLink}>About Stages</a>
       </nav>
     </header>
-    <main id="main">
+    <main id="main" class="px-gutter pb-20">
       <slot />
     </main>
   </body>
 </html>
-
-<style is:global>
-  @font-face {
-    font-family: "Garden Modern";
-    src: url("/fonts/garden-modern-book.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Garden Modern";
-    src: url("/fonts/garden-modern-book-italic.woff2") format("woff2");
-    font-weight: 400;
-    font-style: italic;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Garden Modern";
-    src: url("/fonts/garden-modern-bold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Garden Modern";
-    src: url("/fonts/garden-modern-bold-italic.woff2") format("woff2");
-    font-weight: 700;
-    font-style: italic;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "Garden Modern Mono";
-    src: url("/fonts/garden-modern-mono-book.woff2") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  /* The LaTeX article: a white page, black ink, hyperref blue for references. */
-  :root {
-    color-scheme: light;
-    --page: #ffffff;
-    --ink: #111111;
-    --ink-soft: #4d4d4d;
-    --rule: #111111;
-    --ref: #1f4e8c;
-    --undefined: #8b1a1a;
-    --select: #d6e2f2;
-    --serif: "Garden Modern", "Latin Modern Roman", "CMU Serif", "STIX Two Text", Georgia, serif;
-    --mono: "Garden Modern Mono", "Latin Modern Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-    --measure: 41rem;
-    --gutter: clamp(1rem, 4vw, 4rem);
-  }
-
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  html {
-    background: var(--page);
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 100%;
-    -webkit-text-size-adjust: 100%;
-    text-rendering: optimizeLegibility;
-  }
-
-  body {
-    margin: 0;
-    font-size: 1.1875rem;
-    line-height: 1.55;
-    font-variant-numeric: lining-nums proportional-nums;
-    font-kerning: normal;
-  }
-
-  ::selection {
-    background: var(--select);
-    color: var(--ink);
-  }
-
-  a {
-    color: var(--ref);
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-decoration-color: color-mix(in srgb, var(--ref) 45%, transparent);
-    text-underline-offset: 0.18em;
-  }
-  a:hover {
-    text-decoration-color: currentColor;
-    text-decoration-thickness: 2px;
-  }
-  :focus-visible {
-    outline: 2px solid var(--ref);
-    outline-offset: 2px;
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .stage-badge {
-    white-space: nowrap;
-  }
-
-  .skip-link {
-    position: absolute;
-    left: var(--gutter);
-    top: -3rem;
-    background: var(--page);
-    padding: 0.5rem 0.75rem;
-  }
-  .skip-link:focus {
-    top: 0.5rem;
-  }
-
-  .site-line {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.25rem 1.75rem;
-    padding: 1.5rem var(--gutter) 0;
-    font-variant: small-caps;
-    font-variant-numeric: lining-nums;
-    letter-spacing: 0.04em;
-    font-size: 1.0625rem;
-  }
-  .site-line a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .site-line a:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-  }
-  .site-line nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.75rem;
-  }
-
-  /* Courses ▾: a plain disclosure, its list dropping below the nav */
-  .courses-menu {
-    position: relative;
-  }
-  .courses-menu summary {
-    cursor: pointer;
-    list-style: none;
-  }
-  .courses-menu summary::-webkit-details-marker {
-    display: none;
-  }
-  .courses-menu summary::after {
-    content: " ▾" / "";
-  }
-  .courses-menu[open] summary::after {
-    content: " ▴" / "";
-  }
-  .courses-menu summary:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-  }
-  .courses-menu ul {
-    position: absolute;
-    right: 0;
-    z-index: 1;
-    min-width: max-content;
-    margin: 0.375rem 0 0;
-    padding: 0.375rem 0;
-    list-style: none;
-    background: var(--page);
-    /* The Booktabs Rule: horizontal hairlines only, never a box */
-    border-top: 0.8px solid var(--rule);
-    border-bottom: 0.8px solid var(--rule);
-  }
-  .courses-menu li + li {
-    margin-top: 0.25rem;
-  }
-
-  main {
-    padding: 0 var(--gutter) 5rem;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    text-wrap: balance;
-  }
-
-  code,
-  pre,
-  kbd,
-  samp {
-    font-family: var(--mono);
-    font-size: 0.875em;
-    font-variant-numeric: lining-nums tabular-nums;
-  }
-</style>

@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { gardenInputs } from "./src/garden/inputs";
 
@@ -9,4 +10,5 @@ export default defineConfig({
   output: "static",
   // Inline page CSS: one small site, so no extra stylesheet request per page.
   build: { inlineStylesheets: "always" },
+  vite: { plugins: [tailwindcss()] },
 });

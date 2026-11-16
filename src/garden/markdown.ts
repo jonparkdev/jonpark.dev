@@ -52,7 +52,7 @@ export function renderMarkdown(markdown: string, context: RenderContext): string
         return `${link}<sup class="tangent-mark"><a href="#tangent-${n}"${id} aria-label="Tangent footnote ${n}">🐇${n}</a></sup>`;
       }
       // Links ahead of the writing are allowed; show them as not-yet-written ideas.
-      return `<span class="wikilink unwritten" title="Not written yet">${label}<span class="visually-hidden"> (not written yet)</span></span>`;
+      return `<span class="wikilink unwritten" title="Not written yet">${label}<span class="sr-only"> (not written yet)</span></span>`;
     },
   };
   return new Marked({

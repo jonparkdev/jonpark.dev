@@ -5,13 +5,15 @@ interface Props {
   stage: Stage;
   /** Link to /about-stages. Off where the page already links there once, such as the home page's Note list. */
   linked?: boolean;
+  /** Utilities for where the badge sits, e.g. quieter ink in a list. */
+  class?: string;
 }
 
-const { stage, linked = true } = Astro.props;
+const { stage, linked = true, class: className } = Astro.props;
 const Tag = linked ? "a" : "span";
 // The emoji is hidden from screen readers so the Stage is announced once, by its label.
 const emoji = stageEmoji(stage);
 const label = ` ${stageLabel(stage)}`;
 ---
 
-<Tag href={linked ? "/about-stages" : undefined} class={`stage-badge stage-${stage}`}><span aria-hidden="true">{emoji}</span>{label}</Tag>
+<Tag href={linked ? "/about-stages" : undefined} class:list={["stage-badge", `stage-${stage}`, className]}><span aria-hidden="true">{emoji}</span>{label}</Tag>
