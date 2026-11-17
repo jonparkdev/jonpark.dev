@@ -2,8 +2,10 @@
 import Base from "./Base.astro";
 
 // The LaTeX article every reading page shares: \maketitle, the abstract, and
-// the body's typesetting with numbered sections. Pages put their prose in an
-// element with class "article-body".
+// the body's typesetting with numbered, ruled sections, margin notes and
+// framed figures. Pages put their prose in an element with class
+// "article-body flow"; the article itself is a flow, so its children sit in
+// the text column and section rules can run wider.
 
 interface Props {
   title: string;
@@ -15,37 +17,20 @@ const { title, class: className } = Astro.props;
 ---
 
 <Base title={title}>
-  <article class:list={["article", className]}>
+  <article class:list={["article", "flow", className]}>
     <slot />
   </article>
 </Base>
 
 <style is:global>
   .article {
-    max-width: var(--measure);
-    margin: 0 auto;
     padding-top: clamp(2rem, 6vw, 3.5rem);
   }
 
-  /* \maketitle */
-  .article .title-block {
-    text-align: center;
-    margin-bottom: 1.75rem;
-  }
-  .article h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.875rem;
-  }
   .article .byline {
     margin: 0;
     font-size: 1.0625rem;
     line-height: 1.5;
-  }
-  .article .sc {
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
   }
 
   /* No paragraph ends on a lone word, as TeX's line breaker avoids */
@@ -58,9 +43,10 @@ const { title, class: className } = Astro.props;
   /* \begin{abstract} */
   .article .abstract {
     max-width: 35rem;
-    margin: 0 auto 2.25rem;
+    margin-bottom: 3.5rem;
     font-size: 1rem;
     line-height: 1.5;
+    color: var(--ink-soft);
   }
   .article .abstract p {
     margin: 0;
@@ -70,14 +56,15 @@ const { title, class: className } = Astro.props;
     font-weight: 700;
     font-size: 0.9375rem;
     margin-bottom: 0.25rem;
+    color: var(--ink);
   }
 
   /* Body: justified, hyphenated, numbered sections */
   .article-body {
-    counter-reset: section figure;
+    counter-reset: section;
   }
   .article-body p {
-    margin: 0 0 0.75rem;
+    margin-block: 0 0.75rem;
     text-align: justify;
     hyphens: auto;
     -webkit-hyphens: auto;
@@ -85,55 +72,215 @@ const { title, class: className } = Astro.props;
   .article-body p + p {
     text-indent: 1.5em;
   }
-  .article-body h2 {
+  .article-body > h2 {
     counter-increment: section;
     counter-reset: subsection;
     font-size: 1.375rem;
     font-weight: 700;
     line-height: 1.25;
-    margin: 2.25rem 0 0.75rem;
+    scroll-margin-top: 1.5rem;
   }
-  .article-body h2::before {
+  .article-body > h2::before {
     content: counter(section);
     display: inline-block;
     min-width: 1.75em;
+    color: var(--ink-meta);
+    font-variant-numeric: lining-nums;
   }
-  .article-body h3 {
+  .article-body > h3 {
     counter-increment: subsection;
     font-size: 1.1875rem;
     font-weight: 700;
-    margin: 1.75rem 0 0.5rem;
+    line-height: 1.3;
+    margin-block: 2.5rem 0.625rem;
+    scroll-margin-top: 1.5rem;
   }
-  .article-body h3::before {
+  .article-body > h3::before {
     content: counter(section) "." counter(subsection);
     display: inline-block;
     min-width: 2.5em;
+    color: var(--ink-meta);
+    font-variant-numeric: lining-nums;
   }
-  .article-body h4 {
+  .article-body > h4 {
     font-size: 1em;
     font-weight: 700;
-    margin: 1.25rem 0 0.25rem;
+    margin-block: 1.75rem 0.25rem;
   }
   .article-body ul,
   .article-body ol {
-    margin: 0 0 0.75rem;
+    margin-block: 0 0.75rem;
     padding-left: 1.75em;
+  }
+  .article-body > ul,
+  .article-body > ol {
+    box-sizing: border-box;
   }
   .article-body li + li {
     margin-top: 0.25rem;
   }
   .article-body blockquote {
-    margin: 1rem 2em;
+    box-sizing: border-box;
+    margin-block: 1.25rem;
+    padding-inline: 2rem;
     font-size: 1.0625rem;
   }
   .article-body hr {
     border: 0;
-    border-top: 0.8px solid var(--rule);
-    width: 40%;
-    margin: 2rem auto;
+    border-top: 0.8px solid var(--rule-soft);
+    width: min(40%, 16rem);
+    margin-block: 2.5rem;
   }
   .article-body :not(pre) > code {
     font-size: 0.875em;
+  }
+
+  /* \sidenote: on wide screens each footnote sits in the right margin beside
+     the line that calls it; narrow screens get the footnotes at the end. */
+  .note-mark,
+  .tangent-mark {
+    font-size: 0.7em;
+    line-height: 0;
+    margin-left: 0.1em;
+    font-variant-numeric: lining-nums;
+  }
+  .note-mark a,
+  .tangent-mark a {
+    color: var(--ink-meta);
+    text-decoration: none;
+  }
+  .note-mark a:hover,
+  .tangent-mark a:hover {
+    color: var(--ref);
+  }
+  .mark-wide {
+    display: none;
+    color: var(--ink-meta);
+  }
+  .sidenote {
+    display: none;
+  }
+  /* Margin notes called from a table, set just after it */
+  .article-body .table-notes {
+    margin-block: 0;
+  }
+  @media (min-width: 80rem) {
+    .sidenote {
+      display: block;
+      float: right;
+      clear: right;
+      position: relative;
+      width: var(--margin-note);
+      margin-right: calc(-1 * (var(--margin-note) + var(--margin-gap)));
+      margin-bottom: 1rem;
+      text-align: left;
+      text-indent: 0;
+      hyphens: manual;
+      -webkit-hyphens: manual;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      font-style: normal;
+      font-weight: 400;
+      color: var(--ink-meta);
+      text-wrap: pretty;
+    }
+    /* A blockquote's indent comes off the gap, so its notes line up with the rest */
+    .article-body blockquote .sidenote {
+      margin-right: calc(-1 * (var(--margin-note) + var(--margin-gap)) - 2rem);
+    }
+    .sidenote-mark {
+      font-variant-numeric: lining-nums;
+      color: var(--ink-meta);
+      margin-right: 0.15em;
+    }
+    /* The note is beside its mark, so the mark is a plain number, not a link */
+    .note-mark a,
+    .tangent-mark a {
+      display: none;
+    }
+    .mark-wide {
+      display: inline;
+    }
+    .sidenote .stage-badge {
+      white-space: nowrap;
+    }
+    .article .footnotes {
+      display: none;
+    }
+  }
+
+  /* Figures: the Diagram framed on graph paper, labelled down each side,
+     numbered and captioned beneath. */
+  .article-body figure,
+  .article-body .diagram {
+    text-indent: 0;
+  }
+  .article-body figure {
+    margin-block: 3rem;
+  }
+  figure .figure-frame {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 10rem;
+    padding: 2rem 2.75rem;
+    border: 0.8px solid var(--rule-soft);
+    background:
+      radial-gradient(circle, var(--grain) 0.7px, transparent 1px) 0 0 / 9px 9px,
+      var(--page);
+    text-align: center;
+    overflow-x: auto;
+  }
+  figure .figure-frame::before,
+  figure .figure-frame::after {
+    position: absolute;
+    top: 0.75rem;
+    writing-mode: vertical-rl;
+    padding: 0.25rem 0;
+    background: var(--page);
+    color: var(--ink-meta);
+    font-size: 0.8125rem;
+    font-variant: small-caps;
+    font-variant-numeric: lining-nums;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+    /* A long file name never runs past the frame */
+    max-height: calc(100% - 1.5rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  figure .figure-frame::before {
+    content: attr(data-fig) / "";
+    left: 0.875rem;
+  }
+  figure .figure-frame[data-name]::after {
+    content: "[ " attr(data-name) " ]" / "";
+    right: 0.875rem;
+  }
+  figure .figure-frame svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+  /* Excalidraw paints a white page behind the drawing; let the graph paper show */
+  figure .figure-frame svg > rect[x="0"][y="0"]:is([fill="#ffffff"], [fill="#fff"], [fill="white"]) {
+    fill: transparent;
+  }
+  figure figcaption {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.9375rem;
+    color: var(--ink-meta);
+  }
+  figure figcaption .sc {
+    color: var(--ink);
+  }
+  /* A Diagram set inside a sentence stays inline and unframed */
+  .article-body span.diagram svg {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
   }
 
   @media (max-width: 36rem) {
@@ -143,7 +290,20 @@ const { title, class: className } = Astro.props;
       -webkit-hyphens: manual;
     }
     .article-body blockquote {
-      margin: 1rem 1em;
+      padding-inline: 1rem;
+    }
+    /* Keep Diagram labels at their drawn size; scroll sideways instead of shrinking. */
+    figure .figure-frame {
+      padding: 1.25rem 1rem;
+      text-align: left;
+    }
+    figure .figure-frame::before,
+    figure .figure-frame::after {
+      display: none;
+    }
+    figure .figure-frame svg {
+      max-width: none;
+      margin-inline: 0;
     }
   }
 </style>

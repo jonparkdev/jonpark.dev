@@ -8,6 +8,9 @@ interface Props {
 
 const { title } = Astro.props;
 const { courses } = loadGarden();
+const here = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const current = (path: string) => (here === path ? "page" : undefined);
+const inCourse = courses.some((course) => here === coursePath(course));
 ---
 
 <html lang="en">
@@ -20,21 +23,21 @@ const { courses } = loadGarden();
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-line">
-      <a href="/" class="site-name">jonpark.dev</a>
+      <a href="/" class="site-name" aria-current={current("/")}>jonpark.dev</a>
       <nav aria-label="Site">
-        <details class="courses-menu">
+        <details class:list={["courses-menu", { current: inCourse }]}>
           <summary>Courses</summary>
           <ul>
             {
               courses.map((course) => (
                 <li>
-                  <a href={coursePath(course)}>{course.title}</a>
+                  <a href={coursePath(course)} aria-current={current(coursePath(course))}>{course.title}</a>
                 </li>
               ))
             }
           </ul>
         </details>
-        <a href="/about-stages">About Stages</a>
+        <a href="/about-stages" aria-current={current("/about-stages")}>About Stages</a>
       </nav>
     </header>
     <main id="main">
@@ -80,19 +83,27 @@ const { courses } = loadGarden();
     font-display: swap;
   }
 
-  /* The LaTeX article: a white page, black ink, hyperref blue for references. */
+  /* The LaTeX article: a white page, black ink, hyperref blue for references,
+     and a ladder of greys for everything that sits beside the text. */
   :root {
     color-scheme: light;
     --page: #ffffff;
     --ink: #111111;
     --ink-soft: #4d4d4d;
+    --ink-meta: #6b6b6b;
     --rule: #111111;
+    --rule-soft: #d6d6d6;
+    --grain: color-mix(in srgb, var(--ink) 16%, transparent);
     --ref: #1f4e8c;
     --undefined: #8b1a1a;
     --select: #d6e2f2;
     --serif: "Garden Modern", "Latin Modern Roman", "CMU Serif", "STIX Two Text", Georgia, serif;
     --mono: "Garden Modern Mono", "Latin Modern Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
     --measure: 41rem;
+    --margin-note: 13rem;
+    --margin-gap: 2.5rem;
+    /* The band section rules run across: the column plus a margin each side */
+    --band: 76rem;
     --gutter: clamp(1rem, 4vw, 4rem);
   }
 
@@ -176,9 +187,18 @@ const { courses } = loadGarden();
     letter-spacing: 0.04em;
     font-size: 1.0625rem;
   }
-  .site-line a {
-    color: var(--ink);
+  .site-line a,
+  .courses-menu summary {
+    color: var(--ink-meta);
     text-decoration: none;
+  }
+  .site-line .site-name,
+  .site-line a[aria-current="page"],
+  .site-line a:hover,
+  .courses-menu summary:hover,
+  .courses-menu[open] summary,
+  .courses-menu.current summary {
+    color: var(--ink);
   }
   .site-line a:hover {
     text-decoration: underline;
@@ -221,15 +241,133 @@ const { courses } = loadGarden();
     list-style: none;
     background: var(--page);
     /* The Booktabs Rule: horizontal hairlines only, never a box */
-    border-top: 0.8px solid var(--rule);
-    border-bottom: 0.8px solid var(--rule);
+    border-top: 0.8px solid var(--rule-soft);
+    border-bottom: 0.8px solid var(--rule-soft);
   }
   .courses-menu li + li {
     margin-top: 0.25rem;
   }
 
   main {
-    padding: 0 var(--gutter) 5rem;
+    padding: 0 var(--gutter) 6rem;
+  }
+
+  /* A flow sets its children in the text column, so a section rule inside it
+     can run wider than the column. Flows nest. */
+  .flow > * {
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+  .flow > .flow {
+    max-width: none;
+  }
+
+  /* \section, ruled: a hairline across the band, the heading set in the column */
+  .flow > .section-rule,
+  .flow.article-body > h2 {
+    clear: both;
+    box-sizing: border-box;
+    max-width: none;
+    width: min(100%, var(--band));
+    margin-block: clamp(4rem, 10vh, 6.5rem) 1.75rem;
+    padding-top: 1.25rem;
+    padding-inline: max(0px, (min(100%, var(--band)) - var(--measure)) / 2);
+    border-top: 0.8px solid var(--rule-soft);
+  }
+
+  /* \maketitle, shared by every page */
+  .title-block {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .title-block h1 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 0 0.875rem;
+  }
+  .title-block p {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+  .sc {
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+  }
+  .meta {
+    color: var(--ink-meta);
+  }
+
+  /* \tableofcontents: ruled rows, hanging numbers, collapsible */
+  .contents {
+    margin-bottom: 4rem;
+    border-top: 0.8px solid var(--rule-soft);
+    border-bottom: 0.8px solid var(--rule-soft);
+  }
+  .contents summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.875rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 1.0625rem;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .contents summary::-webkit-details-marker {
+    display: none;
+  }
+  .contents summary::after {
+    content: "[+]" / "";
+    color: var(--ink-meta);
+    font-variant: normal;
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    letter-spacing: 0;
+  }
+  .contents details[open] > summary::after {
+    content: "[\2212]" / "";
+  }
+  .contents details[open] > summary {
+    border-bottom: 0.8px solid var(--rule-soft);
+  }
+  .contents ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .contents li + li {
+    border-top: 0.8px solid var(--rule-soft);
+  }
+  .contents a {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.25rem;
+    padding: 0.625rem 0;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+  }
+  .contents a:hover .contents-label {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+  .contents .contents-number {
+    color: var(--ink-meta);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  .contents .depth-3 a {
+    grid-template-columns: 2.5rem 2.5rem minmax(0, 1fr);
+    font-size: 1rem;
+  }
+  .contents .depth-3 .contents-number {
+    grid-column: 2;
   }
 
   h1,

@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from "astro";
+import Contents, { type ContentsItem } from "../components/Contents.astro";
 import NoteLink from "../components/NoteLink.astro";
 import { partLabel, type Course } from "../garden/course";
 import { loadGarden } from "../garden/garden";
@@ -15,21 +16,33 @@ interface Props {
 
 const { course } = Astro.props;
 const index = topicIndex(course.curriculum, loadGarden().notes);
+
+// Each Part is a ruled section; the Contents lists them by number.
+const parts = index.map(({ part }, i) => {
+  const numbered = /^(\d+)\s+(.+)$/.exec(part.title);
+  const id = part.isTangents ? "part-tangents" : `part-${numbered ? Number(numbered[1]) : i + 1}`;
+  const item: ContentsItem = part.isTangents
+    ? { id, number: "🐇", label: "Tangents", depth: 2 }
+    : { id, number: numbered ? String(Number(numbered[1])) : "", label: numbered ? numbered[2] : part.title, depth: 2 };
+  return { entry: index[i], item };
+});
 ---
 
 <Base title={`${course.title} · jonpark.dev`}>
-  <div class="course">
+  <div class="course flow">
     <header class="title-block">
       <h1>{course.title}</h1>
       <p>{course.subtitle}</p>
     </header>
 
-    <section class="topic-index" aria-label="Topics">
+    <Contents items={parts.map(({ item }) => item)} />
+
+    <section class="topic-index flow" aria-label="Topics">
       {index.length === 0 && <p class="empty">No Notes yet.</p>}
       {
-        index.map(({ part, topics }) => (
-          <section class:list={["part", { tangents: part.isTangents }]}>
-            <h2>{partLabel(part)}</h2>
+        parts.map(({ entry: { part, topics }, item }) => (
+          <section class:list={["part", "flow", { tangents: part.isTangents }]} aria-labelledby={item.id}>
+            <h2 class="section-rule" id={item.id}>{partLabel(part)}</h2>
             {topics.map(({ topic, notes }) => (
               <section class="topic" id={topic.key} data-topic={topic.key}>
                 <h3>{topic.title}</h3>
@@ -51,43 +64,36 @@ const index = topicIndex(course.curriculum, loadGarden().notes);
 
 <style>
   .course {
-    max-width: var(--measure);
-    margin: 0 auto;
     padding-top: clamp(2rem, 6vw, 3.5rem);
   }
-
-  /* \maketitle */
-  .title-block {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.625rem;
-  }
-  .title-block p {
-    margin: 0;
-    font-size: 1.0625rem;
+  .course .title-block {
+    margin-bottom: 3.5rem;
   }
 
-  /* The outline: small-caps Part labels, bold Topic heads, Notes indented */
-  .part {
-    margin-bottom: 2rem;
+  /* The outline: ruled small-caps Parts, bold Topic heads, Notes indented */
+  .topic-index > .part:first-child > h2 {
+    margin-top: 0;
   }
   .part h2 {
-    font-size: 1.0625rem;
+    font-size: 1.25rem;
     font-weight: 400;
     font-variant: small-caps;
     letter-spacing: 0.04em;
-    margin: 0 0 0.25rem;
+    line-height: 1.3;
+    margin-block: clamp(3.5rem, 8vh, 5rem) 1.25rem;
+    scroll-margin-top: 1.5rem;
+  }
+  .topic {
+    scroll-margin-top: 1.5rem;
+  }
+  .topic + .topic {
+    margin-top: 1.5rem;
   }
   .topic h3 {
     font-size: 1.1875rem;
     font-weight: 700;
     line-height: 1.3;
-    margin: 0.625rem 0 0.125rem;
+    margin: 0 0 0.25rem;
   }
   .topic ul {
     list-style: none;
@@ -95,7 +101,7 @@ const index = topicIndex(course.curriculum, loadGarden().notes);
     padding: 0 0 0 1.5em;
   }
   .topic li {
-    margin-bottom: 0.1875rem;
+    margin-bottom: 0.25rem;
   }
   .topic-index :global(.stage-badge) {
     color: var(--ink);

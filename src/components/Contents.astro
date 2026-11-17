@@ -1,0 +1,41 @@
+---
+// \tableofcontents: a ruled, collapsible list of a page's numbered sections.
+// Shown only when the page has enough top-level sections to need one.
+
+export interface ContentsItem {
+  id: string;
+  label: string;
+  /** "2" for a section, "2.1" for a subsection; empty for an unnumbered one. */
+  number: string;
+  depth: 2 | 3;
+}
+
+interface Props {
+  items: ContentsItem[];
+  /** The fewest top-level sections that earn a Contents. */
+  minSections?: number;
+}
+
+const { items, minSections = 3 } = Astro.props;
+const shown = items.filter((item) => item.depth === 2).length >= minSections;
+---
+
+{
+  shown && (
+    <nav class="contents" aria-labelledby="contents-head">
+      <details>
+        <summary id="contents-head">Contents</summary>
+        <ol>
+          {items.map((item) => (
+            <li class={`depth-${item.depth}`}>
+              <a href={`#${item.id}`}>
+                <span class="contents-number">{item.number}</span>
+                <span class="contents-label">{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    </nav>
+  )
+}

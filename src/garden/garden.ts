@@ -2,14 +2,19 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadCourses, type Course } from "./course";
 import { gardenInputs, type GardenInputs } from "./inputs";
-import { renderMarkdown } from "./markdown";
+import { escapeHtml, renderMarkdown, type Footnote, type Heading } from "./markdown";
 import { noteProblem, notePath, readNote, type NoteFile } from "./note-file";
+import { stageBadgeHtml } from "./stage";
 import { byTended, tendedDate } from "./tended";
 
 /** One idea in the garden, ready to render. */
 export interface Note extends NoteFile {
   /** Rendered body HTML, wikilinks resolved and Diagrams embedded. */
   html: string;
+  /** The body's numbered sections and subsections, in order, for its Contents. */
+  headings: Heading[];
+  /** The author's own footnotes, numbered in order of first reference. */
+  footnotes: Footnote[];
   /**
    * The written Notes this Note's body wikilinks to, in first-mention order,
    * each once. Links to unwritten Notes are not included.
@@ -79,6 +84,8 @@ function buildGarden(inputs: GardenInputs): Garden {
         ...file,
         isTangent: file.placement?.part.isTangents ?? false,
         html: "",
+        headings: [],
+        footnotes: [],
         linksTo: [],
         linkedFrom: [],
         tangents: [],
@@ -114,7 +121,7 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
   for (const note of notes) {
     const linked = new Set<Note>();
     const tangents: Note[] = [];
-    note.html = renderMarkdown(note.markdown, {
+    const rendered = renderMarkdown(note.markdown, {
       resolveNote(target) {
         const found = byTitle.get(target.toLowerCase());
         if (!found) return undefined;
@@ -124,7 +131,8 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
         if (!found.isTangent || note.isTangent || found === note) return { href };
         const firstMention = !tangents.includes(found);
         if (firstMention) tangents.push(found);
-        return { href, tangentFootnote: tangents.indexOf(found) + 1, firstMention };
+        const tangentNote = firstMention ? `Tangent: <a href="${escapeHtml(href)}">${escapeHtml(found.title)}</a> ${stageBadgeHtml(found.stage)}` : undefined;
+        return { href, tangentFootnote: tangents.indexOf(found) + 1, firstMention, tangentNote };
       },
       embedDiagram(name) {
         const path = join(assetsDir, name);
@@ -135,6 +143,9 @@ function renderNotes(notes: Note[], assetsDir: string, problems: string[]): void
         return inlineSvg(readFileSync(path, "utf8"));
       },
     });
+    note.html = rendered.html;
+    note.headings = rendered.headings;
+    note.footnotes = rendered.footnotes;
     note.linksTo = [...linked];
     note.tangents = tangents;
   }

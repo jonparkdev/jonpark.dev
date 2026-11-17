@@ -32,6 +32,7 @@ Every Stage is earned through Recall, never through polish (see `GLOSSARY.md`). 
 ## Capabilities and Constraints
 
 - Note pages at `/notes/<slug>` with a Stage badge, Topic and Course (if the Note has one), wikilinks (links to unwritten Notes render as visibly unwritten text), embedded Diagrams, and "Linked from" backlinks.
+- Obsidian footnotes (`[^id]` and `^[inline]`) and 🐇 Tangents show as notes in the right margin on wide screens and as footnotes at the end on narrow ones. A Note with three or more `##` sections gets a Contents block. A Diagram on a line of its own is a framed, numbered figure named after its file. None of this adds authoring work (changed 2026-11-17).
 - Home page: every Note, most recently Tended first, with its Stage and date, wherever it comes from (changed 2026-11-14).
 - Course pages at `/<course>` (one `src/courses/<course>.json` each; Hello Interview is `/hellointerview`) = Topic index: only Topics that have at least one Note, plus Tangents, in Curriculum order, each listing its Notes with their Stages. No progress tracking or per-Stage counts. A `Courses ▾` dropdown in the header lists every Course.
 - `/about-stages` explains the Stages publicly.

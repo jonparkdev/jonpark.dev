@@ -20,7 +20,7 @@ test("a link to a Tangent Note gets a 🐇 footnote mark and a footnote naming i
   expect(build.exitCode, build.stdout + build.stderr).toBe(0);
   const html = build.page("/notes/cache-aside") ?? "";
   // Both mentions point at the same footnote.
-  expect(html.match(/<sup class="tangent-mark"><a href="#tangent-1"[^>]*>🐇1<\/a><\/sup>/g)).toHaveLength(2);
+  expect(html.match(/<sup class="tangent-mark"><a href="#tangent-1"[^>]*>🐇1<\/a>/g)).toHaveLength(2);
   expect(html).not.toContain("#tangent-2");
   expect(html).toMatch(/<li id="tangent-1"[^>]*>[\s\S]*?<a[^>]*href="\/notes\/thundering-herd"[^>]*>Thundering herd<\/a>/);
 
