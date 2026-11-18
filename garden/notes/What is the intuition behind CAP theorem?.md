@@ -1,0 +1,6 @@
+- The context behind CAP theorem is the following:
+	- You have 3 properties Consistency, Availability and Partitioning. In your system you can only pick 2 of these properties for you system at one time
+- When reading any guide to system design,  The assumption is that Partitioning is a given. Most of the time the interviewer is testing you on a problem of scale which requires your system to be distributed. So given the business requirements do you chose availability or consistency. A contrived example of each would be:
+	- Consistency: a booking system where its critical that 2 people cannot book the same reservation (i.e. ticket). We would want to priotiz
+	- Availability
+- Non functional requirements go hand in hand with CAP theorem. That specify something like "the system must prio"
