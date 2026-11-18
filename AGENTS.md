@@ -15,13 +15,13 @@ Each kind of information has one home. Extend that file instead of creating a ne
 | Personal study routine and dates | `docs/study-plan.md` |
 | Specs and issues | `.scratch/<feature>/` (finished work in `.scratch/archive/`) |
 | Per-page design briefs (impeccable) | `.impeccable/surfaces/` |
-| Agent-only setup | `docs/agents/` |
+| How the engineering skills find issues, triage labels, and domain docs | `docs/agents/` |
+| Rules for agents working in the writing vault (`garden/`) | `garden/AGENTS.md` |
 
 ## Adding docs
 
 - Before creating a doc, find its home above and add to that file.
 - A new top-level doc or folder needs a row in this map in the same change.
-- Root and `docs/` are for humans, except `docs/agents/`. Other files only agents read go in a dot-folder.
 
 ## Agent skills
 
