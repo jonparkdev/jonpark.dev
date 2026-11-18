@@ -6,3 +6,6 @@ dist/
 garden/inbox.md
 garden/.obsidian/workspace*.json
 .claude/settings.local.json
+garden/copilot/
+garden/.copilot/
+garden/.obsidian/plugins/copilot/
