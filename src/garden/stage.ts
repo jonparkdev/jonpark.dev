@@ -37,3 +37,11 @@ export function stageLabel(stage: Stage): string {
 export function compareStages(a: Stage, b: Stage): number {
   return STAGES.indexOf(a) - STAGES.indexOf(b);
 }
+
+/**
+ * The Stage badge as HTML, for markup built outside Astro (such as a Tangent's
+ * margin note). Mirrors `src/components/StageBadge.astro`.
+ */
+export function stageBadgeHtml(stage: Stage): string {
+  return `<a href="/about-stages" class="stage-badge stage-${stage}"><span aria-hidden="true">${stageEmoji(stage)}</span> ${stageLabel(stage)}</a>`;
+}

@@ -7,6 +7,7 @@ import { loadGarden, type Note } from "../../garden/garden";
 import { stageCue } from "../../garden/stage";
 import { tendedDay, tendedLong } from "../../garden/tended";
 import Article from "../../layouts/Article.astro";
+import Contents from "../../components/Contents.astro";
 
 export const getStaticPaths = (() =>
   loadGarden().notes.map((note) => ({ params: { slug: note.slug }, props: { note } }))) satisfies GetStaticPaths;
@@ -16,91 +17,102 @@ interface Props {
 }
 
 const { note } = Astro.props;
-
-
-
 const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
+const hasFootnotes = note.footnotes.length > 0 || note.tangents.length > 0;
 ---
 
 <Article title={note.title} class="note">
-    <header class="title-block">
-      <h1>{note.title}</h1>
-      <p class="byline">
-        {note.placement && (
-          <>
-            <span class="sc">Topic:</span>{" "}
-            <a href={`${coursePath(note.placement.course)}#${note.placement.topic.key}`}>{note.placement.topic.title}</a>
-            {" · "}{partLabel(note.placement.part)}{" · "}
-            <a href={coursePath(note.placement.course)}>{note.placement.course.title}</a><br />
-          </>
+  <header class="title-block">
+    <h1>{note.title}</h1>
+    <p class="byline">
+      {note.placement && (
+        <>
+          <span class="sc">Topic:</span>{" "}
+          <a href={`${coursePath(note.placement.course)}#${note.placement.topic.key}`}>{note.placement.topic.title}</a>
+          {" · "}{partLabel(note.placement.part)}{" · "}
+          <a href={coursePath(note.placement.course)}>{note.placement.course.title}</a><br />
+        </>
+      )}
+      <span class="meta">Tended <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time></span>
+    </p>
+  </header>
+
+  <section class="abstract" aria-label="Stage">
+    <p class="abstract-head">Stage: <StageBadge stage={note.stage} /></p>
+    <p>{stageCue(note.stage)}</p>
+  </section>
+
+  <Contents items={note.headings} />
+
+  <div class="note-body article-body flow" set:html={note.html} />
+
+  {
+    hasReferences && (
+      <div class="references flow">
+        <h2 class="section-rule">References</h2>
+        {note.linksTo.length > 0 && (
+          <section class="links-to" aria-labelledby="links-to-head">
+            <h3 id="links-to-head">Links to</h3>
+            <ol>
+              {note.linksTo.map((target) => (
+                <li>
+                  <NoteLink note={target} />
+                  {target.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
+                </li>
+              ))}
+            </ol>
+          </section>
         )}
-        Tended <time datetime={tendedDay(note.tended)}>{tendedLong(note.tended)}</time>
-      </p>
-    </header>
+        {note.linkedFrom.length > 0 && (
+          <section class="linked-from" aria-labelledby="linked-from-head">
+            <h3 id="linked-from-head">Linked from</h3>
+            <ol>
+              {note.linkedFrom.map((source) => (
+                <li>
+                  <NoteLink note={source} />
+                  {source.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+      </div>
+    )
+  }
 
-    <section class="abstract" aria-label="Stage">
-      <p class="abstract-head">Stage: <StageBadge stage={note.stage} /></p>
-      <p>{stageCue(note.stage)}</p>
-    </section>
-
-    <div class="note-body article-body" set:html={note.html} />
-
-    {
-      hasReferences && (
-        <div class="references">
-          <h2>References</h2>
-          {note.linksTo.length > 0 && (
-            <section class="links-to" aria-labelledby="links-to-head">
-              <h3 id="links-to-head">Links to</h3>
-              <ol>
-                {note.linksTo.map((target) => (
-                  <li>
-                    <NoteLink note={target} />
-                    {target.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
-                  </li>
-                ))}
-              </ol>
-            </section>
-          )}
-          {note.linkedFrom.length > 0 && (
-            <section class="linked-from" aria-labelledby="linked-from-head">
-              <h3 id="linked-from-head">Linked from</h3>
-              <ol>
-                {note.linkedFrom.map((source) => (
-                  <li>
-                    <NoteLink note={source} />
-                    {source.isTangent && <span class="tangent-flag"> 🐇 Tangent</span>}
-                  </li>
-                ))}
-              </ol>
-            </section>
-          )}
-        </div>
-      )
-    }
-
-    {
-      note.tangents.length > 0 && (
-        <footer class="footnotes" aria-labelledby="tangents-head">
-          <h2 id="tangents-head" class="visually-hidden">
-            Tangents
-          </h2>
-          <ol>
-            {note.tangents.map((tangent, i) => (
-              <li id={`tangent-${i + 1}`}>
-                <span class="fn-mark" aria-hidden="true">
-                  🐇{i + 1}
-                </span>
-                Tangent: <NoteLink note={tangent} />{" "}
-                <a class="fn-back" href={`#tangent-ref-${i + 1}`} aria-label={`Back to tangent mark ${i + 1} in the text`}>
-                  ↑
-                </a>
-              </li>
-            ))}
-          </ol>
-        </footer>
-      )
-    }
+  {
+    hasFootnotes && (
+      <footer class="footnotes" aria-labelledby="notes-head">
+        <h2 id="notes-head" class="visually-hidden">
+          Notes
+        </h2>
+        <ol>
+          {note.footnotes.map((footnote) => (
+            <li id={`note-${footnote.n}`}>
+              <span class="fn-mark" aria-hidden="true">
+                {footnote.n}
+              </span>
+              <Fragment set:html={footnote.html} />{" "}
+              <a class="fn-back" href={`#note-ref-${footnote.n}`} aria-label={`Back to note ${footnote.n} in the text`}>
+                ↑
+              </a>
+            </li>
+          ))}
+          {note.tangents.map((tangent, i) => (
+            <li id={`tangent-${i + 1}`}>
+              <span class="fn-mark" aria-hidden="true">
+                🐇{i + 1}
+              </span>
+              Tangent: <NoteLink note={tangent} />{" "}
+              <a class="fn-back" href={`#tangent-ref-${i + 1}`} aria-label={`Back to tangent mark ${i + 1} in the text`}>
+                ↑
+              </a>
+            </li>
+          ))}
+        </ol>
+      </footer>
+    )
+  }
 </Article>
 
 <style>
@@ -124,21 +136,13 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     margin-left: 0.1em;
     font-weight: 700;
   }
-  .note-body :global(.tangent-mark) {
-    font-size: 0.7em;
-    line-height: 0;
-    margin-left: 0.1em;
-  }
-  .note-body :global(.tangent-mark a) {
-    text-decoration: none;
-  }
 
-  /* lstlisting: rules above and below, line numbers in the margin */
+  /* lstlisting: soft rules above and below, line numbers in the margin */
   .note-body :global(pre.listing) {
-    margin: 1.25rem 0 1.5rem;
-    padding: 0.5rem 0;
-    border-top: 0.8px solid var(--rule);
-    border-bottom: 0.8px solid var(--rule);
+    margin-block: 2rem 2.25rem;
+    padding: 0.625rem 0;
+    border-top: 0.8px solid var(--rule-soft);
+    border-bottom: 0.8px solid var(--rule-soft);
     overflow-x: auto;
     font-size: 0.875rem;
     line-height: 1.6;
@@ -157,7 +161,7 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     width: 2.25rem;
     padding-right: 0.875rem;
     text-align: right;
-    color: var(--ink-soft);
+    color: var(--ink-meta);
     font-size: 0.8em;
     user-select: none;
   }
@@ -165,7 +169,7 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
   /* booktabs: horizontal rules only, heavier at top and bottom */
   .note-body :global(table) {
     border-collapse: collapse;
-    margin: 1.25rem auto 1.5rem;
+    margin-block: 2rem 2.25rem;
     font-size: 1rem;
     font-variant-numeric: lining-nums tabular-nums;
     display: block;
@@ -190,43 +194,23 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     font-weight: 700;
   }
 
-  /* Diagrams as numbered figures */
-  .note-body :global(.diagram) {
-    counter-increment: figure;
-    display: block;
-    margin: 1.5rem 0;
-    text-align: center;
-    text-indent: 0;
-  }
-  .note-body :global(.diagram svg) {
-    max-width: 100%;
-    height: auto;
-  }
-  .note-body :global(.diagram::after) {
-    content: "Figure " counter(figure);
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.9375rem;
-    font-variant: small-caps;
-    letter-spacing: 0.03em;
-  }
-
-  /* The bibliography: where the reader walks next */
-  /* One bibliography, numbered straight through both lists */
+  /* The bibliography: where the reader walks next.
+     One counter runs straight through both lists. */
   .references {
-    margin-top: 3rem;
     counter-reset: ref;
   }
   .references h2 {
     font-size: 1.375rem;
-    margin: 0 0 0.75rem;
+    font-weight: 700;
+    line-height: 1.25;
   }
   .references h3 {
     font-size: 1rem;
     font-weight: 400;
     font-variant: small-caps;
     letter-spacing: 0.04em;
-    margin: 1.25rem 0 0.375rem;
+    color: var(--ink-soft);
+    margin: 1.5rem 0 0.5rem;
   }
   .references ol {
     list-style: none;
@@ -237,12 +221,13 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     counter-increment: ref;
     position: relative;
     padding-left: 2.5em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
   }
   .references li::before {
     content: "[" counter(ref) "]";
     position: absolute;
     left: 0;
+    color: var(--ink-meta);
     font-variant-numeric: lining-nums;
   }
   .references :global(.stage-badge),
@@ -254,20 +239,23 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
   }
   .tangent-flag {
     font-size: 0.875em;
+    color: var(--ink-meta);
     white-space: nowrap;
   }
 
-  /* \footnote: a short rule, then small type */
+  /* \footnote: a short rule, then small type. Shown only where the margin
+     notes are not (see Article.astro). */
   .footnotes {
-    margin-top: 3rem;
+    margin-top: 4rem;
     font-size: 0.9375rem;
+    color: var(--ink-soft);
   }
   .footnotes::before {
     content: "";
     display: block;
     width: 10rem;
-    border-top: 0.8px solid var(--rule);
-    margin-bottom: 0.5rem;
+    border-top: 0.8px solid var(--rule-soft);
+    margin-bottom: 0.625rem;
   }
   .footnotes ol {
     list-style: none;
@@ -275,7 +263,8 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     padding: 0;
   }
   .footnotes li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
+    scroll-margin-top: 1.5rem;
   }
   .footnotes li:target {
     background: var(--select);
@@ -289,21 +278,6 @@ const hasReferences = note.linksTo.length > 0 || note.linkedFrom.length > 0;
     vertical-align: super;
     line-height: 0;
     margin-right: 0.25em;
-  }
-
-  @media (max-width: 36rem) {
-    /* Keep Diagram labels at their drawn size; scroll sideways instead of shrinking. */
-    .note-body :global(.diagram) {
-      overflow-x: auto;
-      text-align: left;
-    }
-    .note-body :global(.diagram svg) {
-      max-width: none;
-    }
-    .note-body :global(.diagram::after) {
-      text-align: center;
-      position: sticky;
-      left: 0;
-    }
+    color: var(--ink-meta);
   }
 </style>

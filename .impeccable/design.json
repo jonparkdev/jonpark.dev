@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-14T12:00:00Z",
+  "generatedAt": "2026-11-17T12:00:00Z",
   "title": "Design System: jonpark.dev",
   "extensions": {
     "colorMeta": {
@@ -64,6 +64,36 @@
           "#f2f2f2"
         ]
       },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#4d4d4d",
+        "tonalRamp": [
+          "#1a1a1a",
+          "#333333",
+          "#4d4d4d",
+          "#666666",
+          "#808080",
+          "#a6a6a6",
+          "#cccccc",
+          "#ededed"
+        ]
+      },
+      "ink-meta": {
+        "role": "neutral",
+        "displayName": "Meta Grey",
+        "canonical": "#6b6b6b",
+        "tonalRamp": [
+          "#1f1f1f",
+          "#383838",
+          "#525252",
+          "#6b6b6b",
+          "#8a8a8a",
+          "#a8a8a8",
+          "#d6d6d6",
+          "#f0f0f0"
+        ]
+      },
       "rule": {
         "role": "neutral",
         "displayName": "Rule Ink",
@@ -79,19 +109,34 @@
           "#f2f2f2"
         ]
       },
-      "ink-soft": {
+      "rule-soft": {
         "role": "neutral",
-        "displayName": "Soft Ink",
-        "canonical": "#4d4d4d",
+        "displayName": "Soft Rule",
+        "canonical": "#d6d6d6",
         "tonalRamp": [
-          "#1a1a1a",
-          "#333333",
+          "#1f1f1f",
+          "#383838",
+          "#525252",
+          "#6b6b6b",
+          "#8a8a8a",
+          "#a8a8a8",
+          "#d6d6d6",
+          "#f0f0f0"
+        ]
+      },
+      "grain": {
+        "role": "neutral",
+        "displayName": "Graph Grain",
+        "canonical": "color-mix(in srgb, #111111 16%, transparent)",
+        "tonalRamp": [
+          "#111111",
+          "#2b2b2b",
           "#4d4d4d",
-          "#666666",
-          "#808080",
-          "#a6a6a6",
-          "#cccccc",
-          "#ededed"
+          "#6e6e6e",
+          "#929292",
+          "#b8b8b8",
+          "#dcdcdc",
+          "#f2f2f2"
         ]
       },
       "select": {
@@ -113,15 +158,15 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Note title in the centred title block, regular weight."
+        "purpose": "Page title in the centred title block, regular weight."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Numbered sections and the References heading."
+        "purpose": "Numbered ruled sections and the unnumbered References heading."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Numbered subsections (1.1)."
+        "purpose": "Numbered subsections (1.1) and Topic heads on the Course page."
       },
       "body": {
         "displayName": "Body",
@@ -129,19 +174,35 @@
       },
       "small": {
         "displayName": "Small",
-        "purpose": "Byline, the bold abstract head, footnotes, Figure captions."
+        "purpose": "Byline, the bold abstract head, figure captions, end footnotes, home-page Stage and date."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Small-caps site line, Topic label, home-page Part labels and Recently tended label."
+        "purpose": "Small-caps site line, Contents head, Topic label, Figure n in captions."
       },
       "label-sub": {
         "displayName": "Label Sub",
         "purpose": "Small-caps References sub-heads (Links to, Linked from) at 1rem."
       },
+      "label-part": {
+        "displayName": "Label Part",
+        "purpose": "Small-caps Part headings on a Course page at 1.25rem."
+      },
+      "contents": {
+        "displayName": "Contents",
+        "purpose": "Contents rows with tabular figures; subsections at 1rem."
+      },
       "abstract": {
         "displayName": "Abstract",
-        "purpose": "Abstract text on every article page (Note Stage abstract, About Stages abstract)."
+        "purpose": "Abstract text on every article page, in Soft Ink."
+      },
+      "margin-note": {
+        "displayName": "Margin Note",
+        "purpose": "Margin notes at 0.875rem in Meta Grey, ragged right."
+      },
+      "figure-label": {
+        "displayName": "Figure Label",
+        "purpose": "Vertical small-caps Fig. n and [ file name ] labels on a figure frame."
       },
       "table": {
         "displayName": "Table",
@@ -149,7 +210,7 @@
       },
       "mono": {
         "displayName": "Mono",
-        "purpose": "Inline code, tabular lining figures."
+        "purpose": "Inline code and the Contents [−]/[+] toggle."
       },
       "listing": {
         "displayName": "Listing",
@@ -162,19 +223,39 @@
       {
         "name": "narrow",
         "value": "36rem",
-        "purpose": "Below this, body goes ragged-left, blockquote indent halves, Diagrams scroll sideways, Recently tended dates drop to their own line."
+        "purpose": "Below this, body goes ragged-left, blockquote indent halves, figure frames drop side labels and scroll Diagrams sideways, the Note list's Stage and date drop to their own line, About Stages Table 1 restacks."
+      },
+      {
+        "name": "margin",
+        "value": "80rem",
+        "purpose": "At or above this, footnotes and Tangents are margin notes beside their line and the end footnotes are hidden; below it, the reverse."
+      },
+      {
+        "name": "ladder (container)",
+        "value": "38rem",
+        "purpose": "Figure 1 on About Stages runs top to bottom when its frame is narrower than this."
       }
     ],
     "rules": [
       {
+        "name": "hairline-soft",
+        "value": "0.8px solid var(--rule-soft)",
+        "purpose": "Section rules, Contents, figure frame, listings, hr, Courses menu, Note list rows, end-footnote rule."
+      },
+      {
         "name": "hairline",
         "value": "0.8px solid var(--rule)",
-        "purpose": "Listings, booktabs mid-rule, hr, footnote rule, the rule above Recently tended."
+        "purpose": "Booktabs mid-rule."
       },
       {
         "name": "heavy",
         "value": "1.5px solid var(--rule)",
         "purpose": "Booktabs top and bottom rules."
+      },
+      {
+        "name": "graph-paper",
+        "value": "radial-gradient(circle, var(--grain) 0.7px, transparent 1px) 0 0 / 9px 9px, var(--page)",
+        "purpose": "The dot grid inside the figure frame; nowhere else."
       }
     ],
     "focus": {
@@ -185,9 +266,12 @@
       "designed": [
         "src/pages/notes/[slug].astro",
         "src/pages/about-stages.astro",
-        "src/pages/index.astro (Topic index)",
-        "src/layouts/Article.astro (shared article shell)",
-        "src/layouts/Base.astro"
+        "src/pages/[course].astro (Topic index)",
+        "src/pages/index.astro (Note list)",
+        "src/layouts/Article.astro (shared article shell, margin notes, figures)",
+        "src/layouts/Base.astro (tokens, site line, section rule, Contents styles)",
+        "src/components/Contents.astro",
+        "src/garden/markdown.ts (headings, footnotes, figures)"
       ],
       "notYetCovered": [],
       "outOfScope": [
@@ -200,9 +284,9 @@
       "name": "Site Line",
       "kind": "nav",
       "refersTo": "site-line",
-      "description": "Small-caps site name left, Topics and About Stages right.",
-      "html": "<header class=\"ds-site-line\"><a href=\"#\">jonpark.dev</a><nav><a href=\"#\">Topics</a><a href=\"#\">About Stages</a></nav></header>",
-      "css": ".ds-site-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1.75rem; padding: 1.5rem 1rem 0; font-family: var(--serif, 'Garden Modern', Georgia, serif); font-variant: small-caps; letter-spacing: 0.04em; font-size: 1.0625rem; background: #ffffff; } .ds-site-line nav { display: flex; gap: 0.25rem 1.75rem; } .ds-site-line a { color: #111111; text-decoration: none; } .ds-site-line a:hover { text-decoration: underline; text-decoration-thickness: 1px; } .ds-site-line a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
+      "description": "Small-caps site name left in ink; Courses and About Stages right in meta grey, ink when current, hovered or open.",
+      "html": "<header class=\"ds-site-line\"><a class=\"ds-site-name\" href=\"#\">jonpark.dev</a><nav><span class=\"ds-courses\">Courses ▾</span><a href=\"#\" aria-current=\"page\">About Stages</a></nav></header>",
+      "css": ".ds-site-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.25rem 1.75rem; padding: 1.5rem 1rem 0; font-family: 'Garden Modern', Georgia, serif; font-variant: small-caps; letter-spacing: 0.04em; font-size: 1.0625rem; background: #ffffff; } .ds-site-line nav { display: flex; gap: 0.25rem 1.75rem; } .ds-site-line a, .ds-courses { color: #6b6b6b; text-decoration: none; cursor: pointer; } .ds-site-line .ds-site-name, .ds-site-line a[aria-current=page], .ds-site-line a:hover, .ds-courses:hover { color: #111111; } .ds-site-line a:hover, .ds-courses:hover { text-decoration: underline; text-decoration-thickness: 1px; } .ds-site-line a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
     },
     {
       "name": "Reference Link",
@@ -226,31 +310,47 @@
       "refersTo": "stage-abstract",
       "description": "The abstract of the shared article shell: bold centred head, one paragraph. On a Note the head reads Stage: plus the badge; on About Stages it reads Abstract.",
       "html": "<section class=\"ds-abstract\"><p class=\"ds-abstract-head\">Stage: <a href=\"#\">🌱 Seedling</a></p><p>Written from memory with the source closed. Not yet re-explained on a different day or checked against the source.</p></section>",
-      "css": ".ds-abstract { max-width: 35rem; margin: 0 auto; font-family: 'Garden Modern', Georgia, serif; font-size: 1rem; line-height: 1.5; color: #111111; } .ds-abstract p { margin: 0; } .ds-abstract-head { text-align: center; font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.25rem; } .ds-abstract-head a { color: #111111; white-space: nowrap; text-decoration-thickness: 1px; text-underline-offset: 0.18em; } .ds-abstract-head a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
+      "css": ".ds-abstract { max-width: 35rem; margin: 0 auto; font-family: 'Garden Modern', Georgia, serif; font-size: 1rem; line-height: 1.5; color: #4d4d4d; } .ds-abstract p { margin: 0; } .ds-abstract-head { text-align: center; font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.25rem; color: #111111; } .ds-abstract-head a { color: #111111; white-space: nowrap; text-decoration-thickness: 1px; text-underline-offset: 0.18em; } .ds-abstract-head a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
     },
     {
-      "name": "Article Abstract",
-      "kind": "card",
-      "refersTo": "stage-abstract",
-      "description": "The same abstract on About Stages, headed Abstract as LaTeX prints it.",
-      "html": "<section class=\"ds-abstract\"><p class=\"ds-abstract-head\">Abstract</p><p>Every Note in this garden carries a Stage: an honest mark of how well I understand the idea right now, not of how polished the writing is.</p></section>",
-      "css": ".ds-abstract { max-width: 35rem; margin: 0 auto; font-family: 'Garden Modern', Georgia, serif; font-size: 1rem; line-height: 1.5; color: #111111; } .ds-abstract p { margin: 0; } .ds-abstract-head { text-align: center; font-weight: 700; font-size: 0.9375rem; margin-bottom: 0.25rem; }"
-    },
-    {
-      "name": "Numbered Section Heading",
+      "name": "Section Rule",
       "kind": "custom",
-      "refersTo": "section-heading",
-      "description": "Section and subsection headings with LaTeX counters in a hanging slot.",
-      "html": "<div class=\"ds-sections\"><h2>When it fits</h2><h3>Invalidation</h3></div>",
-      "css": ".ds-sections { counter-reset: section; font-family: 'Garden Modern', Georgia, serif; color: #111111; } .ds-sections h2 { counter-increment: section; counter-reset: subsection; font-size: 1.375rem; font-weight: 700; line-height: 1.25; margin: 0 0 0.75rem; } .ds-sections h2::before { content: counter(section); display: inline-block; min-width: 1.75em; } .ds-sections h3 { counter-increment: subsection; font-size: 1.1875rem; font-weight: 700; margin: 1.75rem 0 0.5rem; } .ds-sections h3::before { content: counter(section) '.' counter(subsection); display: inline-block; min-width: 2.5em; }"
+      "refersTo": "section-rule",
+      "description": "A numbered section opened by a soft hairline across the band, the number in meta grey, the heading aligned to the column.",
+      "html": "<div class=\"ds-sections\"><h2>When it fits</h2><p>Cache-aside suits read-heavy data that tolerates brief staleness.</p><h3>Invalidation</h3></div>",
+      "css": ".ds-sections { counter-reset: section; font-family: 'Garden Modern', Georgia, serif; color: #111111; font-size: 1.1875rem; line-height: 1.55; background: #ffffff; } .ds-sections h2 { counter-increment: section; counter-reset: subsection; font-size: 1.375rem; font-weight: 700; line-height: 1.25; margin: 0 0 1.75rem; padding-top: 1.25rem; border-top: 0.8px solid #d6d6d6; } .ds-sections h2::before { content: counter(section); display: inline-block; min-width: 1.75em; color: #6b6b6b; } .ds-sections p { margin: 0 0 0.75rem; } .ds-sections h3 { counter-increment: subsection; font-size: 1.1875rem; font-weight: 700; line-height: 1.3; margin: 2.5rem 0 0.625rem; } .ds-sections h3::before { content: counter(section) '.' counter(subsection); display: inline-block; min-width: 2.5em; color: #6b6b6b; }"
+    },
+    {
+      "name": "Contents",
+      "kind": "nav",
+      "refersTo": "contents",
+      "description": "Ruled, collapsible table of contents: small-caps head, mono toggle, hanging meta-grey numbers, subsections indented.",
+      "html": "<nav class=\"ds-contents\"><details><summary>Contents</summary><ol><li><a href=\"#\"><span class=\"ds-n\">1</span><span class=\"ds-l\">When it fits</span></a></li><li class=\"ds-d3\"><a href=\"#\"><span class=\"ds-n\">1.1</span><span class=\"ds-l\">Read-heavy data</span></a></li><li><a href=\"#\"><span class=\"ds-n\">2</span><span class=\"ds-l\">Invalidation</span></a></li><li><a href=\"#\"><span class=\"ds-n\">3</span><span class=\"ds-l\">Failure modes</span></a></li></ol></details></nav>",
+      "css": ".ds-contents { max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; color: #111111; background: #ffffff; border-top: 0.8px solid #d6d6d6; border-bottom: 0.8px solid #d6d6d6; } .ds-contents summary { display: flex; justify-content: space-between; align-items: baseline; padding: 0.875rem 0; cursor: pointer; list-style: none; font-size: 1.0625rem; font-variant: small-caps; letter-spacing: 0.04em; } .ds-contents summary::-webkit-details-marker { display: none; } .ds-contents summary::after { content: '[+]'; color: #6b6b6b; font-variant: normal; font-family: 'Garden Modern Mono', ui-monospace, Menlo, monospace; font-size: 0.875rem; letter-spacing: 0; } .ds-contents details[open] > summary::after { content: '[\\2212]'; } .ds-contents details[open] > summary { border-bottom: 0.8px solid #d6d6d6; } .ds-contents ol { list-style: none; margin: 0; padding: 0; } .ds-contents li + li { border-top: 0.8px solid #d6d6d6; } .ds-contents a { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.25rem; padding: 0.625rem 0; color: #111111; text-decoration: none; font-size: 1.0625rem; line-height: 1.4; } .ds-contents a:hover .ds-l { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; } .ds-contents a:focus-visible, .ds-contents summary:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-n { color: #6b6b6b; font-variant-numeric: lining-nums tabular-nums; } .ds-d3 a { grid-template-columns: 2.5rem 2.5rem minmax(0, 1fr); font-size: 1rem; } .ds-d3 .ds-n { grid-column: 2; }"
+    },
+    {
+      "name": "Margin Note",
+      "kind": "custom",
+      "refersTo": "margin-note",
+      "description": "A footnote set in the right margin beside its line on wide screens: plain meta-grey mark in the text, 0.875rem meta-grey note, links still blue.",
+      "html": "<div class=\"ds-mn-wrap\"><p class=\"ds-mn-text\">Cache-aside reads the cache first and falls back to the database<sup class=\"ds-mn-mark\">1</sup><span class=\"ds-mn\"><span class=\"ds-mn-n\">1</span> Also called lazy loading; see <a href=\"#\">Redis</a>.</span> on a miss, then fills the cache for the next reader.</p></div>",
+      "css": ".ds-mn-wrap { max-width: 41rem; padding-right: 15.5rem; background: #ffffff; } .ds-mn-text { margin: 0; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; text-align: justify; hyphens: auto; } .ds-mn-mark { font-size: 0.7em; line-height: 0; margin-left: 0.1em; color: #6b6b6b; } .ds-mn { float: right; clear: right; width: 13rem; margin-right: -15.5rem; margin-bottom: 1rem; text-align: left; hyphens: manual; font-size: 0.875rem; line-height: 1.5; color: #6b6b6b; } .ds-mn-n { color: #6b6b6b; margin-right: 0.15em; } .ds-mn a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-mn a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-mn a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "Figure Frame",
+      "kind": "custom",
+      "refersTo": "figure-frame",
+      "description": "A Diagram framed on graph paper: soft hairline, dot grid, vertical small-caps Fig. n and [ file name ] labels, caption beneath.",
+      "html": "<figure class=\"ds-fig\"><div class=\"ds-frame\" tabindex=\"0\" data-fig=\"Fig. 1\" data-name=\"cache aside read\"><svg width=\"220\" height=\"90\" viewBox=\"0 0 220 90\" fill=\"none\" stroke=\"#111111\" stroke-width=\"1.2\"><rect x=\"6\" y=\"28\" width=\"60\" height=\"34\"/><rect x=\"154\" y=\"28\" width=\"60\" height=\"34\"/><path d=\"M66 45h86m-6-5 6 5-6 5\"/></svg></div><figcaption><span class=\"ds-sc\">Figure 1</span>&ensp;A read through the cache</figcaption></figure>",
+      "css": ".ds-fig { max-width: 41rem; margin: 0; font-family: 'Garden Modern', Georgia, serif; background: #ffffff; } .ds-frame { position: relative; min-height: 10rem; padding: 2rem 2.75rem; border: 0.8px solid #d6d6d6; background: radial-gradient(circle, color-mix(in srgb, #111111 16%, transparent) 0.7px, transparent 1px) 0 0 / 9px 9px, #ffffff; text-align: center; overflow-x: auto; } .ds-frame:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-frame::before, .ds-frame::after { position: absolute; top: 0.75rem; writing-mode: vertical-rl; padding: 0.25rem 0; background: #ffffff; color: #6b6b6b; font-size: 0.8125rem; font-variant: small-caps; letter-spacing: 0.06em; line-height: 1; white-space: nowrap; } .ds-frame::before { content: attr(data-fig); left: 0.875rem; } .ds-frame::after { content: '[ ' attr(data-name) ' ]'; right: 0.875rem; } .ds-frame svg { display: block; max-width: 100%; height: auto; margin-inline: auto; } .ds-fig figcaption { margin-top: 0.75rem; text-align: center; font-size: 0.9375rem; color: #6b6b6b; } .ds-sc { font-variant: small-caps; letter-spacing: 0.03em; color: #111111; }"
     },
     {
       "name": "Listing",
       "kind": "custom",
       "refersTo": "listing",
-      "description": "Code between two hairlines with listings-style line numbers.",
+      "description": "Code between two soft hairlines with listings-style line numbers in meta grey.",
       "html": "<pre class=\"ds-listing\"><code><span class=\"ds-line\">value = cache.get(key)</span>\n<span class=\"ds-line\">if value is None:</span>\n<span class=\"ds-line\">    value = db.query(key)</span></code></pre>",
-      "css": ".ds-listing { margin: 0; padding: 0.5rem 0; border-top: 0.8px solid #111111; border-bottom: 0.8px solid #111111; overflow-x: auto; font-family: 'Garden Modern Mono', ui-monospace, Menlo, monospace; font-size: 0.875rem; line-height: 1.6; counter-reset: line; tab-size: 4; color: #111111; background: #ffffff; } .ds-line { counter-increment: line; } .ds-line::before { content: counter(line); display: inline-block; width: 2.25rem; padding-right: 0.875rem; text-align: right; color: #4d4d4d; font-size: 0.8em; user-select: none; }"
+      "css": ".ds-listing { margin: 0; padding: 0.625rem 0; border-top: 0.8px solid #d6d6d6; border-bottom: 0.8px solid #d6d6d6; overflow-x: auto; font-family: 'Garden Modern Mono', ui-monospace, Menlo, monospace; font-size: 0.875rem; line-height: 1.6; counter-reset: line; tab-size: 4; color: #111111; background: #ffffff; } .ds-line { counter-increment: line; } .ds-line::before { content: counter(line); display: inline-block; width: 2.25rem; padding-right: 0.875rem; text-align: right; color: #6b6b6b; font-size: 0.8em; user-select: none; }"
     },
     {
       "name": "Booktabs Table",
@@ -263,63 +363,68 @@
     {
       "name": "References List",
       "kind": "custom",
-      "refersTo": "link-ref",
-      "description": "Bibliography of linked Notes with hanging [n] labels and Stage badges.",
-      "html": "<div class=\"ds-refs\"><h3>Links to</h3><ol><li><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></li><li><a href=\"#\">Thundering herd</a> <a class=\"ds-badge\" href=\"#\">🌳 Evergreen</a> <span class=\"ds-flag\">🐇 Tangent</span></li></ol></div>",
-      "css": ".ds-refs { counter-reset: ref; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; } .ds-refs h3 { font-size: 1rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; margin: 0 0 0.375rem; } .ds-refs ol { list-style: none; margin: 0; padding: 0; } .ds-refs li { counter-increment: ref; position: relative; padding-left: 2.5em; margin-bottom: 0.25rem; } .ds-refs li::before { content: '[' counter(ref) ']'; position: absolute; left: 0; } .ds-refs a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-refs a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-refs a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-refs .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); } .ds-flag { font-size: 0.875em; white-space: nowrap; }"
+      "refersTo": "section-rule",
+      "description": "Unnumbered ruled References section: soft-ink sub-heads, hanging meta-grey [n] labels, Stage badges in ink.",
+      "html": "<div class=\"ds-refs\"><h2>References</h2><h3>Links to</h3><ol><li><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></li><li><a href=\"#\">Thundering herd</a> <a class=\"ds-badge\" href=\"#\">🌳 Evergreen</a> <span class=\"ds-flag\">🐇 Tangent</span></li></ol></div>",
+      "css": ".ds-refs { counter-reset: ref; max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-refs h2 { font-size: 1.375rem; font-weight: 700; line-height: 1.25; margin: 0 0 1.75rem; padding-top: 1.25rem; border-top: 0.8px solid #d6d6d6; } .ds-refs h3 { font-size: 1rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; color: #4d4d4d; margin: 1.5rem 0 0.5rem; } .ds-refs ol { list-style: none; margin: 0; padding: 0; } .ds-refs li { counter-increment: ref; position: relative; padding-left: 2.5em; margin-bottom: 0.375rem; } .ds-refs li::before { content: '[' counter(ref) ']'; position: absolute; left: 0; color: #6b6b6b; } .ds-refs a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-refs a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-refs a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-refs .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); } .ds-flag { font-size: 0.875em; color: #6b6b6b; white-space: nowrap; }"
     },
     {
-      "name": "Tangent Footnotes",
+      "name": "End Footnotes",
       "kind": "custom",
-      "refersTo": "footnote-target",
-      "description": "Short footnote rule, small type, 🐇n marks and a back-link.",
-      "html": "<footer class=\"ds-fn\"><ol><li><span class=\"ds-fn-mark\">🐇1</span>Tangent: <a href=\"#\">Thundering herd</a> <a class=\"ds-fn-back\" href=\"#\">↑</a></li></ol></footer>",
-      "css": ".ds-fn { font-family: 'Garden Modern', Georgia, serif; font-size: 0.9375rem; color: #111111; } .ds-fn::before { content: ''; display: block; width: 10rem; border-top: 0.8px solid #111111; margin-bottom: 0.5rem; } .ds-fn ol { list-style: none; margin: 0; padding: 0; } .ds-fn li:target { background: #d6e2f2; } .ds-fn a { color: #1f4e8c; text-underline-offset: 0.18em; } .ds-fn a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-fn-back { text-decoration: none; margin-left: 0.25em; } .ds-fn-mark { font-size: 0.75em; vertical-align: super; line-height: 0; margin-right: 0.25em; }"
+      "refersTo": "footnotes",
+      "description": "Below 80rem only: a 10rem soft rule, then author footnotes and 🐇 Tangent footnotes in soft ink with back-links.",
+      "html": "<footer class=\"ds-fn\"><ol><li><span class=\"ds-fn-mark\">1</span>Also called lazy loading. <a class=\"ds-fn-back\" href=\"#\">↑</a></li><li><span class=\"ds-fn-mark\">🐇1</span>Tangent: <a href=\"#\">Thundering herd</a> <a class=\"ds-badge\" href=\"#\">🌳 Evergreen</a> <a class=\"ds-fn-back\" href=\"#\">↑</a></li></ol></footer>",
+      "css": ".ds-fn { max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; font-size: 0.9375rem; line-height: 1.5; color: #4d4d4d; background: #ffffff; } .ds-fn::before { content: ''; display: block; width: 10rem; border-top: 0.8px solid #d6d6d6; margin-bottom: 0.625rem; } .ds-fn ol { list-style: none; margin: 0; padding: 0; } .ds-fn li { margin-bottom: 0.375rem; } .ds-fn li:target { background: #d6e2f2; } .ds-fn a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-fn a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-fn a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-fn .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); } .ds-fn-back { text-decoration: none; margin-left: 0.25em; } .ds-fn-mark { font-size: 0.75em; vertical-align: super; line-height: 0; margin-right: 0.25em; color: #6b6b6b; }"
     },
     {
       "name": "Topic Index",
       "kind": "custom",
       "refersTo": "topic-index-part",
-      "description": "The home page outline: small-caps Part label, bold Topic head, Notes indented with Stage badges in ink; Tangents last.",
+      "description": "A Course page's outline: each Part a ruled small-caps section heading, bold Topic heads, Notes indented with Stage badges in ink; Tangents last.",
       "html": "<section class=\"ds-topics\"><section class=\"ds-part\"><h2>Part 2, Core Concepts</h2><section class=\"ds-topic\"><h3>Caching</h3><ul><li><a href=\"#\">Cache-aside</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></li><li><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌱 Seedling</a></li></ul></section></section><section class=\"ds-part\"><h2>🐇 Tangents</h2><section class=\"ds-topic\"><h3>Thundering herd</h3><ul><li><a href=\"#\">Thundering herd</a> <a class=\"ds-badge\" href=\"#\">🌳 Evergreen</a></li></ul></section></section></section>",
-      "css": ".ds-topics { max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-part { margin-bottom: 2rem; } .ds-part h2 { font-size: 1.0625rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; margin: 0 0 0.25rem; } .ds-topic h3 { font-size: 1.1875rem; font-weight: 700; line-height: 1.3; margin: 0.625rem 0 0.125rem; } .ds-topic ul { list-style: none; margin: 0; padding: 0 0 0 1.5em; } .ds-topic li { margin-bottom: 0.1875rem; } .ds-topics a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-topics a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-topics a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-topics .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); }"
+      "css": ".ds-topics { max-width: 41rem; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-part + .ds-part { margin-top: 3.5rem; } .ds-part h2 { font-size: 1.25rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; line-height: 1.3; margin: 0 0 1.25rem; padding-top: 1.25rem; border-top: 0.8px solid #d6d6d6; } .ds-topic + .ds-topic { margin-top: 1.5rem; } .ds-topic h3 { font-size: 1.1875rem; font-weight: 700; line-height: 1.3; margin: 0 0 0.25rem; } .ds-topic ul { list-style: none; margin: 0; padding: 0 0 0 1.5em; } .ds-topic li { margin-bottom: 0.25rem; } .ds-topics a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-topics a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-topics a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-topics .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); }"
     },
     {
-      "name": "Recently Tended",
+      "name": "Note List",
       "kind": "custom",
-      "refersTo": "recently-tended-date",
-      "description": "After a hairline: small-caps label, newest Notes with badges, long dates in soft ink at the right; dates drop below 36rem.",
-      "html": "<section class=\"ds-recent\"><h2>Recently tended</h2><ol><li><span><a href=\"#\">Cache-aside</a> <a class=\"ds-badge\" href=\"#\">🌿 Budding</a></span> <time>13 November 2026</time></li><li><span><a href=\"#\">Redis</a> <a class=\"ds-badge\" href=\"#\">🌱 Seedling</a></span> <time>9 November 2026</time></li></ol></section>",
-      "css": ".ds-recent { max-width: 41rem; padding-top: 1rem; border-top: 0.8px solid #111111; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-recent h2 { font-size: 1.0625rem; font-weight: 400; font-variant: small-caps; letter-spacing: 0.04em; margin: 0 0 0.5rem; } .ds-recent ol { list-style: none; margin: 0; padding: 0; } .ds-recent li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 1.5rem; margin-bottom: 0.25rem; } .ds-recent time { color: #4d4d4d; font-size: 0.9375rem; white-space: nowrap; } .ds-recent a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-recent a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } .ds-recent .ds-badge { color: #111111; white-space: nowrap; font-size: 0.875em; margin-left: 0.25em; text-decoration-color: color-mix(in srgb, #111111 30%, transparent); } @media (max-width: 36rem) { .ds-recent li { display: block; margin-bottom: 0.5rem; } .ds-recent time { display: block; } }"
+      "refersTo": "note-list-row",
+      "description": "The home page: every Note newest first in soft-ruled rows; title is the one link, Stage and date in meta grey flush right; meta drops below 36rem.",
+      "html": "<ol class=\"ds-notes\"><li><a href=\"#\">Cache-aside</a> <span class=\"ds-meta\"><span class=\"ds-stage\">🌿 Budding</span><span class=\"ds-sep\">·</span><time>13 November 2026</time></span></li><li><a href=\"#\">Redis</a> <span class=\"ds-meta\"><span class=\"ds-stage\">🌱 Seedling</span><span class=\"ds-sep\">·</span><time>9 November 2026</time></span></li></ol>",
+      "css": ".ds-notes { max-width: 41rem; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr auto auto; column-gap: 1.5rem; border-top: 0.8px solid #d6d6d6; border-bottom: 0.8px solid #d6d6d6; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; } .ds-notes li { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: baseline; padding: 0.875rem 0; } .ds-notes li + li { border-top: 0.8px solid #d6d6d6; } .ds-meta { display: contents; color: #6b6b6b; font-size: 0.9375rem; white-space: nowrap; } .ds-stage { font-variant-caps: small-caps; letter-spacing: 0.04em; } .ds-meta time { text-align: right; } .ds-sep { display: none; } .ds-notes a { color: #1f4e8c; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, #1f4e8c 45%, transparent); text-underline-offset: 0.18em; } .ds-notes a:hover { text-decoration-color: currentColor; text-decoration-thickness: 2px; } .ds-notes a:focus-visible { outline: 2px solid #1f4e8c; outline-offset: 2px; } @media (max-width: 36rem) { .ds-notes { display: block; } .ds-notes li { display: block; } .ds-meta { display: block; margin-top: 0.25rem; } .ds-sep { display: inline; margin: 0 0.4em; } }"
     },
     {
-      "name": "Topic Index Empty State",
+      "name": "Empty State",
       "kind": "custom",
       "refersTo": "topic-index-part",
-      "description": "An empty garden shows one centred line.",
+      "description": "An empty Course or garden shows one centred line.",
       "html": "<p class=\"ds-empty\">No Notes yet.</p>",
       "css": ".ds-empty { max-width: 41rem; margin: 0; text-align: center; font-family: 'Garden Modern', Georgia, serif; font-size: 1.1875rem; line-height: 1.55; color: #111111; background: #ffffff; }"
     }
   ],
   "narrative": {
     "northStar": "The LaTeX Article",
-    "overview": "Every Note is typeset as a short LaTeX article: a centred \\maketitle block, the Stage where the abstract sits, numbered sections, booktabs rules, listings line numbers, a bibliography of where to walk next, and a short footnote rule. The page is plain white with near-black ink, set entirely in one family (Garden Modern, a subset and renamed New Computer Modern under the GUST Font License). It reads as a paper someone is still writing, which suits a garden that shows unfinished work honestly.\n\nDensity is that of a printed article: a single 41rem column, justified and hyphenated body at 19px, generous space only between sections. Colour appears in exactly two places, as hyperref would set it: blue for a reference that resolves, maroon with a ?? mark for one that is not written yet. There are no cards, fills, shadows or rounded corners; structure comes from type, counters and hairline rules.\n\nCoverage: this system is evidenced by all three page types: the Note page (/notes/<slug>), About Stages (/about-stages), the home page (Topic index, /), plus the base layout and the shared article layout that the Note page and About Stages both use. The world is light only, by decision; there is no dark theme.",
+    "overview": "Every Note is typeset as a short LaTeX article, set with margins in the manner of tufte-latex: a centred \\maketitle block, the Stage where the abstract sits, a ruled \\tableofcontents, numbered sections each opened by a hairline, a wide outer margin where footnotes sit beside the line that calls them, figures framed on graph paper, booktabs rules, listings line numbers, and a bibliography of where to walk next. The page is plain white with near-black ink, set entirely in one family (Garden Modern, a subset and renamed New Computer Modern under the GUST Font License). It reads as a paper someone is still writing, which suits a garden that shows unfinished work honestly.\n\nDensity is that of a printed article: a single 41rem text column, justified and hyphenated body at 19px, generous space only between sections. Everything beside the text (section and contents numbers, margin notes, captions, dates, labels, rules) steps back into a short ladder of greys so the running text and its links stay the loudest thing on the page. Colour appears in exactly two places, as hyperref would set it: blue for a reference that resolves, maroon with a ?? mark for one that is not written yet. There are no cards, fills, shadows or rounded corners; structure comes from type, counters and hairline rules, and the only box is the figure frame.\n\nCoverage: this system is evidenced by every page type: the Note page (/notes/<slug>), About Stages (/about-stages), the Course page (/<course>, its Topic index), the home page (the Note list, /), plus the base layout, the shared article layout that the Note page and About Stages both use, the Contents component, and the Markdown pipeline that produces margin notes and figures. The world is light only, by decision; there is no dark theme.",
     "keyCharacteristics": [
       "One serif family (Garden Modern) for everything, with its mono sibling for code; small caps for labels.",
-      "White page, near-black ink, colour reserved for link state.",
-      "LaTeX's own devices carry structure: numbered sections, `[n]` references, `??` for undefined, Figure counters, booktabs, listings numbers, footnote rule.",
-      "Flat, square, ruled: no shadows, no radius, no boxes.",
+      "White page, near-black ink, colour reserved for link state; greys for the apparatus beside the text.",
+      "LaTeX's own devices carry structure: numbered ruled sections, a ruled Contents, `[n]` references, `??` for undefined, Figure counters, booktabs, listings numbers, margin notes.",
+      "Flat, square, ruled: no shadows, no radius, and one box only, the figure frame.",
       "Stage is always emoji plus label; 🐇 marks Tangents."
     ],
     "rules": [
       {
         "name": "The Hyperref Rule",
-        "body": "Colour means a link and its state: blue resolves, maroon plus `??` does not exist yet. No decorative colour, no fills, no coloured badges.",
+        "body": "Colour means a link and its state: blue resolves, maroon plus `??` does not exist yet. Links stay blue wherever they sit, margin notes included. No decorative colour, no fills, no coloured badges.",
         "section": "colors"
       },
       {
         "name": "The Honest Link Rule",
         "body": "An unwritten link is never styled as a working link and never hidden; it stays in the text, maroon, dashed, marked `??`, and announced as \"(not written yet)\" to assistive tech.",
+        "section": "colors"
+      },
+      {
+        "name": "The Apparatus Grey Rule",
+        "body": "Greys are for the apparatus beside the text (numbers, notes, captions, labels, dates, rules), never for body text and never for links. Ink is the text; Meta Grey is what annotates it; Soft Rule is what divides it.",
         "section": "colors"
       },
       {
@@ -334,25 +439,38 @@
       },
       {
         "name": "The One Article Rule",
-        "body": "Every reading page is the same LaTeX article from one shared layout: centred title block, an abstract with a centred bold head, a numbered justified body. Only the abstract head's content changes by page; the shape never does.",
+        "body": "Every reading page is the same LaTeX article from one shared layout: centred title block, an abstract with a centred bold head, a Contents when earned, a numbered justified body in ruled sections. Only the abstract head's content changes by page; the shape never does.",
+        "section": "layout"
+      },
+      {
+        "name": "The Margin Rule",
+        "body": "One text column at every width, and the only thing ever set beside it is a margin note. No side-by-side panels, no sidebars; when the margin is too narrow to hold notes, the notes move to the end rather than squeezing the column.",
         "section": "layout"
       },
       {
         "name": "The Booktabs Rule",
-        "body": "Rules are horizontal only. Hairlines are 0.8px; the outer top and bottom of a table are 1.5px. No vertical rules, no boxes, no background fills around code or tables.",
+        "body": "Rules are horizontal only. Hairlines are 0.8px; the outer top and bottom of a table are 1.5px, in Rule Ink. No vertical rules and no background fills around code or tables.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Box Rule",
+        "body": "The figure frame is the one box the system allows: a 0.8px Soft Rule hairline around a Diagram on a Graph Grain dot grid. Nothing else is boxed, framed or filled.",
         "section": "elevation"
       }
     ],
     "dos": [
       "**Do** set every surface in Garden Modern on a white page with near-black ink.",
-      "**Do** use LaTeX's own devices for structure: section counters, `[n]` references, Figure counters, booktabs rules, listings numbers, the footnote rule.",
-      "**Do** keep colour to link state: Hyperref Blue for resolved links, Undefined Maroon plus `??` for unwritten ones.",
+      "**Do** use LaTeX's own devices for structure: ruled section counters, the ruled Contents, `[n]` references, Figure counters, booktabs rules, listings numbers, margin notes and the footnote rule.",
+      "**Do** keep colour to link state: Hyperref Blue for resolved links (in margin notes too), Undefined Maroon plus `??` for unwritten ones.",
+      "**Do** set apparatus beside the text (numbers, notes, captions, labels, dates) in Meta Grey and its dividing hairlines in Soft Rule.",
+      "**Do** put footnotes in the margin beside their line on wide screens and at the end below 80rem; never both at once.",
       "**Do** show Stage as emoji plus label, and 🐇 for Tangents, wherever a Note is referenced.",
       "**Do** justify and hyphenate body text on wide screens and fall back to ragged left below 36rem."
     ],
     "donts": [
       "**Don't** use cream or tinted paper, green pills, or a backlinks footer card; the garden defaults this world refused.",
-      "**Don't** add shadows, rounded corners, filled boxes, or vertical table rules.",
+      "**Don't** add shadows, rounded corners, filled boxes, or vertical table rules; the figure frame is the one box.",
+      "**Don't** set body text or links in grey; greys are for apparatus only.",
       "**Don't** introduce a second typeface, uppercase sans labels, or eyebrow text above headings.",
       "**Don't** use colour for decoration or to signal Stage.",
       "**Don't** change a Note's page shape by Stage."

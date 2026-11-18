@@ -33,7 +33,7 @@ export function notePath(slug: string): string {
 }
 
 /** Kebab-case of a Note title: lowercase words joined by single hyphens. */
-function slugify(title: string): string {
+export function slugify(title: string): string {
   return title
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")

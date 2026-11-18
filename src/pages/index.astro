@@ -9,7 +9,7 @@ const garden = loadGarden();
 ---
 
 <Base title="jonpark.dev">
-  <div class="home">
+  <div class="home flow">
     <header class="title-block">
       <h1>jonpark.dev</h1>
       {/* scripts/setup-hosting.sh (HOME_PAGE_TEXT) checks for this tagline; change both together. */}
@@ -38,45 +38,36 @@ const garden = loadGarden();
 
 <style>
   .home {
-    max-width: var(--measure);
-    margin: 0 auto;
     padding-top: clamp(2rem, 6vw, 3.5rem);
   }
-
-  /* \maketitle */
-  .title-block {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin: 0 0 0.625rem;
-  }
-  .title-block p {
-    margin: 0;
-    font-size: 1.0625rem;
-    text-wrap: balance;
+  .home .title-block {
+    margin-bottom: 3.5rem;
   }
   .empty {
     text-align: center;
   }
 
-  /* Every Note, newest first: the title is the row's one link; Stage and date
-     sit flush right as one quiet line of metadata */
+  /* Every Note, newest first, in ruled rows: the title is the row's one link;
+     Stage and date sit flush right as one quiet line of grey metadata */
   .note-list {
     list-style: none;
-    margin: 0;
+    margin-block: 0;
     padding: 0;
+    border-top: 0.8px solid var(--rule-soft);
+    border-bottom: 0.8px solid var(--rule-soft);
   }
   .note-list li {
+    padding: 0.875rem 0;
     text-wrap: pretty;
   }
+  .note-list li + li {
+    border-top: 0.8px solid var(--rule-soft);
+  }
   .note-meta {
-    color: var(--ink-soft);
+    color: var(--ink-meta);
     font-size: 0.9375rem;
     white-space: nowrap;
+    font-variant-numeric: lining-nums;
   }
   .note-meta :global(.stage-badge) {
     font-variant-caps: small-caps;
@@ -86,14 +77,13 @@ const garden = loadGarden();
     margin: 0 0.4em;
   }
 
-  /* Wide: an unruled tabular of three columns. Long titles wrap in their own
+  /* Wide: three columns on a shared grid. Long titles wrap in their own
      column; Stages align left, dates flush right, all on the first baseline. */
   @media (min-width: 36.0625rem) {
     .note-list {
       display: grid;
       grid-template-columns: 1fr auto auto;
-      column-gap: 1.25rem;
-      row-gap: 0.5rem;
+      column-gap: 1.5rem;
     }
     .note-list li {
       grid-column: 1 / -1;
@@ -114,12 +104,9 @@ const garden = loadGarden();
 
   /* Narrow: Stage and date share their own line under the title */
   @media (max-width: 36rem) {
-    .note-list li {
-      margin-bottom: 0.75rem;
-    }
     .note-meta {
       display: block;
-      margin-top: 0.125rem;
+      margin-top: 0.25rem;
     }
   }
 </style>
