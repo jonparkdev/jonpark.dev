@@ -4,9 +4,11 @@ dist/
 .env
 .DS_Store
 garden/inbox.md
-garden/.obsidian/workspace*.json
 .claude/settings.local.json
 garden/copilot/
-garden/.copilot/
-garden/.obsidian/plugins/copilot/
-garden/.claudian/
+
+# garden/: ignore dotfiles except Obsidian settings and .gitkeep placeholders
+garden/**/.*
+!garden/.obsidian/
+!garden/**/.gitkeep
+garden/.obsidian/workspace*.json

@@ -14,7 +14,7 @@ Notes are published from a dedicated writing clone of this repo at `~/vaults/jon
 - Obsidian Git: commit-and-sync every 30 minutes, only when something changed, pulling before it pushes. Every sync that pushes triggers the deploy. Sync only runs while Obsidian is open.
 - Excalidraw: drawings live in `garden/assets/`, auto-export SVG next to them, and are embedded as `![[name.svg]]`.
 - New Notes go to `garden/notes/`. A Note needs valid `stage` and `topic` frontmatter, or the deploy fails and the live site stays at its last good version.
-- `garden/inbox.md` and `garden/.obsidian/workspace*.json` are gitignored and exist only in the writing clone.
+- `garden/inbox.md`, `garden/.obsidian/workspace*.json`, and every dotfile under `garden/` except `.obsidian/` and `.gitkeep` placeholders (for example `.claude/`, `.claudian/`, `.copilot/`) are gitignored and exist only in the writing clone.
 
 Settings live in `garden/.obsidian/` (committed). To set up on a new machine: clone the repo to `~/vaults/jonpark.dev`, open `garden/` as a vault, trust the author, and enable community plugins. The committed plugin code and settings load as-is. Check the settings in the plugin UI rather than editing `data.json` while Obsidian is running, because the plugin overwrites the file.
 
